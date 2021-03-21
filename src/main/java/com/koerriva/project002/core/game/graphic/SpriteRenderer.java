@@ -8,6 +8,7 @@ import static org.lwjgl.opengl.GL33C.*;
 
 public class SpriteRenderer {
     private int vao;
+    private int ebo;
     private Shader shader;
     private final Matrix4f projection = new Matrix4f().identity();
 
@@ -19,27 +20,46 @@ public class SpriteRenderer {
     public void init(){
         // 配置 VAO/VBO
         int VBO;
+//        float[] vertices = {
+//                // 位置     // 纹理
+//                -0.5f, 0.5f, 0.0f, 1.0f,
+//                0.5f, -0.5f, 1.0f, 0.0f,
+//                -0.5f, -0.5f, 0.0f, 0.0f,
+//
+//                -0.5f, 0.5f, 0.0f, 1.0f,
+//                0.5f, 0.5f, 1.0f, 1.0f,
+//                0.5f, -0.5f, 1.0f, 0.0f
+//        };
+
         float[] vertices = {
                 // 位置     // 纹理
-                -0.5f, 0.5f, 0.0f, 1.0f,
-                0.5f, -0.5f, 1.0f, 0.0f,
-                -0.5f, -0.5f, 0.0f, 0.0f,
+                -0.5f, 0.5f, 0.0f, 0.0f,
+                -0.5f, -0.5f, 0.0f, 1.0f,
+                0.5f, -0.5f, 1.0f, 1.0f,
+                0.5f, 0.5f, 1.0f, 0.0f
+        };
 
-                -0.5f, 0.5f, 0.0f, 1.0f,
-                0.5f, 0.5f, 1.0f, 1.0f,
-                0.5f, -0.5f, 1.0f, 0.0f
+        int[] indices = {
+                //索引从0开始
+                0,1,2,0,2,3
         };
 
         vao = glGenVertexArrays();
-        VBO = glGenBuffers();
+        ebo = glGenBuffers();
 
+
+        glBindVertexArray(vao);
+
+        VBO = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER,vertices,GL_STATIC_DRAW);
 
-        glBindVertexArray(vao);
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0,4,GL_FLOAT,false,16,0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER,indices,GL_STATIC_DRAW);
+
         glBindVertexArray(0);
     }
 
@@ -54,7 +74,7 @@ public class SpriteRenderer {
 
         projection.identity()
                 .ortho(-window.size.frameBufferWidth/2f,window.size.frameBufferWidth/2f
-                        ,window.size.frameBufferHeight/2f,-window.size.frameBufferHeight/2f,-1f,1f);
+                        ,-window.size.frameBufferHeight/2f,window.size.frameBufferHeight/2f,-1f,1f);
         shader.setMat4("P",projection);
 
         Matrix4f view = camera.getMatrix();

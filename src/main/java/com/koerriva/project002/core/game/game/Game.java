@@ -7,6 +7,7 @@ import com.koerriva.project002.core.game.gui.NanovgGUI;
 import com.koerriva.project002.core.game.gui.NuklearGUI;
 import org.joml.Random;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.io.IOException;
@@ -41,9 +42,15 @@ public class Game {
         for (int i = 0; i < 100000; i++) {
             int x = random.nextInt(10000)-5000;
             int y = random.nextInt(10000)-5000;
+
+            float r = random.nextFloat();
+            float g = random.nextFloat();
+            float b = random.nextFloat();
+            float a = random.nextFloat()*0.2f+0.8f;
+
             Sprite sprite = new Sprite(new Vector2f(x,y),
                     new Vector2f(spriteTexture.width,spriteTexture.height),
-                    new Vector4f(1.0f),
+                    new Vector4f(r,g,b,a),
                     spriteTexture);
             scene.add(sprite);
         }

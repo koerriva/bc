@@ -4,7 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class Camera2D {
-    private final Vector3f eye = new Vector3f(0f,0f,-1f);
+    private final Vector3f eye = new Vector3f(0f,0f,1f);
     private final Vector3f up = new Vector3f(0f,1f,0f);
     private final Vector3f center = new Vector3f(0f);
     private final Matrix4f matrix;

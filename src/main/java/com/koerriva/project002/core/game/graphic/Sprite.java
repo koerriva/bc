@@ -6,8 +6,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
-import static org.lwjgl.opengl.GL11C.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11C.glDrawArrays;
+import static org.lwjgl.opengl.GL11C.*;
 import static org.lwjgl.opengl.GL13C.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13C.glActiveTexture;
 import static org.lwjgl.opengl.GL30C.glBindVertexArray;
@@ -57,6 +56,7 @@ public class Sprite {
         glActiveTexture(GL_TEXTURE0);
         texture.bind();
 
-        glDrawArrays(GL_TRIANGLES,0,6);
+//        glDrawArrays(GL_TRIANGLES,0,6);
+        glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
     }
 }
