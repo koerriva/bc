@@ -95,7 +95,7 @@ public class Game {
     }
 
     private void render(){
-        spriteRenderer.render(window,camera,scene);
+        spriteRenderer.render(window,camera,scene.getEntities(),spriteTexture);
         gui.render(window);
         window.update();
     }

@@ -25,13 +25,21 @@ public class Sprite {
         this.size = size;
         this.color = color;
         this.texture = texture;
-    }
-
-    public void render(int meshId,Shader shader){
-        matrix.identity()
+        this.matrix
                 .translate(center.x,center.y,0.0f)
                 .rotate(rotate,0f,0f,1f)
                 .scale(size.x,size.y,0f);
+    }
+
+    public final Vector4f getColor(){
+        return color;
+    }
+
+    public final Matrix4f getMatrix(){
+        return matrix;
+    }
+
+    public void render(int meshId,Shader shader){
         shader.setMat4("M",matrix);
         shader.setVec4("baseColor",color);
         shader.setInt("baseTexture",0);
@@ -45,18 +53,10 @@ public class Sprite {
     }
 
     public void render(Shader shader){
-        matrix.identity()
-                .translate(center.x,center.y,0.0f)
-                .rotate(rotate,0f,0f,1f)
-                .scale(size.x,size.y,0f);
         shader.setMat4("M",matrix);
         shader.setVec4("baseColor",color);
         shader.setInt("baseTexture",0);
 
-        glActiveTexture(GL_TEXTURE0);
-        texture.bind();
-
-//        glDrawArrays(GL_TRIANGLES,0,6);
         glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
     }
 }
