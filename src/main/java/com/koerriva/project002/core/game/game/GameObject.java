@@ -6,8 +6,6 @@ import com.koerriva.project002.core.game.graphic.Mesh;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 
-import java.nio.FloatBuffer;
-
 public abstract class GameObject {
     public final Vector2f position;
     public final Vector2f size;
@@ -33,8 +31,6 @@ public abstract class GameObject {
     }
 
     public abstract void draw(Camera2D camera);
-
-    public abstract void draw(Camera2D camera, int batchSize, FloatBuffer colorData, FloatBuffer transformData);
 
     public abstract void cleanup();
 }

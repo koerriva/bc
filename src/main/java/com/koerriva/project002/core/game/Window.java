@@ -85,7 +85,7 @@ public class Window {
             glfwSetTime(0);
 
             GL.createCapabilities();
-            glfwSwapInterval(0);
+            glfwSwapInterval(1);
 
             glViewport(0,0,size.frameBufferWidth,size.frameBufferHeight);
             glClearColor(26/255.0f,59/255.0f,50/255.0f,1.0f);

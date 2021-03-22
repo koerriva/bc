@@ -32,8 +32,4 @@ public class SpriteRenderer {
     public void draw(GameObject obj) {
         obj.draw(camera);
     }
-
-    public void drawBatch(GameObject instance,int batchSize,FloatBuffer colorData,FloatBuffer modelData){
-        instance.draw(camera,batchSize,colorData,modelData);
-    }
 }

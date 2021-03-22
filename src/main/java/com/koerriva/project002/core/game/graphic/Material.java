@@ -33,6 +33,10 @@ public class Material {
         return new Material(Shader.load("sprite"),texture,color);
     }
 
+    public static Material from(Texture texture) {
+        return new Material(Shader.load("sprite"),texture,new Vector4f(1f));
+    }
+
     public final Material use(){
         shader.use();
         return this;
