@@ -10,15 +10,20 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import static com.koerriva.project002.utils.IOUtil.ioResourceToByteBuffer;
 import static org.lwjgl.opengl.GL20C.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 
 public class Shader {
-    private int id;
+    private static final LinkedHashMap<String,Shader> resource = new LinkedHashMap<>();
+    public final int id;
 
-    private Shader(){}
+    private Shader(int id){
+        this.id = id;
+    }
 
     public void use(){
         glUseProgram(id);
@@ -63,8 +68,6 @@ public class Shader {
     }
 
     public static Shader load(String vert,String frag) {
-        Shader shader = new Shader();
-
         int sVertex, sFragment;
 
         sVertex = glCreateShader(GL_VERTEX_SHADER);
@@ -89,7 +92,9 @@ public class Shader {
         }
 
         // Shader Program
-        shader.id = glCreateProgram();
+        int id = glCreateProgram();
+        Shader shader = new Shader(id);
+
         glAttachShader(shader.id, sVertex);
         glAttachShader(shader.id, sFragment);
 
@@ -107,12 +112,23 @@ public class Shader {
         return shader;
     }
 
-    public static Shader load(String name) throws IOException {
-        ByteBuffer vertData = ioResourceToByteBuffer("data/shader/"+name+".vert",1024);
-        ByteBuffer fragData = ioResourceToByteBuffer("data/shader/"+name+".frag",1024);
+    public static Shader load(String name) {
+        if(resource.containsKey(name)){
+            return resource.get(name);
+        }
+        ByteBuffer vertData = null;
+        ByteBuffer fragData = null;
+        try {
+            vertData = ioResourceToByteBuffer("data/shader/"+name+".vert",1024);
+            fragData = ioResourceToByteBuffer("data/shader/"+name+".frag",1024);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         String vert = StandardCharsets.UTF_8.decode(vertData).toString();
         String frag = StandardCharsets.UTF_8.decode(fragData).toString();
-        return load(vert,frag);
+        Shader shader = load(vert,frag);
+        resource.put(name,shader);
+        return  shader;
     }
 }

@@ -1,6 +1,6 @@
 package com.koerriva.project002.core.game.gui.nanovg;
 
-import org.jetbrains.annotations.Nullable;
+import com.sun.istack.internal.Nullable;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.nanovg.NVGColor;
 import org.lwjgl.nanovg.UIHandler;

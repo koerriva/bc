@@ -4,12 +4,15 @@ import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import static org.lwjgl.opengl.GL11C.*;
 
 public class Texture {
-    private int id;
-    public int width,height,channels=4;
+    private static final HashMap<String,Texture> resource = new LinkedHashMap<>();
+    public final int id;
+    public final int width,height,channels=4;
     private int Internal_Format = GL_RGBA;
     private int Image_Format = GL_RGBA;
     private int Wrap_S = GL_REPEAT;
@@ -17,19 +20,19 @@ public class Texture {
     private int Filter_Min = GL_LINEAR;
     private int Filter_Max = GL_LINEAR;
 
-    private Texture(){}
+    private Texture(int id, int width, int height){
+        this.id = id;
+        this.width = width;
+        this.height = height;
+    }
 
     public void bind(){
         glBindTexture(GL_TEXTURE_2D,id);
     }
 
     public static Texture load(int width,int height,ByteBuffer data){
-        Texture texture = new Texture();
-        texture.id = glGenTextures();
-        texture.width = width;
-        texture.height = height;
-        texture.channels = 4;
-
+        int id = glGenTextures();
+        Texture texture = new Texture(id, width, height);
         // Create Texture
         glBindTexture(GL_TEXTURE_2D, texture.id);
         glPixelStorei(GL_UNPACK_ALIGNMENT,1);
@@ -47,14 +50,19 @@ public class Texture {
     }
 
     public static Texture load(String filename) {
+        if(resource.containsKey(filename)){
+            return resource.get(filename);
+        }
         int[] x={0};int[] y={0};int[] ch={0};
         ByteBuffer data = STBImage.stbi_load("data/images/"+filename,x,y,ch,4);
 
         System.out.printf("%s width=%d,height=%d,channels=%d\n",filename,x[0],y[0],ch[0]);
-        return load(x[0],y[0],data);
+        Texture texture = load(x[0],y[0],data);
+        resource.put(filename,texture);
+        return texture;
     }
 
-    public int getId() {
-        return id;
+    public void cleanup() {
+        glDeleteTextures(id);
     }
 }
