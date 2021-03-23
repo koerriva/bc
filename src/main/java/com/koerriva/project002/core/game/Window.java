@@ -1,6 +1,7 @@
 package com.koerriva.project002.core.game;
 
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.WGL;
 import org.lwjgl.opengl.WGLNVGPUAffinity;
@@ -51,6 +52,10 @@ public class Window {
             glfwWindowHint(GLFW_SAMPLES, 4);
 
             handle = glfwCreateWindow(size.width,size.height,title,0,0);
+            GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            if(vidMode!=null) {
+                glfwSetWindowPos(handle, (vidMode.width() - size.width) / 2, (vidMode.height() - size.height) / 2);
+            }
 
             glfwSetWindowSizeCallback(handle,(_handle,width,height)->{
                 size.width = width;
@@ -79,7 +84,6 @@ public class Window {
                 size.xscale = sx.get(0);
                 size.yscale = sy.get(0);
             }
-
 
             glfwMakeContextCurrent(handle);
             glfwSetTime(0);

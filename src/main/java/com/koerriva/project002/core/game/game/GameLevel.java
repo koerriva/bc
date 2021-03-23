@@ -1,10 +1,7 @@
 package com.koerriva.project002.core.game.game;
 
 import com.koerriva.project002.core.game.Window;
-import com.koerriva.project002.core.game.graphic.Material;
-import com.koerriva.project002.core.game.graphic.Neural;
-import com.koerriva.project002.core.game.graphic.SpriteRenderer;
-import com.koerriva.project002.core.game.graphic.Texture;
+import com.koerriva.project002.core.game.graphic.*;
 import org.joml.Matrix4f;
 import org.joml.Random;
 import org.joml.Vector2f;
@@ -13,8 +10,6 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class GameLevel {
     private final ArrayList<GameObject> objects = new ArrayList<>();
@@ -45,12 +40,19 @@ public class GameLevel {
             color.get(i*4,colorData);
         }
 
-        Neural neural = new Neural(Material.from(texture),objNum,colorData,modelData);
-        level.objects.add(neural);
+//        Neural neural = new Neural(Material.from(texture),objNum,colorData,modelData);
+//        level.objects.add(neural);
+
+        Particle particle = new Particle(new Vector2f(0f),new Vector2f(16f),Material.from(texture),60);
+        level.objects.add(particle);
 
         t = System.currentTimeMillis()-t;
         System.out.printf("Level load![%d]ms\n",t);
         return level;
+    }
+
+    public void update(Window window){
+        objects.forEach(obj->obj.update(window.frameTime));
     }
 
     public void draw(Window window, SpriteRenderer renderer){

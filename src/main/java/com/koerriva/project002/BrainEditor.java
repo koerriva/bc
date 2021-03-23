@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class BrainEditor {
     public static void main(String[] args) throws IOException {
-        Game game = new Game(1280,720,"BrainBoard");
+        Game game = new Game(800,600,"BrainBoard");
         game.init();
         game.run();
     }

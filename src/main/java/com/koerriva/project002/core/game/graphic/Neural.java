@@ -21,6 +21,11 @@ public class Neural extends GameObject {
     }
 
     @Override
+    public void update(float deltaTime) {
+
+    }
+
+    @Override
     public void draw(Camera2D camera) {
         material.use()
                 .setProjection(camera.getProjectionMatrix())

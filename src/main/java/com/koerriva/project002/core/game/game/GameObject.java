@@ -30,6 +30,8 @@ public abstract class GameObject {
                 .scale(size.x,size.y,0f);
     }
 
+    public abstract void update(float deltaTime);
+
     public abstract void draw(Camera2D camera);
 
     public abstract void cleanup();

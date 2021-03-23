@@ -64,6 +64,7 @@ public class Game {
         if(window.shouldClose()){
             state = GameState.EXIT;
         }
+        level.update(window);
     }
 
     private void render(){
