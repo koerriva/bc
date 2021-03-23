@@ -53,6 +53,13 @@ public class Window {
 
             handle = glfwCreateWindow(size.width,size.height,title,0,0);
             GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            float[] xs = new float[1];
+            float[] ys = new float[1];
+            glfwGetWindowContentScale(handle,xs,ys);
+            size.xscale = xs[0];
+            size.yscale = ys[0];
+            System.out.println("x_scale="+xs[0]+",y_scale="+ys[0]);
+
             if(vidMode!=null) {
                 glfwSetWindowPos(handle, (vidMode.width() - size.width) / 2, (vidMode.height() - size.height) / 2);
             }
@@ -61,12 +68,12 @@ public class Window {
                 size.width = width;
                 size.height = height;
             });
-
             glfwSetFramebufferSizeCallback(handle,(_handle,width,height)->{
                 size.frameBufferWidth = width;
                 size.frameBufferHeight = height;
             });
             glfwSetWindowContentScaleCallback(handle, (_handle, xscale, yscale) -> {
+                System.out.println(xscale+"_"+yscale);
                 size.xscale = xscale;
                 size.yscale = yscale;
             });
