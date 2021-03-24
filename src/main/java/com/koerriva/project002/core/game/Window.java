@@ -75,7 +75,7 @@ public class Window {
                 size.height = height;
             });
             glfwSetCursorPosCallback(handle,(_handle,x,y)->{
-                System.out.println("mouse move"+x+"_"+y);
+                System.out.println(x+"_"+y);
                 mouse.x = x;
                 mouse.y = y;
             });
@@ -123,6 +123,11 @@ public class Window {
 
     public void input(){
         glfwPollEvents();
+        double[] xpos = new double[1];
+        double[] ypos = new double[1];
+        glfwGetCursorPos(handle,xpos,ypos);
+        mouse.x = xpos[0];
+        mouse.y = ypos[0];
     }
 
     public void update(){

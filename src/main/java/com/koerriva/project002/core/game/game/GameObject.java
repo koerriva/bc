@@ -9,7 +9,7 @@ import org.joml.Vector2f;
 public abstract class GameObject {
     public final Vector2f position;
     public final Vector2f size;
-    public final Vector2f velocity = new Vector2f(0f);
+    public final Vector2f velocity = new Vector2f(1f);
     public final Matrix4f transform = new Matrix4f().identity();
     public final Material material;
 

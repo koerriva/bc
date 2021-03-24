@@ -52,7 +52,13 @@ public class GameLevel {
     }
 
     public void update(Window window){
-        objects.forEach(obj->obj.update(window.frameTime));
+        System.out.printf("x=%f,y=%f\n",window.mouse.wx,window.mouse.wy);
+        objects.forEach(obj->{
+            if(obj instanceof Particle){
+                obj.position.set(window.mouse.wx,window.mouse.wy);
+            }
+            obj.update(window.frameTime);
+        });
     }
 
     public void draw(Window window, SpriteRenderer renderer){
