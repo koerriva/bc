@@ -10,6 +10,7 @@ public class Camera2D {
     private final Vector3f center = new Vector3f(0f);
     private final Matrix4f view;
     private final Matrix4f projection;
+    private final Vector3f mousePosition = new Vector3f();
 
     private final Window window;
 
@@ -31,5 +32,14 @@ public class Camera2D {
         return projection.identity()
                 .ortho(-window.size.frameBufferWidth/2f,window.size.frameBufferWidth/2f
                         ,-window.size.frameBufferHeight/2f,window.size.frameBufferHeight/2f,-1f,1f);
+
+//        float nx = (float) (2*window.mouse.x/window.size.width - 1f);
+//        float ny = (float) (1f - 2*window.mouse.y/window.size.height);
+//        projection.unproject(new Vector3f(nx,ny,0f),
+//                new int[]{0,0,window.size.frameBufferWidth,window.size.frameBufferHeight},
+//                mousePosition);
+//        window.mouse.wx = mousePosition.x;
+//        window.mouse.wy = mousePosition.y;
+//        return projection;
     }
 }

@@ -1,10 +1,8 @@
 package com.koerriva.project002.core.game;
 
-import org.lwjgl.PointerBuffer;
+import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.WGL;
-import org.lwjgl.opengl.WGLNVGPUAffinity;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.Platform;
 
@@ -25,8 +23,16 @@ public class Window {
         public float yscale;
     }
 
+    public static class Mouse{
+        public double x;
+        public double y;
+        public double wx;
+        public double wy;
+    }
+
     private static long handle = 0L;
     public final Size size = new Size();
+    public final Mouse mouse = new Mouse();
     private final String title;
     private double lastFrameTime = 0.0;
     public float frameTime = 0.0f;
@@ -61,7 +67,11 @@ public class Window {
                 size.width = width;
                 size.height = height;
             });
-
+            glfwSetCursorPosCallback(handle,(_handle,x,y)->{
+                System.out.println("mouse move"+x+"_"+y);
+                mouse.x = x;
+                mouse.y = y;
+            });
             glfwSetFramebufferSizeCallback(handle,(_handle,width,height)->{
                 size.frameBufferWidth = width;
                 size.frameBufferHeight = height;
@@ -115,6 +125,7 @@ public class Window {
     }
 
     public void cleanup(){
+        glfwDestroyWindow(handle);
         glfwTerminate();
     }
 

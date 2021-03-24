@@ -2,16 +2,11 @@ package com.koerriva.project002.core.game.graphic;
 
 import com.koerriva.project002.core.game.game.GameObject;
 import org.joml.Math;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
-import org.lwjgl.system.MathUtil;
+import org.joml.*;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Random;
 
 import static org.lwjgl.opengl.GL11C.*;
@@ -32,7 +27,7 @@ public class Particle extends GameObject {
     public Particle(Vector2f position, Vector2f size, Material material, int batchSize) {
         super(position, size, material);
         this.material.color.set(1.0f,0.0f,0.0f,1.0f);
-        this.life = 1f;
+        this.life = 1.0f;
         this.isInstance = true;
         this.batchSize = batchSize;
         this.data = new ArrayList<>();
@@ -47,7 +42,7 @@ public class Particle extends GameObject {
             e.color = new Vector4f(material.color);
             e.velocity = new Vector3f(0f,random.nextFloat()*10f,0f);
             e.model = new Matrix4f().identity()
-                    .translate(position.x+random.nextFloat()*100f,position.y,0f)
+                    .translate(position.x+random.nextFloat()*size.x-size.x/2,position.y+random.nextFloat()*size.y-size.y/2,0f)
                     .rotateZ(rotation)
                     .scale(size.x,size.y,0f);
             data.add(e);
@@ -57,7 +52,7 @@ public class Particle extends GameObject {
                     e.life = life;
                     e.color.w = 1f;
                     e.model.identity()
-                            .translate(position.x+random.nextFloat()*100f,position.y,0f)
+                            .translate(position.x+random.nextFloat()*size.x-size.x/2,position.y+random.nextFloat()*size.y-size.y/2,0f)
                             .rotateZ(rotation)
                             .scale(size.x,size.y,0f);
                     break;
