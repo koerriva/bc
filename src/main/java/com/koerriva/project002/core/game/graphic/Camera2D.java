@@ -32,7 +32,8 @@ public class Camera2D {
     public final Matrix4f getProjectionMatrix(){
         projection.identity()
                 .ortho(-window.size.frameBufferWidth/2f,window.size.frameBufferWidth/2f
-                        ,-window.size.frameBufferHeight/2f,window.size.frameBufferHeight/2f,-1f,11f);
+                        ,-window.size.frameBufferHeight/2f,window.size.frameBufferHeight/2f,
+                        -1f,1f);
 
         Matrix4f invP = new Matrix4f();
         projection.get(invP);

@@ -52,7 +52,6 @@ public class GameLevel {
     }
 
     public void update(Window window){
-        System.out.printf("x=%f,y=%f\n",window.mouse.wx,window.mouse.wy);
         objects.forEach(obj->{
             if(obj instanceof Particle){
                 obj.position.set(window.mouse.wx,window.mouse.wy);
