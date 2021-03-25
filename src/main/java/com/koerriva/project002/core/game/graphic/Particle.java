@@ -28,7 +28,7 @@ public class Particle extends GameObject {
     public Particle(Vector2f position, Vector2f size, Material material, int batchSize) {
         super(position, size, material);
         this.material.color.set(5/255.f,39/255.f,195/255.f,1.0f);
-        this.life = 0.5f;
+        this.life = 0.2f;
         this.isInstance = true;
         this.batchSize = batchSize;
         this.data = new ArrayList<>();
@@ -36,47 +36,46 @@ public class Particle extends GameObject {
         System.out.println("init particle!");
     }
 
-    private void spawn(){
-        Iterator<Data> it = data.iterator();
-        if(data.size()<batchSize){
-            Data e = new Data();
-            e.life = life;
-            e.color = new Vector4f(material.color);
-            e.velocity = new Vector3f(0f,1f,0f);
-            e.model = new Matrix4f().identity()
-                    .translate(position.x+random.nextFloat()*size.x-size.x/2,position.y+random.nextFloat()*size.y-size.y/2,0f)
-                    .rotateZ(rotation)
-                    .scale(size.x,size.y,0f);
-            data.add(e);
-        }else {
-            while (it.hasNext()){
-                Data e = it.next();
-                if(e.life<=0f){
-                    it.remove();
-                }
-            }
-//            for (Data e : data) {
-//                if (e.life <= 0f) {
-//                    e.life = life;
-//                    e.color.w = 1f;
-//                    e.model.identity()
-//                            .translate(position.x + random.nextFloat() * size.x - size.x / 2, position.y + random.nextFloat() * size.y - size.y / 2, 0f)
-//                            .rotateZ(rotation)
-//                            .scale(size.x, size.y, 0f);
-//                    break;
-//                }
-//            }
-        }
+    private Data spawn(){
+        Data e = new Data();
+        e.life = life;
+        e.color = new Vector4f(material.color);
+        e.velocity = new Vector3f(0f,5f,0f);
+        e.model = new Matrix4f().identity()
+                .translate(position.x+random.nextFloat()*size.x-size.x/2,position.y+random.nextFloat()*size.y-size.y/2,0f)
+                .rotateZ(rotation)
+                .scale(size.x,size.y,0f);
+        return e;
     }
 
     public void update(float deltaTime){
-        spawn();
-        for (Data e : data) {
+        if(data.size()<batchSize){
+            for (int i = 0; i < 5; i++) {
+                data.add(spawn());
+            }
+        }
+
+//        for (Data e : data) {
+//            if (e.life <= 0f) {
+//                e.life = life;
+//                e.color.w = 1f;
+//                e.model.identity()
+//                        .translate(position.x + random.nextFloat() * size.x - size.x / 2, position.y + random.nextFloat() * size.y - size.y / 2, 0f)
+//                        .rotateZ(rotation)
+//                        .scale(size.x, size.y, 0f);
+//                break;
+//            }
+//        }
+        Iterator<Data> it = data.iterator();
+        while (it.hasNext()){
+            Data e = it.next();
             e.life -= deltaTime;
             e.life = Math.clamp(0,life,e.life);
             e.color.w -= deltaTime*2.5f;
             if (e.life > 0f) {
                 e.model.translate(e.velocity.x*deltaTime,e.velocity.y*deltaTime,e.velocity.z*deltaTime);
+            }else {
+                it.remove();
             }
         }
     }
