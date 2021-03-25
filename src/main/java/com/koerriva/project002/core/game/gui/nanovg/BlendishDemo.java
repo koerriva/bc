@@ -1,6 +1,6 @@
 package com.koerriva.project002.core.game.gui.nanovg;
 
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.nanovg.*;
 import org.lwjgl.opengl.GL;

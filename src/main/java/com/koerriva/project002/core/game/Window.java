@@ -1,6 +1,5 @@
 package com.koerriva.project002.core.game;
 
-import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;

@@ -15,7 +15,6 @@ import static org.lwjgl.nanovg.NanoVG.nvgEndFrame;
 import static org.lwjgl.nanovg.NanoVGGL3.nvgCreate;
 import static org.lwjgl.nanovg.OUI.*;
 import static org.lwjgl.nanovg.OUI.uiSetKey;
-import static org.lwjgl.opengl.GL11C.*;
 
 public class NanovgGUI implements GUI {
     private static long ctx;
@@ -24,8 +23,6 @@ public class NanovgGUI implements GUI {
     public static Demo.PerfGraph gpuGraph = new Demo.PerfGraph();
     public static Demo.PerfGraph fpsGraph = new Demo.PerfGraph();
     public static DemoData data;
-
-    private OUIState ouiState;
 
     public void init(Window window){
         glfwSetMouseButtonCallback(window.getHandle(), (handle, button, action, mods) -> {
@@ -61,7 +58,7 @@ public class NanovgGUI implements GUI {
         initGPUTimer(gpuTimer);
         initGraph(fpsGraph,GRAPH_RENDER_FPS,"FPS");
 
-        ouiState = new OUIState();
+        new OUIState();
     }
 
     @Override
