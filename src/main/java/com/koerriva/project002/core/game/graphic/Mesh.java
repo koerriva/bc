@@ -117,6 +117,18 @@ public class Mesh {
     }
 
     public void cleanup() {
+        if(INSTANCES.containsValue(this)){
+            Type type = null;
+            for (Type t:INSTANCES.keySet()){
+                if(INSTANCES.get(t).equals(this)){
+                    type = t;
+                    break;
+                }
+            }
+            if(type!=null){
+                INSTANCES.remove(type);
+            }
+        }
         glDeleteBuffers(ebo);
         glDeleteBuffers(vbo);
         glDeleteVertexArrays(vao);

@@ -37,11 +37,6 @@ public class Neural extends GameObject {
 
     @Override
     public void cleanup() {
-        material.shader.cleanup();
-        material.texture.cleanup();
-        if(mesh!=null){
-            mesh.cleanup();
-        }
         MemoryUtil.memFree(colorData);
         MemoryUtil.memFree(modelData);
     }

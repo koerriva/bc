@@ -30,6 +30,18 @@ public class Shader {
     }
 
     public void cleanup(){
+        if(resource.containsValue(this)){
+            String name = null;
+            for (String key:resource.keySet()){
+                if(resource.get(key).equals(this)){
+                    name = key;
+                    break;
+                }
+            }
+            if(name!=null){
+                resource.remove(name);
+            }
+        }
         glDeleteProgram(id);
     }
 
