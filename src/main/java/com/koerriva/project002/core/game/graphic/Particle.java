@@ -7,6 +7,7 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 import static org.lwjgl.opengl.GL11C.*;
@@ -26,8 +27,8 @@ public class Particle extends GameObject {
 
     public Particle(Vector2f position, Vector2f size, Material material, int batchSize) {
         super(position, size, material);
-        this.material.color.set(1.0f,0.0f,0.0f,1.0f);
-        this.life = 1.0f;
+        this.material.color.set(5/255.f,39/255.f,195/255.f,1.0f);
+        this.life = 0.5f;
         this.isInstance = true;
         this.batchSize = batchSize;
         this.data = new ArrayList<>();
@@ -36,28 +37,35 @@ public class Particle extends GameObject {
     }
 
     private void spawn(){
+        Iterator<Data> it = data.iterator();
         if(data.size()<batchSize){
             Data e = new Data();
             e.life = life;
             e.color = new Vector4f(material.color);
-            e.velocity = new Vector3f(0f,random.nextFloat()*10f,0f);
+            e.velocity = new Vector3f(0f,1f,0f);
             e.model = new Matrix4f().identity()
                     .translate(position.x+random.nextFloat()*size.x-size.x/2,position.y+random.nextFloat()*size.y-size.y/2,0f)
                     .rotateZ(rotation)
                     .scale(size.x,size.y,0f);
             data.add(e);
         }else {
-            for (Data e : data) {
-                if(e.life <= 0f){
-                    e.life = life;
-                    e.color.w = 1f;
-                    e.model.identity()
-                            .translate(position.x+random.nextFloat()*size.x-size.x/2,position.y+random.nextFloat()*size.y-size.y/2,0f)
-                            .rotateZ(rotation)
-                            .scale(size.x,size.y,0f);
-                    break;
+            while (it.hasNext()){
+                Data e = it.next();
+                if(e.life<=0f){
+                    it.remove();
                 }
             }
+//            for (Data e : data) {
+//                if (e.life <= 0f) {
+//                    e.life = life;
+//                    e.color.w = 1f;
+//                    e.model.identity()
+//                            .translate(position.x + random.nextFloat() * size.x - size.x / 2, position.y + random.nextFloat() * size.y - size.y / 2, 0f)
+//                            .rotateZ(rotation)
+//                            .scale(size.x, size.y, 0f);
+//                    break;
+//                }
+//            }
         }
     }
 
@@ -66,7 +74,7 @@ public class Particle extends GameObject {
         for (Data e : data) {
             e.life -= deltaTime;
             e.life = Math.clamp(0,life,e.life);
-            e.color.w = e.life;
+            e.color.w -= deltaTime*2.5f;
             if (e.life > 0f) {
                 e.model.translate(e.velocity.x*deltaTime,e.velocity.y*deltaTime,e.velocity.z*deltaTime);
             }

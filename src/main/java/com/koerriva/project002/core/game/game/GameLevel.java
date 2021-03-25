@@ -43,7 +43,8 @@ public class GameLevel {
 //        Neural neural = new Neural(Material.from(texture),objNum,colorData,modelData);
 //        level.objects.add(neural);
 
-        Particle particle = new Particle(new Vector2f(0f),new Vector2f(8f),Material.from(texture),50);
+        texture = Texture.load("star.png");
+        Particle particle = new Particle(new Vector2f(0f),new Vector2f(16),Material.from(texture),50);
         level.objects.add(particle);
 
         t = System.currentTimeMillis()-t;
