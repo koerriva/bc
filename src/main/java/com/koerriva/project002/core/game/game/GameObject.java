@@ -1,5 +1,6 @@
 package com.koerriva.project002.core.game.game;
 
+import com.koerriva.project002.core.game.Window;
 import com.koerriva.project002.core.game.graphic.Camera2D;
 import com.koerriva.project002.core.game.graphic.Material;
 import com.koerriva.project002.core.game.graphic.Mesh;
@@ -29,6 +30,8 @@ public abstract class GameObject {
                 .rotateZ(rotation)
                 .scale(size.x,size.y,0f);
     }
+
+    public abstract void input(Window window);
 
     public abstract void update(float deltaTime);
 

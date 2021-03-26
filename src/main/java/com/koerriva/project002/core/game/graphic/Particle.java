@@ -1,5 +1,6 @@
 package com.koerriva.project002.core.game.graphic;
 
+import com.koerriva.project002.core.game.Window;
 import com.koerriva.project002.core.game.game.GameObject;
 import org.joml.Math;
 import org.joml.*;
@@ -26,7 +27,7 @@ public class Particle extends GameObject {
 
     public Particle(Vector2f position, Vector2f size, Material material, int batchSize) {
         super(position, size, material);
-        this.material.color.set(0.5f,0.1f,0.1f,1.0f);
+        this.material.color.set(0.9f,0.15f,0.05f,1.0f);
         this.life = 0.4f;
         this.isInstance = true;
         this.batchSize = batchSize;
@@ -66,6 +67,11 @@ public class Particle extends GameObject {
         e.model.identity().translate(position.x+xoffset*5,position.y+yoffset*5,0f)
                 .rotateZ(rotation)
                 .scale(size.x,size.y,0f);
+    }
+
+    @Override
+    public void input(Window window) {
+
     }
 
     public void update(float deltaTime){

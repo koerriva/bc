@@ -1,21 +1,21 @@
 package com.koerriva.project002.core.game.game;
 
-import com.koerriva.project002.core.game.graphic.Neural;
+import com.koerriva.project002.core.game.graphic.NeuralGroup;
 
 import java.util.ArrayList;
 
 public class Scene {
-    private final ArrayList<Neural> entities = new ArrayList<Neural>();
+    private final ArrayList<NeuralGroup> entities = new ArrayList<NeuralGroup>();
 
-    public void add(Neural neural){
-        entities.add(neural);
+    public void add(NeuralGroup neuralGroup){
+        entities.add(neuralGroup);
     }
 
-    public void remove(Neural neural){
-        entities.remove(neural);
+    public void remove(NeuralGroup neuralGroup){
+        entities.remove(neuralGroup);
     }
 
-    public final ArrayList<Neural> getEntities(){
+    public final ArrayList<NeuralGroup> getEntities(){
         return entities;
     }
 }

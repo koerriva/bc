@@ -1,5 +1,6 @@
 package com.koerriva.project002.core.game.graphic;
 
+import org.joml.Vector2f;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryUtil;
 
@@ -24,6 +25,34 @@ public class Texture {
         this.id = id;
         this.width = width;
         this.height = height;
+    }
+
+    public static Texture background(Vector2f size) {
+        int width = (int) size.x;
+        int height = (int) size.y;
+        byte[] buffer = new byte[width*height*4];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int idx = (y*width+x)*4;
+                if(x%10==0||y%10==0){
+                    buffer[idx] = (byte) (1);
+                    buffer[idx+1] = (byte) (30);
+                    buffer[idx+2] = (byte) (10);
+                    buffer[idx+3] = (byte) (255);
+                }else {
+                    buffer[idx] = (byte) (26);
+                    buffer[idx+1] = (byte) (59);
+                    buffer[idx+2] = (byte) (50);
+                    buffer[idx+3] = (byte) (255);
+                }
+            }
+        }
+
+        ByteBuffer data = MemoryUtil.memAlloc(width*height*4);
+        data.put(buffer);
+        data.flip();
+        System.out.println("buffer size "+buffer.length);
+        return load(width,height,data);
     }
 
     public void bind(){
@@ -58,6 +87,7 @@ public class Texture {
 
         System.out.printf("%s width=%d,height=%d,channels=%d\n",filename,x[0],y[0],ch[0]);
         Texture texture = load(x[0],y[0],data);
+//        Texture texture = background(new Vector2f(x[0],y[0]));
         resource.put(filename,texture);
         return texture;
     }
