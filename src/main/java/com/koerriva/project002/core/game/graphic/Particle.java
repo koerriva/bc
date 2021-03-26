@@ -7,7 +7,6 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 
 import static org.lwjgl.opengl.GL11C.*;
@@ -19,20 +18,21 @@ public class Particle extends GameObject {
         Vector4f color;
         Matrix4f model;
     }
-    private final Random random = new Random();
 
+    private final Random random = new Random();
     private final ArrayList<Data> data;
     private final float life;
     private final int batchSize;
 
     public Particle(Vector2f position, Vector2f size, Material material, int batchSize) {
         super(position, size, material);
-        this.material.color.set(5/255.f,39/255.f,195/255.f,1.0f);
-        this.life = 0.2f;
+        this.material.color.set(0.5f,0.1f,0.1f,1.0f);
+        this.life = 0.4f;
         this.isInstance = true;
         this.batchSize = batchSize;
         this.data = new ArrayList<>();
 
+        random.setSeed(System.currentTimeMillis());
         System.out.println("init particle!");
     }
 
@@ -40,42 +40,53 @@ public class Particle extends GameObject {
         Data e = new Data();
         e.life = life;
         e.color = new Vector4f(material.color);
-        e.velocity = new Vector3f(0f,5f,0f);
+
+        float xoffset = (float) Math.random()*2-1;
+        float yoffset = (float) Math.random()*2-1;
+        float xv = (float) (Math.random()*10f-5f);
+        float yv = (float) (5f+Math.random()*5f);
+
+        e.velocity = new Vector3f(xv,yv,0f);
         e.model = new Matrix4f().identity()
-                .translate(position.x+random.nextFloat()*size.x-size.x/2,position.y+random.nextFloat()*size.y-size.y/2,0f)
+                .translate(position.x+xoffset*5,position.y+yoffset*5,0f)
                 .rotateZ(rotation)
                 .scale(size.x,size.y,0f);
         return e;
     }
 
+    private void respawn(final Data e){
+        float xoffset = random.nextFloat()*2-1;
+        float yoffset = random.nextFloat()*2-1;
+        float xv = random.nextFloat()*10f-5f;
+        float yv = 5f+random.nextFloat()*5f;
+
+        e.life = life;
+        e.color.set(material.color);
+        e.velocity.set(xv,yv,0f);
+        e.model.identity().translate(position.x+xoffset*5,position.y+yoffset*5,0f)
+                .rotateZ(rotation)
+                .scale(size.x,size.y,0f);
+    }
+
     public void update(float deltaTime){
         if(data.size()<batchSize){
-            for (int i = 0; i < 5; i++) {
-                data.add(spawn());
-            }
+            data.add(spawn());
         }
 
-//        for (Data e : data) {
-//            if (e.life <= 0f) {
-//                e.life = life;
-//                e.color.w = 1f;
-//                e.model.identity()
-//                        .translate(position.x + random.nextFloat() * size.x - size.x / 2, position.y + random.nextFloat() * size.y - size.y / 2, 0f)
-//                        .rotateZ(rotation)
-//                        .scale(size.x, size.y, 0f);
-//                break;
-//            }
-//        }
-        Iterator<Data> it = data.iterator();
-        while (it.hasNext()){
-            Data e = it.next();
+        for (Data e : data) {
             e.life -= deltaTime;
-            e.life = Math.clamp(0,life,e.life);
+            e.life = Math.clamp(0, life, e.life);
             e.color.w -= deltaTime*2.5f;
+//            e.color.w = e.life;
             if (e.life > 0f) {
-                e.model.translate(e.velocity.x*deltaTime,e.velocity.y*deltaTime,e.velocity.z*deltaTime);
+                if(e.velocity.x>0){
+                    e.velocity.x -= deltaTime*200f;
+                }else {
+                    e.velocity.x += deltaTime*200f;
+                }
+                e.model.translate(e.velocity.x * deltaTime, e.velocity.y * deltaTime, e.velocity.z * deltaTime);
             }else {
-                it.remove();
+                respawn(e);
             }
         }
     }
