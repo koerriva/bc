@@ -13,19 +13,19 @@ public class Mesh {
     public enum Type{
         QUAD,LINE,POINT,MODEL
     }
-    private static final LinkedHashMap<Type,Mesh> INSTANCES = new LinkedHashMap<>();
+    private static final LinkedHashMap<String,Mesh> INSTANCES = new LinkedHashMap<>();
     public final int vao;
-    public final Type type;
     private final int[] vbo = new int[10];
     private final float[] vertices;
     private final float[] texCoords;
     private final int[] indices;
 
     private int ebo;
+    private String name;
 
-    private Mesh(Type type, int vao, float[] vertices, float[] texCoords, int[] indices) {
+    private Mesh(String name, int vao, float[] vertices, float[] texCoords, int[] indices) {
         this.vao = vao;
-        this.type = type;
+        this.name = name;
         this.vertices = vertices;
         this.texCoords = texCoords;
         this.indices = indices;
@@ -40,29 +40,32 @@ public class Mesh {
     public void drawBatch(int batchSize,FloatBuffer colors,FloatBuffer transform){
         glBindVertexArray(vao);
 
+        //color
         glBindBuffer(GL_ARRAY_BUFFER,vbo[2]);
         glBufferData(GL_ARRAY_BUFFER,colors,GL_DYNAMIC_DRAW);
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2,4,GL_FLOAT,false,64,0);
-        glVertexAttribDivisor(2,1);
-        glBindBuffer(GL_ARRAY_BUFFER,0);
+        int start = 2;
+        glEnableVertexAttribArray(start);
+        glVertexAttribPointer(start,4,GL_FLOAT,false,0,0);
+        glVertexAttribDivisor(start,1);
 
+        //model martix
         glBindBuffer(GL_ARRAY_BUFFER,vbo[3]);
         glBufferData(GL_ARRAY_BUFFER,transform,GL_DYNAMIC_DRAW);
-        int start = 3;
+        start = 3;
         for (int i = 0; i < 4; i++) {
             glEnableVertexAttribArray(start+i);
             glVertexAttribPointer(start+i,4,GL_FLOAT,false,64,i*16);
             glVertexAttribDivisor(start+i,1);
         }
+
         glDrawElementsInstanced(GL_TRIANGLES,indices.length,GL_UNSIGNED_INT,0,batchSize);
 
         glBindVertexArray(0);
     }
 
-    public static Mesh QUAD(){
-        if(INSTANCES.containsKey(Type.QUAD)){
-            return INSTANCES.get(Type.QUAD);
+    public static Mesh QUAD(String name){
+        if(INSTANCES.containsKey(name)){
+            return INSTANCES.get(name);
         }
         float[] vertices = {
                 // 位置
@@ -86,7 +89,7 @@ public class Mesh {
         int vao = glGenVertexArrays();
         glBindVertexArray(vao);
 
-        Mesh mesh = new Mesh(Type.QUAD, vao, vertices, texCoords, indices);
+        Mesh mesh = new Mesh("quad", vao, vertices, texCoords, indices);
 
         for (int i = 0; i < 4; i++) {
             mesh.vbo[i] = glGenBuffers();
@@ -97,14 +100,14 @@ public class Mesh {
         glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
         glBufferData(GL_ARRAY_BUFFER,vertices,GL_STATIC_DRAW);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0,2,GL_FLOAT,false,8,0);
+        glVertexAttribPointer(0,2,GL_FLOAT,false,0,0);
 
         //纹理坐标
         int texCoordsVBO = mesh.vbo[1];
         glBindBuffer(GL_ARRAY_BUFFER, texCoordsVBO);
         glBufferData(GL_ARRAY_BUFFER,texCoords,GL_STATIC_DRAW);
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1,2,GL_FLOAT,false,8,0);
+        glVertexAttribPointer(1,2,GL_FLOAT,false,0,0);
 
         //顶点索引
         mesh.ebo = glGenBuffers();
@@ -113,22 +116,12 @@ public class Mesh {
 
         glBindVertexArray(0);
 
+        INSTANCES.put(name,mesh);
         return mesh;
     }
 
     public void cleanup() {
-        if(INSTANCES.containsValue(this)){
-            Type type = null;
-            for (Type t:INSTANCES.keySet()){
-                if(INSTANCES.get(t).equals(this)){
-                    type = t;
-                    break;
-                }
-            }
-            if(type!=null){
-                INSTANCES.remove(type);
-            }
-        }
+        INSTANCES.remove(name);
         glDeleteBuffers(ebo);
         glDeleteBuffers(vbo);
         glDeleteVertexArrays(vao);
