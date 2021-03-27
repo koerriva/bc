@@ -25,9 +25,13 @@ public class Particle extends GameObject {
     private final float life;
     private final int batchSize;
 
+    private final FloatBuffer colorData = MemoryUtil.memAllocFloat(1024*4);
+    private final FloatBuffer modelData = MemoryUtil.memAllocFloat(1024*16);
+
     public Particle(Vector2f position, Vector2f size, Material material, int batchSize) {
         super(position, size, material);
         this.material.color.set(0.9f,0.15f,0.05f,1.0f);
+        this.mesh = Mesh.QUAD("particle");
         this.life = 0.4f;
         this.isInstance = true;
         this.batchSize = batchSize;
@@ -100,8 +104,6 @@ public class Particle extends GameObject {
     @Override
     public void draw(Camera2D camera) {
         if(data.size()==0)return;
-        FloatBuffer colorData = MemoryUtil.memAllocFloat(data.size()*4);
-        FloatBuffer modelData = MemoryUtil.memAllocFloat(data.size()*16);
 
         for (int i = 0; i < data.size(); i++) {
             Data e = data.get(i);
@@ -117,13 +119,11 @@ public class Particle extends GameObject {
                 .setTexture();
         mesh.drawBatch(data.size(),colorData,modelData);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        MemoryUtil.memFree(colorData);
-        MemoryUtil.memFree(modelData);
     }
 
     @Override
     public void cleanup() {
-
+        MemoryUtil.memFree(colorData);
+        MemoryUtil.memFree(modelData);
     }
 }
