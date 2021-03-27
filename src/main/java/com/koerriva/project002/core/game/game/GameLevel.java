@@ -7,6 +7,7 @@ import com.koerriva.project002.core.game.game.brain.Neural;
 import com.koerriva.project002.core.game.game.brain.Vision;
 import com.koerriva.project002.core.game.graphic.*;
 import org.joml.Vector2f;
+import org.joml.Vector4f;
 import org.lwjgl.opengl.GL33C;
 import org.lwjgl.opengl.GL40C;
 
@@ -43,6 +44,18 @@ public class GameLevel {
         brain.link(neural1,neural2);
         brain.link(neural1,muscle1);
         brain.link(neural2,muscle1);
+
+        Line line = new Line(neural2.position, muscle1.position, 5,new Vector4f(1f));
+        level.objects.add(line);
+
+//        Vector2f[] points = Line.getBezierPoints2D(neural2.position,muscle1.position);
+//        System.out.println("points ="+points.length);
+//        for (int i = 0; i < points.length - 2; i++) {
+//            Vector2f start = points[i];
+//            Vector2f end = points[i+1];
+//            Line line1 = new Line(start, end,5,new Vector4f(1f));
+//            level.objects.add(line1);
+//        }
 
         Texture start_texture = Texture.load("star.png");
         Particle particle = new Particle(new Vector2f(0f),new Vector2f(16),Material.from(start_texture),50);

@@ -9,10 +9,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public abstract class Cell{
     private static final AtomicInteger counter = new AtomicInteger(0);
 
-    protected final int id;
-    protected final Vector2f position;
-    protected final Vector2f size;
-    protected final Vector4f color;
+    public final int id;
+    public final Vector2f position;
+    public final Vector2f size;
+    public final Vector4f color;
 
     protected final Matrix4f transform = new Matrix4f();
 

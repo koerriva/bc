@@ -37,7 +37,7 @@ public class Mesh {
         glBindVertexArray(0);
     }
 
-    public void drawBatch(int batchSize,FloatBuffer colors,FloatBuffer transform){
+    public void drawBatch(int batchSize,FloatBuffer colors,FloatBuffer transforms){
         glBindVertexArray(vao);
 
         //color
@@ -50,7 +50,7 @@ public class Mesh {
 
         //model martix
         glBindBuffer(GL_ARRAY_BUFFER,vbo[3]);
-        glBufferData(GL_ARRAY_BUFFER,transform,GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER,transforms,GL_DYNAMIC_DRAW);
         start = 3;
         for (int i = 0; i < 4; i++) {
             glEnableVertexAttribArray(start+i);
