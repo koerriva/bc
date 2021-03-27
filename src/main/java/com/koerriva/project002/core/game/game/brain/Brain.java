@@ -11,9 +11,7 @@ import org.joml.Vector4f;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.joml.Math.PI;
 
@@ -23,6 +21,7 @@ public class Brain extends GameObject {
     private final LinkedHashMap<Integer,Muscle> muscles = new LinkedHashMap<>();
     private final LinkedHashMap<Integer,Synapse> synapses = new LinkedHashMap<>();
     private final HashSet<LinkLine> linkLines = new HashSet<>();
+    private final HashMap<Integer,HashSet<Integer>> linkTree = new HashMap<>();
 
     private final Matrix4f transform = new Matrix4f().identity();
 
@@ -66,6 +65,8 @@ public class Brain extends GameObject {
         neural.useSynapse(synapse.id,angel);
 
         linkLines.add(new LinkLine(input.id,synapse.id,1));
+        var tree = linkTree.getOrDefault(input.id,new HashSet<>());
+        tree.add(synapse.id);
     }
 
     public void link(Neural from,Neural to){
@@ -82,10 +83,14 @@ public class Brain extends GameObject {
         to.useSynapse(synapse.id,angel);
 
         linkLines.add(new LinkLine(from.id,synapse.id,2));
+        var tree = linkTree.getOrDefault(from.id,new HashSet<>());
+        tree.add(synapse.id);
     }
 
     public void link(Neural neural,Muscle output){
         linkLines.add(new LinkLine(neural.id,output.id,3));
+        var tree = linkTree.getOrDefault(neural.id,new HashSet<>());
+        tree.add(output.id);
     }
 
     @Override
@@ -95,7 +100,39 @@ public class Brain extends GameObject {
 
     @Override
     public void update(float deltaTime){
-        visions.forEach((id,cell)-> cell.update(deltaTime));
+        visions.forEach((id,cell)-> {
+            cell.update(deltaTime);
+            if(cell.isActive){
+                linkLines.forEach(linkLine -> {
+                    if(linkLine.type==1&& linkLine.from.equals(id)){
+                        synapses.get(linkLine.to).active();
+                    }
+                });
+            }
+        });
+
+        synapses.forEach((id,cell)->{
+            if(cell.isActive){
+                neurals.get(cell.getTo()).active();
+            }
+        });
+
+        neurals.forEach((id,cell)->{
+            if(cell.isActive){
+                linkLines.forEach(linkLine -> {
+                    if(linkLine.type==2&& linkLine.from.equals(id)){
+                        synapses.get(linkLine.to).active();
+                    }
+                    if(linkLine.type==3&& linkLine.from.equals(id)){
+                        muscles.get(linkLine.to).active();
+                    }
+                });
+            }
+        });
+
+        synapses.forEach((id,cell)->cell.update(deltaTime));
+        neurals.forEach((id,cell)->cell.update(deltaTime));
+        muscles.forEach((id,cell)->cell.update(deltaTime));
     }
 
     @Override

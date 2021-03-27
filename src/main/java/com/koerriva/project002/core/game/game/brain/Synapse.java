@@ -23,6 +23,10 @@ public class Synapse extends Cell{
         this.form = form;
     }
 
+    public Integer getTo(){
+        return this.to;
+    }
+
     public void active(){
         isActive = true;
     }
