@@ -45,8 +45,9 @@ public class GameLevel {
         brain.link(neural1,muscle1);
         brain.link(neural2,muscle1);
 
-        Line line = new Line(neural2.position, muscle1.position, 5,new Vector4f(1f));
-        level.objects.add(line);
+        brain.link(neural1,neural2);
+//        Line line = new Line(neural2.position, muscle1.position, 5,new Vector4f(1f));
+//        level.objects.add(line);
 
 //        Vector2f[] points = Line.getBezierPoints2D(neural2.position,muscle1.position);
 //        System.out.println("points ="+points.length);

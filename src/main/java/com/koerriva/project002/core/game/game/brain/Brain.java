@@ -1,14 +1,13 @@
 package com.koerriva.project002.core.game.game.brain;
 
 import com.koerriva.project002.core.game.Window;
+import com.koerriva.project002.core.game.game.Direction;
 import com.koerriva.project002.core.game.game.GameObject;
-import com.koerriva.project002.core.game.graphic.Camera2D;
-import com.koerriva.project002.core.game.graphic.Material;
-import com.koerriva.project002.core.game.graphic.Mesh;
-import com.koerriva.project002.core.game.graphic.Texture;
+import com.koerriva.project002.core.game.graphic.*;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
+import org.joml.Vector4f;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -58,25 +57,40 @@ public class Brain extends GameObject {
     }
 
     public void link(Vision input,Neural neural){
-        Synapse synapse = new Synapse(getCirclePos(neural.position,16f,-180),new Vector2f(8f));
+        Direction dir = Direction.to(input.position,neural.position);
+        int angel = dir.getAngle();
+        if(neural.isUsed(angel)){
+            throw new RuntimeException("hold used!");
+        }
+
+        Synapse synapse = new Synapse(getCirclePos(neural.position,16f,angel),new Vector2f(8f));
         synapse.attach(neural.id);
         synapse.link(input.id);
         synapses.put(synapse.id,synapse);
 
-        linkLines.add(new LinkLine(input.id,synapse.id));
+        neural.useSynapse(synapse.id,angel);
+
+        linkLines.add(new LinkLine(input.id,synapse.id,1));
     }
 
     public void link(Neural from,Neural to){
-        Synapse synapse = new Synapse(getCirclePos(to.position,16f,90),new Vector2f(8f));
+        Direction dir = Direction.to(from.position,to.position);
+        int angel = dir.getAngle();
+        if(to.isUsed(angel)){
+            throw new RuntimeException("hold used!");
+        }
+
+        Synapse synapse = new Synapse(getCirclePos(to.position,16f,angel),new Vector2f(8f));
         synapse.attach(to.id);
         synapse.link(from.id);
         synapses.put(synapse.id,synapse);
+        to.useSynapse(synapse.id,angel);
 
-        linkLines.add(new LinkLine(from.id,synapse.id));
+        linkLines.add(new LinkLine(from.id,synapse.id,2));
     }
 
     public void link(Neural neural,Muscle output){
-        linkLines.add(new LinkLine(neural.id,output.id));
+        linkLines.add(new LinkLine(neural.id,output.id,3));
     }
 
     @Override
@@ -94,6 +108,26 @@ public class Brain extends GameObject {
                 .setColor()
                 .setTexture();
         mesh.draw();
+
+        for (LinkLine link:linkLines){
+            Vector2f from,to;
+            if(link.type==1){
+                from = visions.get(link.from).position;
+                to = synapses.get(link.to).position;
+            }else if(link.type==2){
+                from = neurals.get(link.from).position;
+                to = synapses.get(link.to).position;
+            }else if(link.type==3){
+                from = neurals.get(link.from).position;
+                to = muscles.get(link.to).position;
+            }else {
+                break;
+            }
+
+            Line line = new Line(from,to,5, new Vector4f(0.8f,0.8f,0.8f,1f));
+            line.draw(camera);
+            line.cleanup();
+        }
 
         int batchSize = neurals.size()+visions.size()+muscles.size()+synapses.size();
         colorData.clear();
