@@ -25,9 +25,9 @@ public class GameLevel {
         System.out.println("brain load!");
         level.objects.add(brain);
 
-        Vision vision1 = new Vision(new Vector2f(0f,0f),new Vector2f(32));
+        Vision vision1 = new Vision(new Vector2f(0f,0f),new Vector2f(32),1f);
         brain.add(vision1);
-        Vision vision2 = new Vision(new Vector2f(0f,-64f),new Vector2f(32));
+        Vision vision2 = new Vision(new Vector2f(0f,-64f),new Vector2f(32),2f);
         brain.add(vision2);
 
         Neural neural1 = new Neural(new Vector2f(64f,0f),new Vector2f(32));
@@ -44,19 +44,6 @@ public class GameLevel {
         brain.link(neural1,neural2);
         brain.link(neural1,muscle1);
         brain.link(neural2,muscle1);
-
-        brain.link(neural1,neural2);
-//        Line line = new Line(neural2.position, muscle1.position, 5,new Vector4f(1f));
-//        level.objects.add(line);
-
-//        Vector2f[] points = Line.getBezierPoints2D(neural2.position,muscle1.position);
-//        System.out.println("points ="+points.length);
-//        for (int i = 0; i < points.length - 2; i++) {
-//            Vector2f start = points[i];
-//            Vector2f end = points[i+1];
-//            Line line1 = new Line(start, end,5,new Vector4f(1f));
-//            level.objects.add(line1);
-//        }
 
         Texture start_texture = Texture.load("star.png");
         Particle particle = new Particle(new Vector2f(0f),new Vector2f(16),Material.from(start_texture),50);

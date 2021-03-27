@@ -39,11 +39,6 @@ public class Brain extends GameObject {
                 .scale(size.x,size.y,0f);
     }
 
-    @Override
-    public void input(Window window) {
-
-    }
-
     public void add(Neural cell){
         neurals.put(cell.id,cell);
     }
@@ -94,8 +89,13 @@ public class Brain extends GameObject {
     }
 
     @Override
-    public void update(float deltaTime){
+    public void input(Window window) {
 
+    }
+
+    @Override
+    public void update(float deltaTime){
+        visions.forEach((id,cell)-> cell.update(deltaTime));
     }
 
     @Override

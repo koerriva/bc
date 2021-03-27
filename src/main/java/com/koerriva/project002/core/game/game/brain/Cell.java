@@ -15,6 +15,7 @@ public abstract class Cell{
     public final Vector4f color;
 
     protected final Matrix4f transform = new Matrix4f();
+    protected boolean isActive = false;
 
     public Cell(Vector2f position, Vector2f size, Vector4f color) {
         this.position = position;
