@@ -16,14 +16,10 @@ public abstract class Cell{
 
     protected final Matrix4f transform = new Matrix4f();
 
-    public abstract Matrix4f getTransform();
-
     public Cell(Vector2f position, Vector2f size, Vector4f color) {
         this.position = position;
         this.size = size;
         this.color = color;
         this.id = counter.incrementAndGet();
-
-        System.out.println(this.id);
     }
 }

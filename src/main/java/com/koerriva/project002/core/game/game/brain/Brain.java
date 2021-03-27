@@ -4,6 +4,7 @@ import com.koerriva.project002.core.game.Window;
 import com.koerriva.project002.core.game.game.GameObject;
 import com.koerriva.project002.core.game.graphic.Camera2D;
 import com.koerriva.project002.core.game.graphic.Material;
+import com.koerriva.project002.core.game.graphic.Mesh;
 import com.koerriva.project002.core.game.graphic.Texture;
 import org.joml.Math;
 import org.joml.Matrix4f;
@@ -27,9 +28,13 @@ public class Brain extends GameObject {
     private final Matrix4f transform = new Matrix4f().identity();
 
     private final Material cellMaterial = new Material();
+    private final Mesh cellMesh = Mesh.QUAD("cell");
+
+    private final FloatBuffer colorData = MemoryUtil.memAllocFloat(10000*4);
+    private final FloatBuffer modelData = MemoryUtil.memAllocFloat(10000*16);
 
     public Brain(Vector2f position,Vector2f size) {
-        super(position, size, Material.from(Texture.background(new Vector2f(4096,4096))));
+        super(position, size, Material.from(Texture.background(new Vector2f(1024,1024))));
         this.isInstance = true;
         this.transform.translate(position.x,position.y,0f)
                 .scale(size.x,size.y,0f);
@@ -53,7 +58,7 @@ public class Brain extends GameObject {
     }
 
     public void link(Vision input,Neural neural){
-        Synapse synapse = new Synapse(getCirclePos(neural.position,32f,-160),new Vector2f(16f));
+        Synapse synapse = new Synapse(getCirclePos(neural.position,16f,-180),new Vector2f(8f));
         synapse.attach(neural.id);
         synapse.link(input.id);
         synapses.put(synapse.id,synapse);
@@ -62,7 +67,7 @@ public class Brain extends GameObject {
     }
 
     public void link(Neural from,Neural to){
-        Synapse synapse = new Synapse(getCirclePos(to.position,32f,-160),new Vector2f(16f));
+        Synapse synapse = new Synapse(getCirclePos(to.position,16f,90),new Vector2f(8f));
         synapse.attach(to.id);
         synapse.link(from.id);
         synapses.put(synapse.id,synapse);
@@ -91,35 +96,35 @@ public class Brain extends GameObject {
         mesh.draw();
 
         int batchSize = neurals.size()+visions.size()+muscles.size()+synapses.size();
-        FloatBuffer colorData = MemoryUtil.memAllocFloat(batchSize*4);
-        FloatBuffer modelData = MemoryUtil.memAllocFloat(batchSize*16);
+        colorData.clear();
+        modelData.clear();
 
         int idx = 0;
         for (Map.Entry<Integer, Neural> entry:neurals.entrySet()){
             Neural e = entry.getValue();
             e.color.get(idx*4,colorData);
-            e.getTransform().get(idx*16,modelData);
+            e.transform.get(idx*16,modelData);
             idx++;
         }
 
         for (Map.Entry<Integer, Vision> entry:visions.entrySet()){
             Vision e = entry.getValue();
             e.color.get(idx*4,colorData);
-            e.getTransform().get(idx*16,modelData);
+            e.transform.get(idx*16,modelData);
             idx++;
         }
 
         for (Map.Entry<Integer, Muscle> entry:muscles.entrySet()){
             Muscle e = entry.getValue();
             e.color.get(idx*4,colorData);
-            e.getTransform().get(idx*16,modelData);
+            e.transform.get(idx*16,modelData);
             idx++;
         }
 
         for (Map.Entry<Integer, Synapse> entry:synapses.entrySet()){
             Synapse e = entry.getValue();
             e.color.get(idx*4,colorData);
-            e.getTransform().get(idx*16,modelData);
+            e.transform.get(idx*16,modelData);
             idx++;
         }
 
@@ -128,15 +133,13 @@ public class Brain extends GameObject {
                 .setView(camera.getViewMatrix())
                 .setInstance(1)
                 .setTexture();
-        mesh.drawBatch(batchSize,colorData,modelData);
-
-        MemoryUtil.memFree(colorData);
-        MemoryUtil.memFree(modelData);
+        cellMesh.drawBatch(batchSize,colorData,modelData);
     }
 
     @Override
     public void cleanup() {
-
+        MemoryUtil.memFree(colorData);
+        MemoryUtil.memFree(modelData);
     }
 
     private Vector2f getCirclePos(Vector2f r0,float r,float angle){

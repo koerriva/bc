@@ -21,7 +21,7 @@ public abstract class GameObject {
     protected Mesh mesh;
 
     public GameObject(Vector2f position, Vector2f size, Material material) {
-        this.mesh = Mesh.QUAD();
+        this.mesh = Mesh.QUAD("quad");
         this.position = position;
         this.size = size;
         this.material = material;
