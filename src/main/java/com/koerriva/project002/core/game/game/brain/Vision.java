@@ -3,6 +3,8 @@ package com.koerriva.project002.core.game.game.brain;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
+import java.util.HashMap;
+
 public class Vision extends Cell{
     private static final float activeKeepTime = 0.08f;
 
@@ -14,11 +16,19 @@ public class Vision extends Cell{
     private float activeSignal = 0;
     private float lastActiveTime = 0;
 
+    private HashMap<Integer, Synapse> output = new HashMap<>();
+
     public Vision(Vector2f position, Vector2f size,float frequency) {
         super(position, size, new Vector4f(baseColor));
         this.activeFrequency = frequency;
         this.transform.identity()
                 .translate(position.x,position.y,0f).scale(size.x,size.y,0f);
+        cells.put(this.id,this);
+    }
+
+    public void link(Synapse synapse){
+        output.put(synapse.id,synapse);
+        synapse.input(this);
     }
 
     public void update(float deltaTime){
@@ -40,6 +50,10 @@ public class Vision extends Cell{
             color.set(activeColor);
         }else {
             color.set(baseColor);
+        }
+
+        if(isActive){
+            output.forEach((integer, synapse) -> synapse.active(this));
         }
     }
 }

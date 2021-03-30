@@ -4,9 +4,11 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Cell{
+    protected static final HashMap<Integer,Object> cells = new HashMap<>();
     private static final AtomicInteger counter = new AtomicInteger(0);
 
     public final int id;
