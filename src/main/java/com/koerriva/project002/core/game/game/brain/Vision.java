@@ -26,11 +26,6 @@ public class Vision extends Cell{
         cells.put(this.id,this);
     }
 
-    public void link(Synapse synapse){
-        output.put(synapse.id,synapse);
-        synapse.input(this);
-    }
-
     public void update(float deltaTime){
         ttl+=deltaTime;
 
@@ -50,10 +45,6 @@ public class Vision extends Cell{
             color.set(activeColor);
         }else {
             color.set(baseColor);
-        }
-
-        if(isActive){
-            output.forEach((integer, synapse) -> synapse.active(this));
         }
     }
 }

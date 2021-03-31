@@ -42,6 +42,7 @@ public class Game {
 
     private void input(){
         window.input();
+        level.input(window);
     }
 
     private void update(){

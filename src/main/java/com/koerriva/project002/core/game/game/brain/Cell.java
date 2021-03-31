@@ -5,10 +5,11 @@ import org.joml.Vector2f;
 import org.joml.Vector4f;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Cell{
-    protected static final HashMap<Integer,Object> cells = new HashMap<>();
+    protected static final Map<Integer,Cell> cells = new HashMap<>();
     private static final AtomicInteger counter = new AtomicInteger(0);
 
     public final int id;
@@ -26,5 +27,22 @@ public abstract class Cell{
         this.id = counter.incrementAndGet();
         this.transform.identity().translate(position.x,position.y,0f)
                 .scale(size.x,size.y,0f);
+    }
+
+    public abstract void update(float deltaTime);
+
+    public static Cell get(Integer id) {
+        return cells.get(id);
+    }
+
+    public static void remove(Cell cell){
+        cells.remove(cell.id);
+    }
+
+    @Override
+    public String toString() {
+        return "Cell{" +
+                "id=" + id +
+                '}';
     }
 }

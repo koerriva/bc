@@ -8,6 +8,7 @@ import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -16,11 +17,11 @@ import java.util.*;
 import static org.joml.Math.PI;
 
 public class Brain extends GameObject {
-    private final LinkedHashMap<Integer,Vision> visions = new LinkedHashMap<>();
-    private final LinkedHashMap<Integer,Neural> neurals = new LinkedHashMap<>();
-    private final LinkedHashMap<Integer,Muscle> muscles = new LinkedHashMap<>();
-    private final LinkedHashMap<Integer,Synapse> synapses = new LinkedHashMap<>();
-    private final HashSet<LinkLine> linkLines = new HashSet<>();
+    private final Map<Integer,Vision> visions = new HashMap<>();
+    private final Map<Integer,Neural> neurals = new HashMap<>();
+    private final Map<Integer,Muscle> muscles = new HashMap<>();
+    private final Map<Integer,Synapse> synapses = new HashMap<>();
+    private final LinkNode root = LinkNode.root();
 
     private final Matrix4f transform = new Matrix4f().identity();
 
@@ -31,22 +32,36 @@ public class Brain extends GameObject {
     private final FloatBuffer modelData = MemoryUtil.memAllocFloat(10000*16);
 
     public Brain(Vector2f position,Vector2f size) {
-        super(position, size, Material.from(Texture.background(new Vector2f(1024,1024))));
+        super(position, size, Material.from(Texture.background(new Vector2f(4096,4096))));
         this.isInstance = true;
         this.transform.translate(position.x,position.y,0f)
                 .scale(size.x,size.y,0f);
     }
 
-    public void add(Neural cell){
-        neurals.put(cell.id,cell);
+    public void add(Cell cell){
+        if(cell instanceof Neural){
+            neurals.put(cell.id, (Neural) cell);
+        }
+        if(cell instanceof Vision){
+            visions.put(cell.id, (Vision) cell);
+        }
+        if(cell instanceof Muscle){
+            muscles.put(cell.id, (Muscle) cell);
+        }
     }
 
-    public void add(Vision cell){
-        visions.put(cell.id,cell);
-    }
-
-    public void add(Muscle cell){
-        muscles.put(cell.id,cell);
+    public void remove(Cell cell){
+        if(cell instanceof Neural){
+            neurals.remove(cell.id);
+        }
+        if(cell instanceof Vision){
+            visions.remove(cell.id);
+        }
+        if(cell instanceof Muscle){
+            muscles.remove(cell.id);
+        }
+        LinkNode.remove(cell);
+        Cell.remove(cell);
     }
 
     public void link(Vision input,Neural neural){
@@ -58,12 +73,12 @@ public class Brain extends GameObject {
 
         Synapse synapse = new Synapse(getCirclePos(neural.position,16f,angel),new Vector2f(8f));
         synapses.put(synapse.id,synapse);
-
-        input.link(synapse);
-        synapse.link(neural);
         neural.useSynapse(synapse.id,angel);
 
-        linkLines.add(new LinkLine(input.id,synapse.id,1));
+        LinkNode.get(input).link(LinkNode.get(synapse));
+        LinkNode.get(synapse).link(LinkNode.get(neural));
+
+        root.link(LinkNode.get(input));
     }
 
     public void link(Neural from,Neural to){
@@ -77,29 +92,43 @@ public class Brain extends GameObject {
         synapses.put(synapse.id,synapse);
         to.useSynapse(synapse.id,angel);
 
-        from.link(synapse);
-        synapse.link(to);
-
-        linkLines.add(new LinkLine(from.id,synapse.id,2));
+        LinkNode.get(from).link(LinkNode.get(synapse));
+        LinkNode.get(synapse).link(LinkNode.get(to));
     }
 
     public void link(Neural neural,Muscle output){
-        neural.link(output);
-
-        linkLines.add(new LinkLine(neural.id,output.id,3));
+        LinkNode.get(neural).link(LinkNode.get(output));
     }
 
     @Override
     public void input(Window window) {
-
+        if(window.isKeyPress(GLFW.GLFW_KEY_DELETE)){
+            System.out.println("delete all neural");
+            List<Neural> n = new ArrayList<>(neurals.values());
+            n.forEach(this::remove);
+        }
     }
 
     @Override
     public void update(float deltaTime){
-        visions.forEach((id,cell)-> cell.update(deltaTime));
-        synapses.forEach((id,cell)->cell.update(deltaTime));
-        neurals.forEach((id,cell)->cell.update(deltaTime));
-        muscles.forEach((id,cell)->cell.update(deltaTime));
+        LinkNode.update(deltaTime);
+        Cell.cells.forEach((id,cell)->cell.update(deltaTime));
+    }
+
+    private List<Line> render(LinkNode node){
+        ArrayList<Line> lines = new ArrayList<>();
+        for (Map.Entry<Integer, LinkNode> entry : node) {
+            if(node.getType()==0)break;
+            LinkNode input = entry.getValue();
+            System.out.println(input);
+            Cell from = Cell.get(input.getId());
+            for (LinkNode output:input.getOutput()){
+                Cell to = Cell.get(output.getId());
+                Line line = new Line(from.position, to.position, 5, new Vector4f(0.8f, 0.8f, 0.8f, 1f));
+                lines.add(line);
+            }
+        }
+        return lines;
     }
 
     @Override
@@ -113,54 +142,19 @@ public class Brain extends GameObject {
                 .setTexture();
         mesh.draw();
 
-        for (LinkLine link:linkLines){
-            Vector2f from,to;
-            if(link.type==1){
-                from = visions.get(link.from).position;
-                to = synapses.get(link.to).position;
-            }else if(link.type==2){
-                from = neurals.get(link.from).position;
-                to = synapses.get(link.to).position;
-            }else if(link.type==3){
-                from = neurals.get(link.from).position;
-                to = muscles.get(link.to).position;
-            }else {
-                break;
-            }
-
-            Line line = new Line(from,to,5, new Vector4f(0.8f,0.8f,0.8f,1f));
+        List<Line> lines = render(root);
+        for (Line line:lines){
             line.draw(camera);
             line.cleanup();
         }
 
-        int batchSize = neurals.size()+visions.size()+muscles.size()+synapses.size();
+        int batchSize = Cell.cells.size();
         colorData.clear();
         modelData.clear();
 
         int idx = 0;
-        for (Map.Entry<Integer, Neural> entry:neurals.entrySet()){
-            Neural e = entry.getValue();
-            e.color.get(idx*4,colorData);
-            e.transform.get(idx*16,modelData);
-            idx++;
-        }
-
-        for (Map.Entry<Integer, Vision> entry:visions.entrySet()){
-            Vision e = entry.getValue();
-            e.color.get(idx*4,colorData);
-            e.transform.get(idx*16,modelData);
-            idx++;
-        }
-
-        for (Map.Entry<Integer, Muscle> entry:muscles.entrySet()){
-            Muscle e = entry.getValue();
-            e.color.get(idx*4,colorData);
-            e.transform.get(idx*16,modelData);
-            idx++;
-        }
-
-        for (Map.Entry<Integer, Synapse> entry:synapses.entrySet()){
-            Synapse e = entry.getValue();
+        for (Map.Entry<Integer, Cell> entry:Cell.cells.entrySet()){
+            Cell e = entry.getValue();
             e.color.get(idx*4,colorData);
             e.transform.get(idx*16,modelData);
             idx++;
