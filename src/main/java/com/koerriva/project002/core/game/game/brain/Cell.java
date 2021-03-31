@@ -24,5 +24,7 @@ public abstract class Cell{
         this.size = size;
         this.color = color;
         this.id = counter.incrementAndGet();
+        this.transform.identity().translate(position.x,position.y,0f)
+                .scale(size.x,size.y,0f);
     }
 }
