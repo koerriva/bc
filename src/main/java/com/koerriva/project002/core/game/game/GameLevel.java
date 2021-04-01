@@ -5,11 +5,11 @@ import com.koerriva.project002.core.game.game.brain.Brain;
 import com.koerriva.project002.core.game.game.brain.Muscle;
 import com.koerriva.project002.core.game.game.brain.Neural;
 import com.koerriva.project002.core.game.game.brain.Vision;
-import com.koerriva.project002.core.game.graphic.*;
+import com.koerriva.project002.core.game.graphic.Material;
+import com.koerriva.project002.core.game.graphic.Particle;
+import com.koerriva.project002.core.game.graphic.SpriteRenderer;
+import com.koerriva.project002.core.game.graphic.Texture;
 import org.joml.Vector2f;
-import org.joml.Vector4f;
-import org.lwjgl.opengl.GL33C;
-import org.lwjgl.opengl.GL40C;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -25,7 +25,7 @@ public class GameLevel {
         System.out.println("brain load!");
         level.objects.add(brain);
 
-        Vision vision1 = new Vision(new Vector2f(0f,0f),new Vector2f(32),1f);
+        Vision vision1 = new Vision(new Vector2f(0f,0f),new Vector2f(32),0.2f);
         brain.add(vision1);
         Vision vision2 = new Vision(new Vector2f(0f,-64f),new Vector2f(32),2f);
         brain.add(vision2);

@@ -10,6 +10,7 @@ public class LinkNode implements Iterable<Map.Entry<Integer,LinkNode>>{
     private static Random random = new Random(1234);
 
     private final Integer id;
+
     private final ArrayList<LinkNode> input;
     private final ArrayList<LinkNode> output;
     private int type=0;

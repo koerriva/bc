@@ -17,9 +17,11 @@ public abstract class Cell{
     public final Vector2f position;
     public final Vector2f size;
     public final Vector4f color;
+    public final Matrix4f transform = new Matrix4f();
 
-    protected final Matrix4f transform = new Matrix4f();
+    protected float ttl = 0;
     protected boolean isActive = false;
+    protected float activeKeepTime = 0.08f;
 
     public Cell(Vector2f position, Vector2f size, Vector4f color) {
         this.position = position;
