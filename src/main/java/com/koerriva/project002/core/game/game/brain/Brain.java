@@ -60,8 +60,8 @@ public class Brain extends GameObject {
         if(cell instanceof Muscle){
             muscles.remove(cell.id);
         }
-        LinkNode.remove(cell);
-        Cell.remove(cell);
+        Set<Integer> cells = LinkNode.remove(cell);
+        Cell.removeAll(cells);
     }
 
     public void link(Vision input,Neural neural){
@@ -103,9 +103,10 @@ public class Brain extends GameObject {
     @Override
     public void input(Window window) {
         if(window.isKeyPress(GLFW.GLFW_KEY_DELETE)){
-            System.out.println("delete all neural");
-            List<Neural> n = new ArrayList<>(neurals.values());
-            n.forEach(this::remove);
+            Neural n = neurals.get(3);
+            if(n!=null){
+                remove(n);
+            }
         }
     }
 
@@ -115,14 +116,13 @@ public class Brain extends GameObject {
         Cell.cells.forEach((id,cell)->cell.update(deltaTime));
     }
 
-    private List<Line> render(LinkNode node){
+    private List<Line> render(LinkNode root){
         ArrayList<Line> lines = new ArrayList<>();
-        for (Map.Entry<Integer, LinkNode> entry : node) {
-            if(node.getType()==0)break;
-            LinkNode input = entry.getValue();
-            System.out.println(input);
-            Cell from = Cell.get(input.getId());
-            for (LinkNode output:input.getOutput()){
+        for (Map.Entry<Integer, LinkNode> entry : root) {
+            LinkNode n = entry.getValue();
+            if(n.getType()==0)continue;
+            Cell from = Cell.get(n.getId());
+            for(LinkNode output:n.getOutput()){
                 Cell to = Cell.get(output.getId());
                 Line line = new Line(from.position, to.position, 5, new Vector4f(0.8f, 0.8f, 0.8f, 1f));
                 lines.add(line);

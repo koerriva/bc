@@ -7,6 +7,7 @@ import java.util.*;
 public class LinkNode implements Iterable<Map.Entry<Integer,LinkNode>>{
     private static final Map<Integer,LinkNode> nodes = new HashMap<>();
     private static LinkNode root;
+    private static Random random = new Random(1234);
 
     private final Integer id;
     private final ArrayList<LinkNode> input;
@@ -38,19 +39,25 @@ public class LinkNode implements Iterable<Map.Entry<Integer,LinkNode>>{
         }
     }
 
-    public void link(LinkNode child){
-        if(!this.output.contains(child)){
-            this.output.add(child);
-            child.input.add(this);
+    public void link(LinkNode out){
+        if(!this.output.contains(out)){
+            this.output.add(out);
+            out.input.add(this);
         }
     }
 
     private void active(){
         if(type==1){
-            for (LinkNode child:output){
-                child.active();
+            for (LinkNode out:output){
+                out.active();
             }
         }else if(type>1){
+            Integer signals = input.stream().map(node -> Cell.get(node.id).isActive?1:0).reduce(0, Integer::sum);
+            Cell.get(id).isActive = signals==input.size();
+
+            for (LinkNode out:output){
+                out.active();
+            }
         }
     }
 
@@ -77,13 +84,34 @@ public class LinkNode implements Iterable<Map.Entry<Integer,LinkNode>>{
         return node;
     }
 
-    public static void remove(Cell cell){
+    public static Set<Integer> remove(Cell cell){
+        Set<Integer> cells = new HashSet<>();
+        if(cell==null)return cells;
+        cells.add(cell.id);
         if(nodes.containsKey(cell.id)){
             LinkNode me = nodes.get(cell.id);
-            me.input.forEach(node -> node.output.remove(me));
-            me.output.forEach(node -> node.input.remove(me));
-            nodes.remove(me.id);
+            if(cell instanceof Neural){
+                //移除 synapse
+                for (LinkNode synapseNode : me.input) {
+                    synapseNode.input.forEach(node -> node.output.remove(synapseNode));
+                    nodes.remove(synapseNode.id);
+                    cells.add(synapseNode.id);
+                }
+
+                for (LinkNode node : me.output){
+                    if(node.type==2){
+                        node.output.forEach(outNode -> outNode.input.remove(node));
+                        nodes.remove(node.id);
+                        cells.add(node.id);
+                    }else{
+                        node.input.remove(me);
+                    }
+                }
+                nodes.remove(me.id);
+                cells.add(me.id);
+            }
         }
+        return cells;
     }
 
     public static void update(float deltaTime){
@@ -109,8 +137,12 @@ public class LinkNode implements Iterable<Map.Entry<Integer,LinkNode>>{
 
     @Override
     public String toString() {
+        String i = Arrays.toString(input.stream().map(node -> node.id).toArray());
+        String o = Arrays.toString(output.stream().map(node -> node.id).toArray());
         return "LinkNode{" +
                 "id=" + id +
+                ", input=" + i +
+                ", output=" + o +
                 '}';
     }
 

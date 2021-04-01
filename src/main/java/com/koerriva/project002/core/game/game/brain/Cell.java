@@ -6,6 +6,7 @@ import org.joml.Vector4f;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Cell{
@@ -37,6 +38,10 @@ public abstract class Cell{
 
     public static void remove(Cell cell){
         cells.remove(cell.id);
+    }
+
+    public static void removeAll(Set<Integer> ids){
+        ids.forEach(cells::remove);
     }
 
     @Override
