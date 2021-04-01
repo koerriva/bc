@@ -6,3 +6,6 @@
 /.project
 /.settings/
 /.vscode/
+/hs_err_pid136264.log
+/hs_err_pid136880.log
+/imgui.ini

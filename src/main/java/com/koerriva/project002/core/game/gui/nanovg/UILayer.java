@@ -109,6 +109,13 @@ public class UILayer {
         uiSetBox(btn3, UI_ROW);
         uiInsert(root, btn3);
 
+        int btn4 = uiItem();
+        uiSetSize(btn4,50,50);
+        uiSetEvents(btn4,UI_BUTTON0_DOWN);
+        uiSetLayout(btn4, UI_LEFT);
+        uiSetBox(btn4, UI_START);
+        uiInsert(root, btn4);
+
         uiEndLayout();
 
         //draw
@@ -119,6 +126,8 @@ public class UILayer {
         drawButton(vg,null,"暂停",rect.x(),rect.y(),rect.w(),rect.h(),rgba(0, 96, 128, 255, colorA));
         uiGetRect(btn3,rect);
         drawButton(vg,null,"结束",rect.x(),rect.y(),rect.w(),rect.h(),rgba(0, 96, 128, 255, colorA));
+        uiGetRect(btn4,rect);
+        drawButton(vg,null,"添加",rect.x(),rect.y(),rect.w(),rect.h(),rgba(0, 96, 128, 255, colorA));
 
         uiProcess((int)(glfwGetTime() * 1000.0));
 
