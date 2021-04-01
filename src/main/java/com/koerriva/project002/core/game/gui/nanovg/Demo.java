@@ -474,7 +474,7 @@ public class Demo {
             sy[i] = y + h * samples[i] * 0.8f;
         }
 
-        // Graph background
+        // com.koerriva.project002.imgui.Graph background
         nvgLinearGradient(vg, x, y, x, y + h, rgba(0, 160, 192, 0, colorA), rgba(0, 160, 192, 64, colorB), bg);
         nvgBeginPath(vg);
         nvgMoveTo(vg, sx[0], sy[0]);
@@ -486,7 +486,7 @@ public class Demo {
         nvgFillPaint(vg, bg);
         nvgFill(vg);
 
-        // Graph line
+        // com.koerriva.project002.imgui.Graph line
         nvgBeginPath(vg);
         nvgMoveTo(vg, sx[0], sy[0] + 2);
         for (i = 1; i < 6; i++) {
@@ -505,7 +505,7 @@ public class Demo {
         nvgStrokeWidth(vg, 3.0f);
         nvgStroke(vg);
 
-        // Graph sample pos
+        // com.koerriva.project002.imgui.Graph sample pos
         for (i = 0; i < 6; i++) {
             nvgRadialGradient(vg, sx[i], sy[i] + 2, 3.0f, 8.0f, rgba(0, 0, 0, 32, colorA), rgba(0, 0, 0, 0, colorB), bg);
             nvgBeginPath(vg);

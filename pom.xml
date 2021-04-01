@@ -11,8 +11,8 @@
     <properties>
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
-        <lwjgl.version>3.3.0-SNAPSHOT</lwjgl.version>
-<!--        <lwjgl.version>3.2.3</lwjgl.version>-->
+<!--        <lwjgl.version>3.3.0-SNAPSHOT</lwjgl.version>-->
+        <lwjgl.version>3.2.3</lwjgl.version>
         <joml.version>1.10.1</joml.version>
     </properties>
 
@@ -64,6 +64,12 @@
 
     <repositories>
         <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2/</url>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+        <repository>
             <id>sonatype-snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
             <releases><enabled>false</enabled></releases>
@@ -72,6 +78,10 @@
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
         </repository>
     </repositories>
 
@@ -222,6 +232,21 @@
             <artifactId>annotations</artifactId>
             <version>RELEASE</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.imgui.java</groupId>
+            <artifactId>imgui-java-binding</artifactId>
+            <version>1.80-1.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.imgui.java</groupId>
+            <artifactId>imgui-java-lwjgl3</artifactId>
+            <version>1.80-1.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.imgui.java</groupId>
+            <artifactId>imgui-java-app</artifactId>
+            <version>1.80-1.5.0</version>
         </dependency>
     </dependencies>
 
