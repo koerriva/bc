@@ -27,6 +27,16 @@ public class Window {
         public double y;
         public double wx;
         public double wy;
+
+        @Override
+        public String toString() {
+            return "{" +
+                    "x=" + x +
+                    ", y=" + y +
+                    ", wx=" + wx +
+                    ", wy=" + wy +
+                    '}';
+        }
     }
 
     private static long handle = 0L;
@@ -68,15 +78,9 @@ public class Window {
             if(vidMode!=null) {
                 glfwSetWindowPos(handle, (vidMode.width() - size.width) / 2, (vidMode.height() - size.height) / 2);
             }
-
             glfwSetWindowSizeCallback(handle,(_handle,width,height)->{
                 size.width = width;
                 size.height = height;
-            });
-            glfwSetCursorPosCallback(handle,(_handle,x,y)->{
-                System.out.println(x+"_"+y);
-                mouse.x = x;
-                mouse.y = y;
             });
             glfwSetFramebufferSizeCallback(handle,(_handle,width,height)->{
                 size.frameBufferWidth = width;

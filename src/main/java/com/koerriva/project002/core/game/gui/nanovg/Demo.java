@@ -210,7 +210,7 @@ public class Demo {
         nvgText(vg, x + w - h * 0.5f, y + h * 0.5f, ICON_CHEVRON_RIGHT);
     }
 
-    private static void drawLabel(long vg, String text, float x, float y, float w, float h) {
+    public static void drawLabel(long vg, String text, float x, float y, float w, float h) {
         nvgFontSize(vg, 18.0f);
         nvgFontFace(vg, "sans");
         nvgFillColor(vg, rgba(255, 255, 255, 128, colorA));

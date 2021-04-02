@@ -41,7 +41,11 @@ public class NanovgGUI implements GUI {
             }
             uiSetButton(button, mods, action == GLFW_PRESS);
         });
-        glfwSetCursorPosCallback(window.getHandle(), (handle, xpos, ypos) -> uiSetCursor((int)xpos, (int)ypos));
+        glfwSetCursorPosCallback(window.getHandle(), (handle, xpos, ypos) -> {
+            window.mouse.x = xpos;
+            window.mouse.y = ypos;
+            uiSetCursor((int)xpos, (int)ypos);
+        });
         glfwSetScrollCallback(window.getHandle(), (handle, xoffset, yoffset) -> uiSetScroll((int)xoffset, (int)yoffset));
         glfwSetKeyCallback(window.getHandle(), (handle, keyCode, scancode, action, mods) -> {
             if (keyCode == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
@@ -77,12 +81,14 @@ public class NanovgGUI implements GUI {
 //        glClear(GL_COLOR_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
         nvgBeginFrame(ctx,window.size.width,window.size.height,window.size.xscale);
 
-        uiLayer.draw(ctx,800,600);
+        uiLayer.draw(ctx,window.size.width,window.size.height);
 
         if (gpuTimer.supported) {
             renderGraph(ctx, 5 , 5, gpuGraph);
         }
         renderGraph(ctx,5,50,fpsGraph);
+
+        drawLabel(ctx,window.mouse.toString(),5,80,100,35);
 
         nvgEndFrame(ctx);
 
@@ -97,7 +103,10 @@ public class NanovgGUI implements GUI {
 
     @Override
     public void cleanup() {
-
+        data.entypo.clear();
+        data.NotoBold.clear();
+        data.NotoBold.clear();
+        data.NotoEmojiRegular.clear();
     }
 
     static ByteBuffer loadResource(String resource, int bufferSize) {

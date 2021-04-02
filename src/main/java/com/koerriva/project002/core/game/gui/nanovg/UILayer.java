@@ -1,34 +1,18 @@
 package com.koerriva.project002.core.game.gui.nanovg;
 
-import org.lwjgl.BufferUtils;
 import org.lwjgl.nanovg.*;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
-import static com.koerriva.project002.core.game.gui.nanovg.Demo.loadResource;
-import static com.koerriva.project002.core.game.gui.nanovg.SubType.values;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 import static org.lwjgl.nanovg.NanoVG.*;
 import static org.lwjgl.nanovg.OUI.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.system.MemoryUtil.memUTF8;
 
 public class UILayer {
-
-    private static final SubType[] SUBTYPES = values();
-
-    private final UIHandler ui_btn_handler = new UIHandler() {
-        @Override public void invoke(int item, int event) {
-            System.out.printf("clicked: %d %d\n", uiGetHandle(item), event);
-        }
-    };
-
     private static final UIHandler ui_root_handler = new UIHandler() {
         @Override public void invoke(int item, int event) {
             switch (event) {
@@ -46,36 +30,15 @@ public class UILayer {
             }
         }
     };
-
-    private final IntBuffer enum1 = BufferUtils.createIntBuffer(1);
-
-    // some persistent variables for demonstration
-    private final FloatBuffer progress1 = BufferUtils.createFloatBuffer(1);
-    private final FloatBuffer progress2 = BufferUtils.createFloatBuffer(1);
-    private final IntBuffer   option1   = BufferUtils.createIntBuffer(1);
-    private final IntBuffer   option2   = BufferUtils.createIntBuffer(1);
-    private final IntBuffer   option3   = BufferUtils.createIntBuffer(1);
-    private final IntBuffer   choice    = BufferUtils.createIntBuffer(1);
-
-    private final ByteBuffer textbuffer = BufferUtils.createByteBuffer(1024);
-
-    private final Map<String, ByteBuffer> TEXT_MAP = new HashMap<>(32);
-
     private final long uictx;
-
     private int peak_items;
     private int peak_alloc;
+    private static final String[] menuName = new String[]{"运行","暂停","停止"};
+    private static final String[] toolsetName = new String[]{"+输入","+输出","+神经元"};
 
     public UILayer() {
         uictx = uiCreateContext(4096, 1 << 20);
         uiMakeCurrent(uictx);
-
-        enum1.put(0, -1);
-        progress1.put(0, 0.25f);
-        progress2.put(0, 0.75f);
-        choice.put(0, -1);
-
-        memUTF8("The quick brown fox.", true, textbuffer);
     }
 
     public void draw(long vg, float w, float h) {
@@ -83,51 +46,60 @@ public class UILayer {
 
         int root = uiItem();
         // position root element
-        uiSetSize(0, (int)w, (int)h);
-        uiSetEvents(root, UI_SCROLL);
-        uiSetBox(root, UI_FLEX);
+        uiSetSize(root, (int)w, (int)h);
+        uiSetBox(root, UI_COLUMN);
         uiSetHandler(ui_root_handler);
 
-        int btn1 = uiItem();
-        uiSetSize(btn1,50,25);
-        uiSetEvents(btn1,UI_BUTTON0_DOWN);
-        uiSetLayout(btn1, UI_TOP);
-        uiSetBox(btn1, UI_ROW);
-        uiInsert(root, btn1);
+        int menu = uiItem();
+        uiSetLayout(menu, UI_HFILL | UI_TOP);
+        uiSetBox(menu, UI_ROW);
+        uiInsert(root,menu);
 
-        int btn2 = uiItem();
-        uiSetSize(btn2,50,25);
-        uiSetEvents(btn2,UI_BUTTON0_DOWN);
-        uiSetLayout(btn2, UI_TOP);
-        uiSetBox(btn2, UI_ROW);
-        uiInsert(root, btn2);
+        int content = uiItem();
+        uiSetLayout(content,UI_FILL);
+        uiSetBox(content,UI_LAYOUT);
+        uiInsert(root,content);
 
-        int btn3 = uiItem();
-        uiSetSize(btn3,50,25);
-        uiSetEvents(btn3,UI_BUTTON0_DOWN);
-        uiSetLayout(btn3, UI_TOP);
-        uiSetBox(btn3, UI_ROW);
-        uiInsert(root, btn3);
+        int[] menus = new int[3];
+        for (int i = 0; i < 3; i++) {
+            int item = uiItem();
+            uiSetSize(item,50,25);
+            uiSetEvents(item,UI_BUTTON0_DOWN);
+            uiSetLayout(item, UI_LEFT);
+            uiSetMargins(item, 1, 1, 0, 1);
+            uiInsert(menu, item);
+            menus[i]=item;
+        }
 
-        int btn4 = uiItem();
-        uiSetSize(btn4,50,50);
-        uiSetEvents(btn4,UI_BUTTON0_DOWN);
-        uiSetLayout(btn4, UI_LEFT);
-        uiSetBox(btn4, UI_START);
-        uiInsert(root, btn4);
+        int tool = uiItem();
+        uiSetLayout(tool,UI_LEFT);
+        uiSetBox(tool,UI_COLUMN);
+        uiInsert(content,tool);
+
+        int[] tools = new int[3];
+        for (int i = 0; i < 3; i++) {
+            int item = uiItem();
+            uiSetSize(item,50,50);
+            uiSetEvents(item,UI_BUTTON0_DOWN);
+            uiSetLayout(item, UI_HFILL|UI_TOP);
+            uiInsert(tool, item);
+            tools[i]=item;
+        }
 
         uiEndLayout();
 
         //draw
         UIRect rect = UIRect.calloc();
-        uiGetRect(btn1,rect);
-        drawButton(vg,null,"运行",rect.x(),rect.y(),rect.w(),rect.h(),rgba(0, 96, 128, 255, colorA));
-        uiGetRect(btn2,rect);
-        drawButton(vg,null,"暂停",rect.x(),rect.y(),rect.w(),rect.h(),rgba(0, 96, 128, 255, colorA));
-        uiGetRect(btn3,rect);
-        drawButton(vg,null,"结束",rect.x(),rect.y(),rect.w(),rect.h(),rgba(0, 96, 128, 255, colorA));
-        uiGetRect(btn4,rect);
-        drawButton(vg,null,"添加",rect.x(),rect.y(),rect.w(),rect.h(),rgba(0, 96, 128, 255, colorA));
+        for (int i = 0; i < 3; i++) {
+            int item = menus[i];
+            uiGetRect(item,rect);
+            drawButton(vg,null,menuName[i],rect.x(),rect.y(),rect.w(),rect.h(),rgba(0, 96, 128, 255, colorA));
+        }
+        for (int i = 0; i < 3; i++) {
+            int item = tools[i];
+            uiGetRect(item,rect);
+            drawButton(vg,null,toolsetName[i],rect.x(),rect.y(),rect.w(),rect.h(),rgba(0, 96, 128, 255, colorB));
+        }
 
         uiProcess((int)(glfwGetTime() * 1000.0));
 
