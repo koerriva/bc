@@ -6,7 +6,6 @@
 /.project
 /.settings/
 /.vscode/
-/hs_err_pid136264.log
-/hs_err_pid136880.log
+/hs_err_*.log
 /imgui.ini
 .DS_Store
