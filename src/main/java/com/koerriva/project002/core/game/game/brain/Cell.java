@@ -17,7 +17,8 @@ public abstract class Cell{
     protected final Vector2f position;
     protected final Vector2f size;
     public final Vector4f color;
-    public final Matrix4f transform = new Matrix4f();
+    public final Matrix4f global = new Matrix4f();
+    public final Matrix4f local = new Matrix4f();
 
     protected float ttl = 0;
     protected boolean isActive = false;
@@ -28,12 +29,12 @@ public abstract class Cell{
         this.size = size;
         this.color = color;
         this.id = counter.incrementAndGet();
-        this.transform.identity().translate(position.x,position.y,0f)
+        this.global.identity().translate(position.x,position.y,0f)
                 .scale(size.x,size.y,0f);
     }
 
     private void updateTransform(){
-        this.transform.identity().translate(position.x,position.y,0f)
+        this.global.identity().translate(position.x,position.y,0f)
                 .scale(size.x,size.y,0f);
     }
 

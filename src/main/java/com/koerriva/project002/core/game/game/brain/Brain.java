@@ -72,7 +72,7 @@ public class Brain extends GameObject {
             throw new RuntimeException("hold used!");
         }
 
-        Synapse synapse = new Synapse(getCirclePos(neural.position,16f,angel),new Vector2f(8f));
+        Synapse synapse = new Synapse(neural,getCirclePos(neural.position,16f,angel),new Vector2f(8f));
         synapses.put(synapse.id,synapse);
         neural.useSynapse(synapse.id,angel);
 
@@ -89,7 +89,7 @@ public class Brain extends GameObject {
             throw new RuntimeException("hold used!");
         }
 
-        Synapse synapse = new Synapse(getCirclePos(to.position,16f,angel),new Vector2f(8f));
+        Synapse synapse = new Synapse(to,getCirclePos(to.position,16f,angel),new Vector2f(8f));
         synapses.put(synapse.id,synapse);
         to.useSynapse(synapse.id,angel);
 
@@ -169,7 +169,7 @@ public class Brain extends GameObject {
         for (Map.Entry<Integer, Cell> entry:Cell.cells.entrySet()){
             Cell e = entry.getValue();
             e.color.get(idx*4,colorData);
-            e.transform.get(idx*16,modelData);
+            e.global.get(idx*16,modelData);
             idx++;
         }
 

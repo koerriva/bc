@@ -9,7 +9,7 @@ public class Muscle extends Cell{
 
     public Muscle(Vector2f position, Vector2f size) {
         super(position, size, new Vector4f(baseColor));
-        this.transform.identity()
+        this.global.identity()
                 .translate(position.x,position.y,0f).scale(size.x,size.y,0f);
         cells.put(this.id,this);
     }

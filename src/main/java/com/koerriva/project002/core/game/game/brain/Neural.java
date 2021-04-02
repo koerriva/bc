@@ -3,7 +3,6 @@ package com.koerriva.project002.core.game.game.brain;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
@@ -15,7 +14,7 @@ public class Neural extends Cell{
 
     public Neural(Vector2f position, Vector2f size) {
         super(position, size, new Vector4f(baseColor));
-        this.transform.identity()
+        this.global.identity()
                 .translate(position.x, position.y, 0f).scale(size.x, size.y, 0f);
         cells.put(this.id, this);
     }
