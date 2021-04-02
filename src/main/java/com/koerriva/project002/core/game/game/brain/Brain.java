@@ -103,6 +103,18 @@ public class Brain extends GameObject {
 
     @Override
     public void input(Window window) {
+        Vector2f mWPos = InputManager.mouse.getWorld();
+        Vector2f offset = InputManager.mouse.getWorldOffset();
+        for (Map.Entry<Integer, Cell> entry:Cell.cells.entrySet()){
+            Cell e = entry.getValue();
+            if(e.isInSide(mWPos)){
+                if(InputManager.isDrag()){
+                    e.setPosition(mWPos);
+                    InputManager.dragHandled();
+                }
+            }
+        }
+
         if(InputManager.isKeyPress(GLFW.GLFW_KEY_DELETE)){
             Neural n = neurals.get(3);
             if(n!=null){

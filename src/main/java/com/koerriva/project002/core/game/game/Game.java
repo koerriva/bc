@@ -4,6 +4,7 @@ import com.koerriva.project002.core.game.graphic.*;
 import com.koerriva.project002.core.game.gui.GUI;
 import com.koerriva.project002.core.game.gui.NanovgGUI;
 import org.joml.Vector2f;
+import org.lwjgl.system.CallbackI;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -59,7 +60,7 @@ public class Game {
         }
 
         if(InputManager.isDrag()){
-            cameraOffset.set(InputManager.mouse.getOffset());
+            cameraOffset.set(InputManager.mouse.getLocalOffset());
         }
     }
 

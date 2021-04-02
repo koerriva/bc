@@ -76,7 +76,7 @@ public class Particle extends GameObject {
 
     @Override
     public void input(Window window) {
-        position.set(InputManager.mouse.wx,InputManager.mouse.wy);
+//        position.set(InputManager.mouse.getWorld());
     }
 
     public void update(float deltaTime){

@@ -14,8 +14,8 @@ public abstract class Cell{
     private static final AtomicInteger counter = new AtomicInteger(0);
 
     public final int id;
-    public final Vector2f position;
-    public final Vector2f size;
+    protected final Vector2f position;
+    protected final Vector2f size;
     public final Vector4f color;
     public final Matrix4f transform = new Matrix4f();
 
@@ -30,6 +30,27 @@ public abstract class Cell{
         this.id = counter.incrementAndGet();
         this.transform.identity().translate(position.x,position.y,0f)
                 .scale(size.x,size.y,0f);
+    }
+
+    private void updateTransform(){
+        this.transform.identity().translate(position.x,position.y,0f)
+                .scale(size.x,size.y,0f);
+    }
+
+    public void setPosition(Vector2f position){
+        this.position.set(position);
+        updateTransform();
+    }
+
+    public void translate(Vector2f offset){
+        this.position.add(offset);
+        updateTransform();
+    }
+
+    private final Vector2f offset = new Vector2f();
+    public boolean isInSide(Vector2f pos){
+        pos.sub(position,offset);
+        return offset.lengthSquared()<size.lengthSquared();
     }
 
     public abstract void update(float deltaTime);

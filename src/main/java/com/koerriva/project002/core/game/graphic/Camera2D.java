@@ -47,8 +47,10 @@ public class Camera2D {
         projection.invert(invProjection);
         view.invert(invView);
 
-        float nx = (float) (2*InputManager.mouse.x/window.size.width - 1f);
-        float ny = (float) (1f - 2*InputManager.mouse.y/window.size.height);
+        Vector2f local = InputManager.mouse.getLocal();
+
+        float nx = 2*local.x/window.size.width - 1f;
+        float ny = 1f - 2*local.y/window.size.height;
 
         Vector4f clip = new Vector4f(nx,ny,-1f,1f);
         Vector4f eye = invProjection.transform(clip);
@@ -58,9 +60,11 @@ public class Camera2D {
         Vector3f world = new Vector3f(pos.x,pos.y,pos.z);
 
         mousePosition.set(world.x,world.y, world.z);
+        float dwx = world.x - InputManager.mouse.getWorld().x;
+        float dwy = world.y - InputManager.mouse.getWorld().y;
 
-        InputManager.mouse.wx = mousePosition.x;
-        InputManager.mouse.wy = mousePosition.y;
+        InputManager.mouse.getWorld().set(world.x,world.y);
+        InputManager.mouse.getWorldOffset().set(dwx,dwy);
         return projection;
     }
 }

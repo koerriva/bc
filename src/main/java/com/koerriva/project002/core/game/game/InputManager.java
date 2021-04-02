@@ -5,42 +5,52 @@ import org.lwjgl.glfw.GLFW;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.nanovg.OUI.*;
-import static org.lwjgl.nanovg.OUI.uiSetKey;
 
 public class InputManager {
     public static class Mouse{
-        public double x;
-        public double y;
-        public double wx;
-        public double wy;
+        private final Vector2f local = new Vector2f();
+        private final Vector2f world = new Vector2f();
+        private final Vector2f localOffset = new Vector2f();
+        private final Vector2f worldOffset = new Vector2f();
 
-        private final Vector2f offset = new Vector2f();
+        public Vector2f getLocal(){
+            return local;
+        }
 
-        public Vector2f getOffset(){
-            return offset;
+        public Vector2f getWorld(){
+            return world;
+        }
+
+        public Vector2f getLocalOffset(){
+            return localOffset;
+        }
+
+        public Vector2f getWorldOffset(){
+            return worldOffset;
         }
 
         public void resetOffset(){
-            offset.zero();
+            localOffset.zero();
         }
 
         @Override
         public String toString() {
             return "Mouse{" +
-                    "x=" + x +
-                    ", y=" + y +
-                    ", wx=" + wx +
-                    ", wy=" + wy +
-                    ", dx=" + offset.x +
-                    ", dy=" + offset.y +
+                    "x=" + local.x +
+                    ", y=" + local.y +
+                    ", wx=" + world.x +
+                    ", wy=" + world.y +
+                    ", dx=" + localOffset.x +
+                    ", dy=" + localOffset.y +
                     '}';
         }
     }
+    public static final Mouse mouse = new Mouse();
 
     private static final boolean[] keyState = new boolean[GLFW.GLFW_KEY_LAST+1];
     private static final int[] mouseState = new int[GLFW.GLFW_MOUSE_BUTTON_LAST+1];
     private static final float[] mouseStateTime = new float[GLFW.GLFW_MOUSE_BUTTON_LAST+1];
-    public static final Mouse mouse = new Mouse();
+    private static final boolean[] dragHandleState = new boolean[GLFW_MOUSE_BUTTON_LAST+1];
 
     public static void init(Window window){
         glfwSetMouseButtonCallback(window.getHandle(), (handle, button, action, mods) -> {
@@ -56,10 +66,10 @@ public class InputManager {
             mouseState[button] = action;
         });
         glfwSetCursorPosCallback(window.getHandle(), (handle, xpos, ypos) -> {
-            mouse.offset.x = (float) (xpos-mouse.x);
-            mouse.offset.y = (float) (mouse.y-ypos);
-            mouse.x = xpos;
-            mouse.y = ypos;
+            mouse.localOffset.x = (float) (xpos-mouse.local.x);
+            mouse.localOffset.y = (float) (mouse.local.y-ypos);
+            mouse.local.x = (float) xpos;
+            mouse.local.y = (float) ypos;
             uiSetCursor((int)xpos, (int)ypos);
         });
         glfwSetScrollCallback(window.getHandle(), (handle, xoffset, yoffset) -> uiSetScroll((int)xoffset, (int)yoffset));
@@ -81,6 +91,7 @@ public class InputManager {
             }else {
                 mouseStateTime[i] += window.frameTime;
             }
+            dragHandleState[i] = false;
         }
     }
 
@@ -89,6 +100,11 @@ public class InputManager {
     }
 
     public static boolean isDrag(){
+        if(dragHandleState[GLFW_MOUSE_BUTTON_LEFT])return false;
         return mouseState[GLFW_MOUSE_BUTTON_LEFT]==GLFW_PRESS&&mouseStateTime[GLFW_MOUSE_BUTTON_LEFT]>0.1f;
+    }
+
+    public static void dragHandled(){
+        dragHandleState[GLFW_MOUSE_BUTTON_LEFT] = true;
     }
 }
