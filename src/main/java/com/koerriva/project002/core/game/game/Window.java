@@ -1,4 +1,4 @@
-package com.koerriva.project002.core.game;
+package com.koerriva.project002.core.game.game;
 
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -22,26 +22,8 @@ public class Window {
         public float yscale;
     }
 
-    public static class Mouse{
-        public double x;
-        public double y;
-        public double wx;
-        public double wy;
-
-        @Override
-        public String toString() {
-            return "{" +
-                    "x=" + x +
-                    ", y=" + y +
-                    ", wx=" + wx +
-                    ", wy=" + wy +
-                    '}';
-        }
-    }
-
     private static long handle = 0L;
     public final Size size = new Size();
-    public final Mouse mouse = new Mouse();
     private final String title;
     private double lastFrameTime = 0.0;
     public float frameTime = 0.0f;
@@ -126,11 +108,6 @@ public class Window {
 
     public void input(){
         glfwPollEvents();
-        double[] xpos = new double[1];
-        double[] ypos = new double[1];
-        glfwGetCursorPos(handle,xpos,ypos);
-        mouse.x = xpos[0];
-        mouse.y = ypos[0];
     }
 
     public void update(){
@@ -159,17 +136,5 @@ public class Window {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
-    }
-
-    public boolean isKeyPress(int key){
-        return glfwGetKey(handle,key) == GLFW_PRESS;
-    }
-
-    public boolean isKeyRelease(int key){
-        return glfwGetKey(handle,key) == GLFW_RELEASE;
-    }
-
-    public void mkCurrent() {
-        glfwMakeContextCurrent(handle);
     }
 }

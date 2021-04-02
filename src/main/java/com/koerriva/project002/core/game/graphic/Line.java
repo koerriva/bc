@@ -1,6 +1,6 @@
 package com.koerriva.project002.core.game.graphic;
 
-import com.koerriva.project002.core.game.Window;
+import com.koerriva.project002.core.game.game.Window;
 import com.koerriva.project002.core.game.game.GameObject;
 import org.joml.Math;
 import org.joml.Matrix4f;

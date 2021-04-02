@@ -1,6 +1,5 @@
 package com.koerriva.project002.core.game.game;
 
-import com.koerriva.project002.core.game.Window;
 import com.koerriva.project002.core.game.game.brain.Brain;
 import com.koerriva.project002.core.game.game.brain.Muscle;
 import com.koerriva.project002.core.game.game.brain.Neural;
@@ -59,12 +58,7 @@ public class GameLevel {
     }
 
     public void update(Window window){
-        objects.forEach(obj->{
-            if(obj instanceof Particle){
-                obj.position.set(window.mouse.wx,window.mouse.wy);
-            }
-            obj.update(window.frameTime);
-        });
+        objects.forEach(obj-> obj.update(window.frameTime));
     }
 
     public void draw(Window window, SpriteRenderer renderer){

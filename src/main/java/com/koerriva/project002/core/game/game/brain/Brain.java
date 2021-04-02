@@ -1,6 +1,7 @@
 package com.koerriva.project002.core.game.game.brain;
 
-import com.koerriva.project002.core.game.Window;
+import com.koerriva.project002.core.game.game.InputManager;
+import com.koerriva.project002.core.game.game.Window;
 import com.koerriva.project002.core.game.game.Direction;
 import com.koerriva.project002.core.game.game.GameObject;
 import com.koerriva.project002.core.game.graphic.*;
@@ -102,7 +103,7 @@ public class Brain extends GameObject {
 
     @Override
     public void input(Window window) {
-        if(window.isKeyPress(GLFW.GLFW_KEY_DELETE)){
+        if(InputManager.isKeyPress(GLFW.GLFW_KEY_DELETE)){
             Neural n = neurals.get(3);
             if(n!=null){
                 remove(n);

@@ -1,11 +1,11 @@
 package com.koerriva.project002.core.game.graphic;
 
-import com.koerriva.project002.core.game.Window;
+import com.koerriva.project002.core.game.game.InputManager;
+import com.koerriva.project002.core.game.game.Window;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-
-import java.util.Map;
 
 public class Camera2D {
     private final Vector3f eye = new Vector3f(0f,0f,1f);
@@ -35,6 +35,10 @@ public class Camera2D {
         view.translate(dx,dy,0f);
     }
 
+    public void move(Vector2f offset){
+        view.translate(offset.x,offset.y,0f);
+    }
+
     public final Matrix4f getProjectionMatrix(){
         projection.identity()
                 .ortho(-window.size.frameBufferWidth/2f,window.size.frameBufferWidth/2f
@@ -43,8 +47,8 @@ public class Camera2D {
         projection.invert(invProjection);
         view.invert(invView);
 
-        float nx = (float) (2*window.mouse.x/window.size.width - 1f);
-        float ny = (float) (1f - 2*window.mouse.y/window.size.height);
+        float nx = (float) (2*InputManager.mouse.x/window.size.width - 1f);
+        float ny = (float) (1f - 2*InputManager.mouse.y/window.size.height);
 
         Vector4f clip = new Vector4f(nx,ny,-1f,1f);
         Vector4f eye = invProjection.transform(clip);
@@ -55,8 +59,8 @@ public class Camera2D {
 
         mousePosition.set(world.x,world.y, world.z);
 
-        window.mouse.wx = mousePosition.x;
-        window.mouse.wy = mousePosition.y;
+        InputManager.mouse.wx = mousePosition.x;
+        InputManager.mouse.wy = mousePosition.y;
         return projection;
     }
 }

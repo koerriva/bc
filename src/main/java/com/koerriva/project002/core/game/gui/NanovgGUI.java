@@ -1,6 +1,7 @@
 package com.koerriva.project002.core.game.gui;
 
-import com.koerriva.project002.core.game.Window;
+import com.koerriva.project002.core.game.game.InputManager;
+import com.koerriva.project002.core.game.game.Window;
 import com.koerriva.project002.core.game.gui.nanovg.Demo;
 import com.koerriva.project002.core.game.gui.nanovg.NanoVGUtils.*;
 import com.koerriva.project002.core.game.gui.nanovg.UILayer;
@@ -12,11 +13,8 @@ import java.nio.ByteBuffer;
 import static com.koerriva.project002.core.game.gui.nanovg.Demo.*;
 import static com.koerriva.project002.core.game.gui.nanovg.NanoVGUtils.*;
 import static com.koerriva.project002.utils.IOUtil.ioResourceToByteBuffer;
-import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.nanovg.NanoVG.*;
-import static org.lwjgl.nanovg.NanoVG.nvgAddFallbackFontId;
 import static org.lwjgl.nanovg.NanoVGGL3.nvgCreate;
-import static org.lwjgl.nanovg.OUI.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class NanovgGUI implements GUI {
@@ -30,30 +28,6 @@ public class NanovgGUI implements GUI {
     private UILayer uiLayer;
 
     public void init(Window window){
-        glfwSetMouseButtonCallback(window.getHandle(), (handle, button, action, mods) -> {
-            switch (button) {
-                case 1:
-                    button = 2;
-                    break;
-                case 2:
-                    button = 1;
-                    break;
-            }
-            uiSetButton(button, mods, action == GLFW_PRESS);
-        });
-        glfwSetCursorPosCallback(window.getHandle(), (handle, xpos, ypos) -> {
-            window.mouse.x = xpos;
-            window.mouse.y = ypos;
-            uiSetCursor((int)xpos, (int)ypos);
-        });
-        glfwSetScrollCallback(window.getHandle(), (handle, xoffset, yoffset) -> uiSetScroll((int)xoffset, (int)yoffset));
-        glfwSetKeyCallback(window.getHandle(), (handle, keyCode, scancode, action, mods) -> {
-            if (keyCode == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-                glfwSetWindowShouldClose(handle, true);
-            }
-            uiSetKey(keyCode, mods, action != GLFW_RELEASE);
-        });
-
         ctx = nvgCreate(NanoVGGL3.NVG_ANTIALIAS|NanoVGGL3.NVG_STENCIL_STROKES|NanoVGGL3.NVG_DEBUG);
         if (ctx == 0) {
             throw new RuntimeException("Could not init nanovg.");
@@ -88,7 +62,7 @@ public class NanovgGUI implements GUI {
         }
         renderGraph(ctx,5,50,fpsGraph);
 
-        drawLabel(ctx,window.mouse.toString(),5,80,100,35);
+        drawLabel(ctx, InputManager.mouse.toString(),5,80,100,35);
 
         nvgEndFrame(ctx);
 

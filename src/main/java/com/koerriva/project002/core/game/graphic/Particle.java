@@ -1,6 +1,7 @@
 package com.koerriva.project002.core.game.graphic;
 
-import com.koerriva.project002.core.game.Window;
+import com.koerriva.project002.core.game.game.InputManager;
+import com.koerriva.project002.core.game.game.Window;
 import com.koerriva.project002.core.game.game.GameObject;
 import org.joml.Math;
 import org.joml.*;
@@ -75,7 +76,7 @@ public class Particle extends GameObject {
 
     @Override
     public void input(Window window) {
-
+        position.set(InputManager.mouse.wx,InputManager.mouse.wy);
     }
 
     public void update(float deltaTime){

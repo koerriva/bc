@@ -1,6 +1,6 @@
 package com.koerriva.project002.core.game.gui;
 
-import com.koerriva.project002.core.game.Window;
+import com.koerriva.project002.core.game.game.Window;
 import com.koerriva.project002.core.game.gui.nuklear.Editor;
 import org.lwjgl.nuklear.*;
 import org.lwjgl.stb.STBTTAlignedQuad;
