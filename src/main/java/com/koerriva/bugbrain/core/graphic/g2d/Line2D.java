@@ -22,7 +22,7 @@ public class Line2D extends GameObject {
         Matrix4f transform;
     }
 
-    public static final int BEZIER_LINE_DIVISIONS = 30;
+    public static final int BEZIER_LINE_DIVISIONS = 24;
     public final float width;
 
     public final Vector2f startPoint;
@@ -68,6 +68,9 @@ public class Line2D extends GameObject {
 //        System.out.println("len normalize="+np.x+"_"+np.y);
 
         float cosAngle = np.dot(new Vector2f(0f,-1f));
+        if(e.endPoint.x<e.startPoint.x){
+            cosAngle = -cosAngle;
+        }
         float angle = Math.acos(cosAngle);
 //        System.out.println("angle degrees ="+Math.toDegrees(angle));
 
