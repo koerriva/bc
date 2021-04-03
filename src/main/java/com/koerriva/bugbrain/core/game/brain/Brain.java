@@ -39,7 +39,7 @@ public class Brain extends GameObject {
 
     public Brain(Vector2f position,Vector2f size) {
         super(position, size, Material.from(Texture.background(new Vector2f(4096,4096)),
-                Shader.load("bg")));
+                Shader.load("bg-cell")));
         this.isInstance = true;
         this.transform.translate(position.x,position.y,0f)
                 .scale(size.x,size.y,0f);
