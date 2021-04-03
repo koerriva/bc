@@ -6,7 +6,7 @@ import com.koerriva.project002.core.game.game.brain.Neural;
 import com.koerriva.project002.core.game.game.brain.Vision;
 import com.koerriva.project002.core.game.graphic.Material;
 import com.koerriva.project002.core.game.graphic.Particle;
-import com.koerriva.project002.core.game.graphic.SpriteRenderer;
+import com.koerriva.project002.core.game.graphic.g2d.SpriteRenderer;
 import com.koerriva.project002.core.game.graphic.Texture;
 import org.joml.Vector2f;
 

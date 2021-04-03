@@ -1,7 +1,8 @@
-package com.koerriva.project002.core.game.graphic;
+package com.koerriva.project002.core.game.graphic.g2d;
 
 import com.koerriva.project002.core.game.game.Window;
 import com.koerriva.project002.core.game.game.GameObject;
+import com.koerriva.project002.core.game.graphic.g2d.Camera2D;
 
 import static org.lwjgl.opengl.GL33C.*;
 

@@ -1,8 +1,8 @@
 package com.koerriva.project002.core.game.graphic;
 
-import com.koerriva.project002.core.game.game.InputManager;
 import com.koerriva.project002.core.game.game.Window;
 import com.koerriva.project002.core.game.game.GameObject;
+import com.koerriva.project002.core.game.graphic.g2d.Camera2D;
 import org.joml.Math;
 import org.joml.*;
 import org.lwjgl.system.MemoryUtil;

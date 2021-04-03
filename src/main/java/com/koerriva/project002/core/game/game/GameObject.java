@@ -1,6 +1,6 @@
 package com.koerriva.project002.core.game.game;
 
-import com.koerriva.project002.core.game.graphic.Camera2D;
+import com.koerriva.project002.core.game.graphic.g2d.Camera2D;
 import com.koerriva.project002.core.game.graphic.Material;
 import com.koerriva.project002.core.game.graphic.Mesh;
 import org.joml.Matrix4f;

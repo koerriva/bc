@@ -1,4 +1,4 @@
-package com.koerriva.project002.core.game.graphic;
+package com.koerriva.project002.core.game.graphic.g2d;
 
 import com.koerriva.project002.core.game.game.InputManager;
 import com.koerriva.project002.core.game.game.Window;

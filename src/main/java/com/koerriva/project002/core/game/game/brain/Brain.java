@@ -5,6 +5,8 @@ import com.koerriva.project002.core.game.game.Window;
 import com.koerriva.project002.core.game.game.Direction;
 import com.koerriva.project002.core.game.game.GameObject;
 import com.koerriva.project002.core.game.graphic.*;
+import com.koerriva.project002.core.game.graphic.g2d.Camera2D;
+import com.koerriva.project002.core.game.graphic.g2d.Line2D;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -129,15 +131,15 @@ public class Brain extends GameObject {
         Cell.cells.forEach((id,cell)->cell.update(deltaTime));
     }
 
-    private List<Line> render(LinkNode root){
-        ArrayList<Line> lines = new ArrayList<>();
+    private List<Line2D> render(LinkNode root){
+        ArrayList<Line2D> lines = new ArrayList<>();
         for (Map.Entry<Integer, LinkNode> entry : root) {
             LinkNode n = entry.getValue();
             if(n.getType()==0)continue;
             Cell from = Cell.get(n.getId());
             for(LinkNode output:n.getOutput()){
                 Cell to = Cell.get(output.getId());
-                Line line = new Line(from.position, to.position, 5, new Vector4f(0.8f, 0.8f, 0.8f, 1f));
+                Line2D line = new Line2D(from.position, to.position, 5, new Vector4f(0.8f, 0.8f, 0.8f, 1f));
                 lines.add(line);
             }
         }
@@ -155,8 +157,8 @@ public class Brain extends GameObject {
                 .setTexture();
         mesh.draw();
 
-        List<Line> lines = render(root);
-        for (Line line:lines){
+        List<Line2D> lines = render(root);
+        for (Line2D line:lines){
             line.draw(camera);
             line.cleanup();
         }

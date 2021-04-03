@@ -1,7 +1,10 @@
-package com.koerriva.project002.core.game.graphic;
+package com.koerriva.project002.core.game.graphic.g2d;
 
 import com.koerriva.project002.core.game.game.Window;
 import com.koerriva.project002.core.game.game.GameObject;
+import com.koerriva.project002.core.game.graphic.Material;
+import com.koerriva.project002.core.game.graphic.Texture;
+import com.koerriva.project002.core.game.graphic.g2d.Camera2D;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -11,7 +14,7 @@ import org.lwjgl.system.MemoryUtil;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
-public class Line extends GameObject {
+public class Line2D extends GameObject {
     static class Data{
         Vector2f startPoint;
         Vector2f endPoint;
@@ -33,8 +36,8 @@ public class Line extends GameObject {
     private final FloatBuffer colors = MemoryUtil.memAllocFloat(BEZIER_LINE_DIVISIONS*4);
     private final FloatBuffer transforms = MemoryUtil.memAllocFloat(BEZIER_LINE_DIVISIONS*16);
 
-    public Line(Vector2f startPoint, Vector2f endPoint, float width,Vector4f color) {
-        super(new Vector2f(0),new Vector2f(width),Material.from(color,Texture.load("line.png")));
+    public Line2D(Vector2f startPoint, Vector2f endPoint, float width, Vector4f color) {
+        super(new Vector2f(0),new Vector2f(width), Material.from(color, Texture.load("line.png")));
         this.isInstance = true;
         this.width = width;
         this.startPoint = startPoint;
