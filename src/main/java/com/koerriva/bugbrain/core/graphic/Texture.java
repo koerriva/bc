@@ -34,12 +34,24 @@ public class Texture {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int idx = (y*width+x)*4;
-                if(x%10==0||y%10==0){
-                    buffer[idx] = (byte) (1);
-                    buffer[idx+1] = (byte) (30);
-                    buffer[idx+2] = (byte) (10);
+
+                boolean isGridLine = false;
+                if(x%20==0||y%20==0){
+                    buffer[idx] = (byte) (80);
+                    buffer[idx+1] = (byte) (80);
+                    buffer[idx+2] = (byte) (80);
                     buffer[idx+3] = (byte) (255);
-                }else {
+                    isGridLine = true;
+                }
+                if(x%100==0||y%100==0){
+                    buffer[idx] = (byte) (0);
+                    buffer[idx+1] = (byte) (0);
+                    buffer[idx+2] = (byte) (0);
+                    buffer[idx+3] = (byte) (255);
+                    isGridLine = true;
+                }
+
+                if(!isGridLine){
                     buffer[idx] = (byte) (26);
                     buffer[idx+1] = (byte) (59);
                     buffer[idx+2] = (byte) (50);
