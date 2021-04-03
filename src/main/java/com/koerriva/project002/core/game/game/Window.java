@@ -40,11 +40,12 @@ public class Window {
         boolean init = glfwInit();
         if(init){
             if (Platform.get() == Platform.MACOSX) {
-                glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-                glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+                glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+                glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
                 glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
                 glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
             }
+            glfwWindowHint(GLFW_VISIBLE,GL_FALSE);
             glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
             glfwWindowHint(GLFW_SAMPLES, 4);
 
@@ -99,6 +100,8 @@ public class Window {
             glClear(GL_COLOR_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
 
             lastFrameTime = glfwGetTime();
+
+            glfwShowWindow(handle);
         }
     }
 
