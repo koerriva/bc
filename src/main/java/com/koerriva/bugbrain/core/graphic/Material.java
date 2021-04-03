@@ -2,6 +2,7 @@ package com.koerriva.bugbrain.core.graphic;
 
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
+import org.lwjgl.glfw.GLFW;
 
 import static org.lwjgl.opengl.GL13C.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13C.glActiveTexture;
@@ -37,8 +38,13 @@ public class Material {
         return new Material(Shader.load("sprite"),texture,new Vector4f(1f));
     }
 
+    public static Material from(Texture texture,Shader shader){
+        return new Material(shader,texture,new Vector4f(1f));
+    }
+
     public final Material use(){
         shader.use();
+        setTime((float) GLFW.glfwGetTime());
         return this;
     }
 
@@ -66,6 +72,11 @@ public class Material {
         shader.setInt("texture0",0);
         glActiveTexture(GL_TEXTURE0);
         texture.bind();
+        return this;
+    }
+
+    public final Material setTime(float time){
+        shader.setFloat("time",time);
         return this;
     }
 

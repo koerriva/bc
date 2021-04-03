@@ -63,7 +63,6 @@ public class Texture {
         ByteBuffer data = MemoryUtil.memAlloc(width*height*4);
         data.put(buffer);
         data.flip();
-        System.out.println("buffer size "+buffer.length);
         return load(width,height,data);
     }
 

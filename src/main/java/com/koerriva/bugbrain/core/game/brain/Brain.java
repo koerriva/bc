@@ -4,6 +4,7 @@ import com.koerriva.bugbrain.core.game.InputManager;
 import com.koerriva.bugbrain.core.game.Window;
 import com.koerriva.bugbrain.core.game.Direction;
 import com.koerriva.bugbrain.core.game.GameObject;
+import com.koerriva.bugbrain.core.graphic.Shader;
 import com.koerriva.bugbrain.core.graphic.g2d.Camera2D;
 import com.koerriva.bugbrain.core.graphic.g2d.Line2D;
 import com.koerriva.bugbrain.core.graphic.Material;
@@ -37,7 +38,8 @@ public class Brain extends GameObject {
     private final FloatBuffer modelData = MemoryUtil.memAllocFloat(10000*16);
 
     public Brain(Vector2f position,Vector2f size) {
-        super(position, size, Material.from(Texture.background(new Vector2f(4096,4096))));
+        super(position, size, Material.from(Texture.background(new Vector2f(4096,4096)),
+                Shader.load("bg")));
         this.isInstance = true;
         this.transform.translate(position.x,position.y,0f)
                 .scale(size.x,size.y,0f);
