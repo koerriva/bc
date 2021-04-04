@@ -67,4 +67,8 @@ public class Camera2D {
         InputManager.mouse.getWorldOffset().set(dwx,dwy);
         return projection;
     }
+
+    public final Vector3f getPosition(){
+        return eye;
+    }
 }
