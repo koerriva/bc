@@ -4,6 +4,8 @@ import com.koerriva.bugbrain.core.game.InputManager;
 import com.koerriva.bugbrain.core.game.Window;
 import com.koerriva.bugbrain.core.game.Direction;
 import com.koerriva.bugbrain.core.game.GameObject;
+import com.koerriva.bugbrain.core.audio.Audio;
+import com.koerriva.bugbrain.core.audio.AudioManager;
 import com.koerriva.bugbrain.core.graphic.Shader;
 import com.koerriva.bugbrain.core.graphic.g2d.Camera2D;
 import com.koerriva.bugbrain.core.graphic.g2d.Line2D;
@@ -37,12 +39,19 @@ public class Brain extends GameObject {
     private final FloatBuffer colorData = MemoryUtil.memAllocFloat(10000*4);
     private final FloatBuffer modelData = MemoryUtil.memAllocFloat(10000*16);
 
+    private final Audio bgMusic;
+
     public Brain(Vector2f position,Vector2f size) {
         super(position, size, Material.from(Texture.background(new Vector2f(4096,4096)),
                 Shader.load("bg-cell")));
         this.isInstance = true;
         this.transform.translate(position.x,position.y,0f)
                 .scale(size.x,size.y,0f);
+
+        this.bgMusic = Audio.load("seansecret__harmonic-ambience.ogg");
+        this.bgMusic.setGain(0.1f);
+        this.bgMusic.setLoop(true);
+        AudioManager.play(this.bgMusic);
     }
 
     public void add(Cell cell){

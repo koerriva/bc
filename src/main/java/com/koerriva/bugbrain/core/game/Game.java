@@ -1,5 +1,6 @@
 package com.koerriva.bugbrain.core.game;
 
+import com.koerriva.bugbrain.core.audio.AudioManager;
 import com.koerriva.bugbrain.core.graphic.g2d.Camera2D;
 import com.koerriva.bugbrain.core.graphic.g2d.SpriteRenderer;
 import com.koerriva.bugbrain.core.gui.GUI;
@@ -23,8 +24,9 @@ public class Game {
         this.spriteRenderer = new SpriteRenderer(camera);
     }
 
-    public void init() {
+    public void init() throws Exception {
         window.init();
+        AudioManager.init();
         InputManager.init(window);
         gui.init(window);
         this.level = GameLevel.load(10000,10000);
@@ -83,5 +85,7 @@ public class Game {
         level.cleanup();
         gui.cleanup();
         window.cleanup();
+
+        AudioManager.cleanup();
     }
 }
