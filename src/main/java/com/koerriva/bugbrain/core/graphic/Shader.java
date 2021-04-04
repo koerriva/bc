@@ -10,14 +10,16 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import static com.koerriva.bugbrain.utils.IOUtil.ioResourceToByteBuffer;
 import static org.lwjgl.opengl.GL20C.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 
 public class Shader {
-    private static final LinkedHashMap<String,Shader> resource = new LinkedHashMap<>();
+    private static final HashMap<String,Shader> resource = new HashMap<>();
     public final int id;
 
     private Shader(int id){
@@ -28,20 +30,13 @@ public class Shader {
         glUseProgram(id);
     }
 
-    public void cleanup(){
-        if(resource.containsValue(this)){
-            String name = null;
-            for (String key:resource.keySet()){
-                if(resource.get(key).equals(this)){
-                    name = key;
-                    break;
-                }
-            }
-            if(name!=null){
-                resource.remove(name);
-            }
+    public static void cleanup(){
+        Iterator<Map.Entry<String,Shader>> iterator = resource.entrySet().iterator();
+        while (iterator.hasNext()){
+            Shader shader = iterator.next().getValue();
+            glDeleteProgram(shader.id);
+            iterator.remove();
         }
-        glDeleteProgram(id);
     }
 
     public void setFloat(String name,float value){

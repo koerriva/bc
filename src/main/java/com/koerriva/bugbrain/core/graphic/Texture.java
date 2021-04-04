@@ -6,7 +6,9 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL11C.*;
 
@@ -103,19 +105,12 @@ public class Texture {
         return texture;
     }
 
-    public void cleanup() {
-        if(resource.containsValue(this)){
-            String name = null;
-            for (String key:resource.keySet()){
-                if(resource.get(key).equals(this)){
-                    name = key;
-                    break;
-                }
-            }
-            if(name!=null){
-                resource.remove(name);
-            }
+    public static void cleanup(){
+        Iterator<Map.Entry<String,Texture>> iterator = resource.entrySet().iterator();
+        while (iterator.hasNext()){
+            Texture texture = iterator.next().getValue();
+            glDeleteTextures(texture.id);
+            iterator.remove();
         }
-        glDeleteTextures(id);
     }
 }

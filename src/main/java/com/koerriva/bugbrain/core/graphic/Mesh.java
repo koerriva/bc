@@ -1,7 +1,9 @@
 package com.koerriva.bugbrain.core.graphic;
 
 import java.nio.FloatBuffer;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL11C.GL_FLOAT;
 import static org.lwjgl.opengl.GL15C.*;
@@ -10,10 +12,7 @@ import static org.lwjgl.opengl.GL31C.glDrawElementsInstanced;
 import static org.lwjgl.opengl.GL33C.glVertexAttribDivisor;
 
 public class Mesh {
-    public enum Type{
-        QUAD,LINE,POINT,MODEL
-    }
-    private static final LinkedHashMap<String,Mesh> INSTANCES = new LinkedHashMap<>();
+    private static final HashMap<String,Mesh> resource = new HashMap<>();
     public final int vao;
     private final int[] vbo = new int[10];
     private final float[] vertices;
@@ -64,8 +63,8 @@ public class Mesh {
     }
 
     public static Mesh QUAD(String name){
-        if(INSTANCES.containsKey(name)){
-            return INSTANCES.get(name);
+        if(resource.containsKey(name)){
+            return resource.get(name);
         }
         float[] vertices = {
                 // 位置
@@ -116,12 +115,21 @@ public class Mesh {
 
         glBindVertexArray(0);
 
-        INSTANCES.put(name,mesh);
+        resource.put(name,mesh);
         return mesh;
     }
 
-    public void cleanup() {
-        INSTANCES.remove(name);
+    public static void cleanup(){
+        Iterator<Map.Entry<String,Mesh>> iterator = resource.entrySet().iterator();
+        while (iterator.hasNext()){
+            Mesh mesh = iterator.next().getValue();
+            mesh.delete();
+            iterator.remove();
+        }
+    }
+
+    private void delete() {
+        resource.remove(name);
         glDeleteBuffers(ebo);
         glDeleteBuffers(vbo);
         glDeleteVertexArrays(vao);
