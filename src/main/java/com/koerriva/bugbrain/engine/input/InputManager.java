@@ -1,6 +1,6 @@
 package com.koerriva.bugbrain.engine.input;
 
-import com.koerriva.bugbrain.engine.graphic.Window;
+import com.koerriva.bugbrain.engine.graphics.Window;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 

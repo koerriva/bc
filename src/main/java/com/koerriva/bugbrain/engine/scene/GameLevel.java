@@ -1,14 +1,14 @@
 package com.koerriva.bugbrain.engine.scene;
 
-import com.koerriva.bugbrain.engine.graphic.Window;
+import com.koerriva.bugbrain.engine.graphics.Window;
 import com.koerriva.bugbrain.core.brain.Brain;
 import com.koerriva.bugbrain.core.brain.Muscle;
 import com.koerriva.bugbrain.core.brain.Neural;
 import com.koerriva.bugbrain.core.brain.Vision;
-import com.koerriva.bugbrain.engine.graphic.Material;
-import com.koerriva.bugbrain.engine.graphic.Particle;
-import com.koerriva.bugbrain.engine.graphic.g2d.SpriteRenderer;
-import com.koerriva.bugbrain.engine.graphic.Texture;
+import com.koerriva.bugbrain.engine.graphics.Material;
+import com.koerriva.bugbrain.engine.graphics.Particle;
+import com.koerriva.bugbrain.engine.graphics.g2d.SpriteRenderer;
+import com.koerriva.bugbrain.engine.graphics.Texture;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;

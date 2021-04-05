@@ -1,7 +1,7 @@
 package com.koerriva.bugbrain.engine.gui;
 
 import com.koerriva.bugbrain.engine.input.InputManager;
-import com.koerriva.bugbrain.engine.graphic.Window;
+import com.koerriva.bugbrain.engine.graphics.Window;
 import com.koerriva.bugbrain.engine.gui.nanovg.Demo;
 import com.koerriva.bugbrain.engine.gui.nanovg.UILayer;
 import com.koerriva.bugbrain.engine.gui.nanovg.NanoVGUtils;

@@ -1,6 +1,6 @@
 package com.koerriva.bugbrain.engine.gui;
 
-import com.koerriva.bugbrain.engine.graphic.Window;
+import com.koerriva.bugbrain.engine.graphics.Window;
 
 public interface GUI {
     void init(Window window);

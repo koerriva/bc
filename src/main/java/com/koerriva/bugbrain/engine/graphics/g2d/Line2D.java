@@ -1,12 +1,11 @@
-package com.koerriva.bugbrain.engine.graphic.g2d;
+package com.koerriva.bugbrain.engine.graphics.g2d;
 
-import com.koerriva.bugbrain.engine.graphic.Window;
+import com.koerriva.bugbrain.engine.graphics.Window;
 import com.koerriva.bugbrain.engine.scene.GameObject;
-import com.koerriva.bugbrain.engine.graphic.Material;
-import com.koerriva.bugbrain.engine.graphic.Texture;
+import com.koerriva.bugbrain.engine.graphics.Material;
+import com.koerriva.bugbrain.engine.graphics.Texture;
 import com.koerriva.bugbrain.engine.scene.Transform;
 import org.joml.Math;
-import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.lwjgl.system.MemoryUtil;

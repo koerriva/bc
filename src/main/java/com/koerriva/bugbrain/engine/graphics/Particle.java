@@ -1,7 +1,7 @@
-package com.koerriva.bugbrain.engine.graphic;
+package com.koerriva.bugbrain.engine.graphics;
 
 import com.koerriva.bugbrain.engine.scene.GameObject;
-import com.koerriva.bugbrain.engine.graphic.g2d.Camera2D;
+import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
 import org.joml.Math;
 import org.joml.*;
 import org.lwjgl.system.MemoryUtil;

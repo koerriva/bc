@@ -1,6 +1,6 @@
 package com.koerriva.bugbrain.engine.audio;
 
-import com.koerriva.bugbrain.engine.graphic.g2d.Camera2D;
+import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 

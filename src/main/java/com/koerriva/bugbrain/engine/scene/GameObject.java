@@ -1,9 +1,9 @@
 package com.koerriva.bugbrain.engine.scene;
 
-import com.koerriva.bugbrain.engine.graphic.Window;
-import com.koerriva.bugbrain.engine.graphic.g2d.Camera2D;
-import com.koerriva.bugbrain.engine.graphic.Material;
-import com.koerriva.bugbrain.engine.graphic.Mesh;
+import com.koerriva.bugbrain.engine.graphics.Window;
+import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
+import com.koerriva.bugbrain.engine.graphics.Material;
+import com.koerriva.bugbrain.engine.graphics.Mesh;
 import org.joml.Vector2f;
 
 public abstract class GameObject {

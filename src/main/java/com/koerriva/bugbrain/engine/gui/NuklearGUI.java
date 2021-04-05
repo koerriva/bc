@@ -1,6 +1,6 @@
 package com.koerriva.bugbrain.engine.gui;
 
-import com.koerriva.bugbrain.engine.graphic.Window;
+import com.koerriva.bugbrain.engine.graphics.Window;
 import com.koerriva.bugbrain.engine.gui.nuklear.Editor;
 import org.lwjgl.nuklear.*;
 import org.lwjgl.stb.STBTTAlignedQuad;

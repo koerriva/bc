@@ -1,4 +1,4 @@
-package com.koerriva.bugbrain.engine.graphic;
+package com.koerriva.bugbrain.engine.graphics;
 
 import org.joml.Vector2f;
 import org.lwjgl.stb.STBImage;

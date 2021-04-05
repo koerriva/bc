@@ -1,17 +1,17 @@
 package com.koerriva.bugbrain.core.brain;
 
 import com.koerriva.bugbrain.engine.input.InputManager;
-import com.koerriva.bugbrain.engine.graphic.Window;
+import com.koerriva.bugbrain.engine.graphics.Window;
 import com.koerriva.bugbrain.core.Direction;
 import com.koerriva.bugbrain.engine.scene.GameObject;
 import com.koerriva.bugbrain.engine.audio.Audio;
 import com.koerriva.bugbrain.engine.audio.AudioManager;
-import com.koerriva.bugbrain.engine.graphic.Shader;
-import com.koerriva.bugbrain.engine.graphic.g2d.Camera2D;
-import com.koerriva.bugbrain.engine.graphic.g2d.Line2D;
-import com.koerriva.bugbrain.engine.graphic.Material;
-import com.koerriva.bugbrain.engine.graphic.Mesh;
-import com.koerriva.bugbrain.engine.graphic.Texture;
+import com.koerriva.bugbrain.engine.graphics.Shader;
+import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
+import com.koerriva.bugbrain.engine.graphics.g2d.Line2D;
+import com.koerriva.bugbrain.engine.graphics.Material;
+import com.koerriva.bugbrain.engine.graphics.Mesh;
+import com.koerriva.bugbrain.engine.graphics.Texture;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;

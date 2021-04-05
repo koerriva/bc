@@ -1,13 +1,13 @@
 package com.koerriva.bugbrain.core;
 
 import com.koerriva.bugbrain.engine.audio.AudioManager;
-import com.koerriva.bugbrain.engine.graphic.g2d.Camera2D;
-import com.koerriva.bugbrain.engine.graphic.g2d.SpriteRenderer;
+import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
+import com.koerriva.bugbrain.engine.graphics.g2d.SpriteRenderer;
 import com.koerriva.bugbrain.engine.gui.GUI;
 import com.koerriva.bugbrain.engine.gui.NanovgGUI;
 import com.koerriva.bugbrain.engine.scene.GameLevel;
 import com.koerriva.bugbrain.engine.input.InputManager;
-import com.koerriva.bugbrain.engine.graphic.Window;
+import com.koerriva.bugbrain.engine.graphics.Window;
 import org.joml.Vector2f;
 
 import static org.lwjgl.glfw.GLFW.*;

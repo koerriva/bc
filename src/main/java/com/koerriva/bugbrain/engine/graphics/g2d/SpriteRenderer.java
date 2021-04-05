@@ -1,6 +1,6 @@
-package com.koerriva.bugbrain.engine.graphic.g2d;
+package com.koerriva.bugbrain.engine.graphics.g2d;
 
-import com.koerriva.bugbrain.engine.graphic.Window;
+import com.koerriva.bugbrain.engine.graphics.Window;
 import com.koerriva.bugbrain.engine.scene.GameObject;
 
 import static org.lwjgl.opengl.GL33C.*;

@@ -1,4 +1,4 @@
-package com.koerriva.bugbrain.engine.graphic;
+package com.koerriva.bugbrain.engine.graphics;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;

@@ -1,4 +1,4 @@
-package com.koerriva.bugbrain.engine.graphic;
+package com.koerriva.bugbrain.engine.graphics;
 
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
