@@ -7,10 +7,9 @@ import com.koerriva.bugbrain.engine.graphics.Mesh;
 import org.joml.Vector2f;
 
 public abstract class GameObject {
-    public final Vector2f position;
-    public final Vector2f size;
-    public final float rotation = 0f;
-    public final Transform transform = new Transform();
+    protected final Vector2f position;
+    protected final Vector2f size;
+    protected final float rotation = 0f;
 
     protected boolean isInstance = false;
     protected Mesh mesh;
@@ -21,9 +20,9 @@ public abstract class GameObject {
         this.position = position;
         this.size = size;
         this.material = material;
-        this.transform.setTranslation(position);
-        this.transform.setScaling(size);
     }
+
+    public abstract Transform getWorldTransform();
 
     public abstract void input(Window window);
 

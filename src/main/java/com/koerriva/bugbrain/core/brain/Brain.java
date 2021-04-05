@@ -1,18 +1,14 @@
 package com.koerriva.bugbrain.core.brain;
 
-import com.koerriva.bugbrain.engine.input.InputManager;
-import com.koerriva.bugbrain.engine.graphics.Window;
 import com.koerriva.bugbrain.core.Direction;
-import com.koerriva.bugbrain.engine.scene.GameObject;
 import com.koerriva.bugbrain.engine.audio.Audio;
 import com.koerriva.bugbrain.engine.audio.AudioManager;
-import com.koerriva.bugbrain.engine.graphics.Shader;
+import com.koerriva.bugbrain.engine.graphics.*;
 import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
 import com.koerriva.bugbrain.engine.graphics.g2d.Line2D;
-import com.koerriva.bugbrain.engine.graphics.Material;
-import com.koerriva.bugbrain.engine.graphics.Mesh;
-import com.koerriva.bugbrain.engine.graphics.Texture;
-import org.joml.Math;
+import com.koerriva.bugbrain.engine.input.InputManager;
+import com.koerriva.bugbrain.engine.scene.GameObject;
+import com.koerriva.bugbrain.engine.scene.Transform;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -22,8 +18,6 @@ import org.lwjgl.system.MemoryUtil;
 import java.nio.FloatBuffer;
 import java.util.*;
 
-import static org.joml.Math.PI;
-
 public class Brain extends GameObject {
     private final Map<Integer,Vision> visions = new HashMap<>();
     private final Map<Integer,Neural> neurals = new HashMap<>();
@@ -31,7 +25,7 @@ public class Brain extends GameObject {
     private final Map<Integer,Synapse> synapses = new HashMap<>();
     private final CellLink root = CellLink.create();
 
-    private final Matrix4f transform = new Matrix4f().identity();
+    private final Transform transform = new Transform();
 
     private final Material cellMaterial = new Material();
     private final Mesh cellMesh = Mesh.QUAD("cell");
@@ -45,8 +39,9 @@ public class Brain extends GameObject {
         super(position, size, Material.from(Texture.background(new Vector2f(4096,4096)),
                 Shader.load("bg-cell")));
         this.isInstance = true;
-        this.transform.translate(position.x,position.y,0f)
-                .scale(size.x,size.y,0f);
+
+        this.transform.setTranslation(position);
+        this.transform.setScaling(size);
 
         this.bgMusic = Audio.load("seansecret__harmonic-ambience.ogg");
         this.bgMusic.setGain(0.1f);
@@ -87,9 +82,8 @@ public class Brain extends GameObject {
             throw new RuntimeException("hold used!");
         }
 
-        Synapse synapse = new Synapse(neural,getCirclePos(neural.position,16f,angel),new Vector2f(8f));
+        Synapse synapse = new Synapse(neural,new Vector2f(16f),angel);
         synapses.put(synapse.id,synapse);
-        neural.useSynapse(synapse.id,angel);
 
         CellLink.get(input).link(CellLink.get(synapse));
         CellLink.get(synapse).link(CellLink.get(neural));
@@ -104,9 +98,8 @@ public class Brain extends GameObject {
             throw new RuntimeException("hold used!");
         }
 
-        Synapse synapse = new Synapse(to,getCirclePos(to.position,16f,angel),new Vector2f(8f));
+        Synapse synapse = new Synapse(to,new Vector2f(16f),angel);
         synapses.put(synapse.id,synapse);
-        to.useSynapse(synapse.id,angel);
 
         CellLink.get(from).link(CellLink.get(synapse));
         CellLink.get(synapse).link(CellLink.get(to));
@@ -114,6 +107,11 @@ public class Brain extends GameObject {
 
     public void link(Neural neural,Muscle output){
         CellLink.get(neural).link(CellLink.get(output));
+    }
+
+    @Override
+    public Transform getWorldTransform() {
+        return transform;
     }
 
     @Override
@@ -164,7 +162,7 @@ public class Brain extends GameObject {
         material.use()
                 .setProjection(camera.getProjectionMatrix())
                 .setView(camera.getViewMatrix())
-                .setModel(transform)
+                .setModel(transform.getWorldMatrix())
                 .setInstance(0)
                 .setColor()
                 .setTexture();
@@ -200,14 +198,5 @@ public class Brain extends GameObject {
     public void cleanup() {
         MemoryUtil.memFree(colorData);
         MemoryUtil.memFree(modelData);
-    }
-
-    private Vector2f getCirclePos(Vector2f r0,float r,float angle){
-        float x0 = r0.x;
-        float y0 = r0.y;
-        float x1 = (float) (x0 + r * Math.cos(angle * PI / 180));
-
-        float y1 = (float) (y0 + r * Math.sin(angle * PI /180));
-        return new Vector2f(x1,y1);
     }
 }

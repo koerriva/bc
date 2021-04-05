@@ -2,6 +2,7 @@ package com.koerriva.bugbrain.engine.graphics;
 
 import com.koerriva.bugbrain.engine.scene.GameObject;
 import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
+import com.koerriva.bugbrain.engine.scene.Transform;
 import org.joml.Math;
 import org.joml.*;
 import org.lwjgl.system.MemoryUtil;
@@ -28,6 +29,7 @@ public class Particle extends GameObject {
     private final FloatBuffer colorData = MemoryUtil.memAllocFloat(1024*4);
     private final FloatBuffer modelData = MemoryUtil.memAllocFloat(1024*16);
 
+    private final Transform worldTransform = new Transform();
     public Particle(Vector2f position, Vector2f size, Material material, int batchSize) {
         super(position, size, material);
         this.material.color.set(0.9f,0.15f,0.05f,1.0f);
@@ -36,6 +38,9 @@ public class Particle extends GameObject {
         this.isInstance = true;
         this.batchSize = batchSize;
         this.data = new ArrayList<>();
+
+        this.worldTransform.setTranslation(position);
+        this.worldTransform.setScaling(size);
 
         random.setSeed(System.currentTimeMillis());
         System.out.println("init particle!");
@@ -71,6 +76,11 @@ public class Particle extends GameObject {
         e.model.identity().translate(position.x+xoffset*5,position.y+yoffset*5,0f)
                 .rotateZ(rotation)
                 .scale(size.x,size.y,0f);
+    }
+
+    @Override
+    public Transform getWorldTransform() {
+        return null;
     }
 
     @Override

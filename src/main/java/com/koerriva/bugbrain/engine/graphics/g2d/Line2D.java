@@ -35,8 +35,11 @@ public class Line2D extends GameObject {
     private final FloatBuffer colors = MemoryUtil.memAllocFloat(BEZIER_LINE_DIVISIONS*4);
     private final FloatBuffer transforms = MemoryUtil.memAllocFloat(BEZIER_LINE_DIVISIONS*16);
 
+    private final Transform worldTransform = new Transform();
     public Line2D(Vector2f startPoint, Vector2f endPoint, float width, Vector4f color) {
         super(new Vector2f(0),new Vector2f(width), Material.from(color, Texture.load("line.png")));
+        this.worldTransform.setTranslation(this.position);
+        this.worldTransform.setScaling(this.size);
         this.isInstance = true;
         this.width = width;
         this.startPoint = startPoint;
@@ -84,6 +87,11 @@ public class Line2D extends GameObject {
 //                .scale(width,e.length.length(),0f);
 
         return e;
+    }
+
+    @Override
+    public Transform getWorldTransform() {
+        return worldTransform;
     }
 
     @Override
