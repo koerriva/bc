@@ -1,8 +1,6 @@
 package com.koerriva.bugbrain;
 
-import com.koerriva.bugbrain.core.game.Game;
-
-import java.io.IOException;
+import com.koerriva.bugbrain.core.Game;
 
 public class BrainEditor {
     public static void main(String[] args) throws Exception {
