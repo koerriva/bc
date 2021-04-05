@@ -44,4 +44,13 @@ public class Transform {
     public void setScaling(Vector2f size){
         scaling.set(size.x,size.y,1f);
     }
+
+    /*
+     * @Param angle 弧度值
+     */
+    public void setRotation(float xAngle,float yAngle,float zAngle){
+        rotation.rotateX(xAngle);
+        rotation.rotateY(yAngle);
+        rotation.rotateZ(zAngle);
+    }
 }

@@ -4,6 +4,7 @@ import com.koerriva.bugbrain.engine.graphic.Window;
 import com.koerriva.bugbrain.engine.scene.GameObject;
 import com.koerriva.bugbrain.engine.graphic.Material;
 import com.koerriva.bugbrain.engine.graphic.Texture;
+import com.koerriva.bugbrain.engine.scene.Transform;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -19,7 +20,7 @@ public class Line2D extends GameObject {
         Vector2f endPoint;
         Vector2f length;
         Vector2f position;
-        Matrix4f transform;
+        Transform transform;
     }
 
     public static final int BEZIER_LINE_DIVISIONS = 24;
@@ -74,10 +75,14 @@ public class Line2D extends GameObject {
         float angle = Math.acos(cosAngle);
 //        System.out.println("angle degrees ="+Math.toDegrees(angle));
 
-        e.transform = new Matrix4f().identity()
-                .translate(e.position.x,e.position.y,0f)
-                .rotateZ(angle)
-                .scale(width,e.length.length(),0f);
+        e.transform = new Transform();
+        e.transform.setTranslation(e.position);
+        e.transform.setRotation(0,0,angle);
+        e.transform.setScaling(new Vector2f(width,e.length.length()));
+//        e.transform = new Matrix4f().identity()
+//                .translate(e.position.x,e.position.y,0f)
+//                .rotateZ(angle)
+//                .scale(width,e.length.length(),0f);
 
         return e;
     }
@@ -97,7 +102,7 @@ public class Line2D extends GameObject {
         for (int i = 0; i < data.size(); i++) {
             Data e = data.get(i);
             material.color.get(i*4,colors);
-            e.transform.get(i*16,transforms);
+            e.transform.getWorldMatrix().get(i*16,transforms);
         }
 
         material.use()
@@ -132,7 +137,7 @@ public class Line2D extends GameObject {
         return points;
     }
 
-    private float easeInOutCubic(float x){
+    private static float easeInOutCubic(float x){
         return x < 0.5 ? 4 * x * x * x : (float) (1 - java.lang.Math.pow(-2 * x + 2, 3) / 2);
     }
 
