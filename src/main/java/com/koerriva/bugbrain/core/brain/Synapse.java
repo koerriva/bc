@@ -11,8 +11,6 @@ public class Synapse extends Cell{
     public Synapse(Neural neural,Vector2f position, Vector2f size) {
         super(position, size, new Vector4f(baseColor));
         this.neural = neural;
-        this.global.identity()
-                .translate(position.x,position.y,0f).scale(size.x,size.y,0f);
         cells.put(this.id,this);
     }
 

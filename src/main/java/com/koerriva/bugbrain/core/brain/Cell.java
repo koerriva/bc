@@ -1,5 +1,6 @@
 package com.koerriva.bugbrain.core.brain;
 
+import com.koerriva.bugbrain.engine.scene.Transform;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -17,8 +18,7 @@ public abstract class Cell{
     protected final Vector2f position;
     protected final Vector2f size;
     public final Vector4f color;
-    public final Matrix4f global = new Matrix4f();
-    public final Matrix4f local = new Matrix4f();
+    public final Transform transform = new Transform();
 
     protected float ttl = 0;
     protected boolean isActive = false;
@@ -29,23 +29,14 @@ public abstract class Cell{
         this.size = size;
         this.color = color;
         this.id = counter.incrementAndGet();
-        this.global.identity().translate(position.x,position.y,0f)
-                .scale(size.x,size.y,0f);
-    }
 
-    private void updateTransform(){
-        this.global.identity().translate(position.x,position.y,0f)
-                .scale(size.x,size.y,0f);
+        this.transform.setTranslation(position);
+        this.transform.setScaling(size);
     }
 
     public void setPosition(Vector2f position){
         this.position.set(position);
-        updateTransform();
-    }
-
-    public void translate(Vector2f offset){
-        this.position.add(offset);
-        updateTransform();
+        this.transform.setTranslation(position);
     }
 
     private final Vector2f offset = new Vector2f();

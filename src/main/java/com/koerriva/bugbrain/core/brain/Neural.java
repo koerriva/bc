@@ -14,8 +14,6 @@ public class Neural extends Cell{
 
     public Neural(Vector2f position, Vector2f size) {
         super(position, size, new Vector4f(baseColor));
-        this.global.identity()
-                .translate(position.x, position.y, 0f).scale(size.x, size.y, 0f);
         cells.put(this.id, this);
     }
 

@@ -29,7 +29,7 @@ public class Brain extends GameObject {
     private final Map<Integer,Neural> neurals = new HashMap<>();
     private final Map<Integer,Muscle> muscles = new HashMap<>();
     private final Map<Integer,Synapse> synapses = new HashMap<>();
-    private final LinkNode root = LinkNode.root();
+    private final CellLink root = CellLink.create();
 
     private final Matrix4f transform = new Matrix4f().identity();
 
@@ -76,7 +76,7 @@ public class Brain extends GameObject {
         if(cell instanceof Muscle){
             muscles.remove(cell.id);
         }
-        Set<Integer> cells = LinkNode.remove(cell);
+        Set<Integer> cells = CellLink.remove(cell);
         Cell.removeAll(cells);
     }
 
@@ -91,10 +91,10 @@ public class Brain extends GameObject {
         synapses.put(synapse.id,synapse);
         neural.useSynapse(synapse.id,angel);
 
-        LinkNode.get(input).link(LinkNode.get(synapse));
-        LinkNode.get(synapse).link(LinkNode.get(neural));
+        CellLink.get(input).link(CellLink.get(synapse));
+        CellLink.get(synapse).link(CellLink.get(neural));
 
-        root.link(LinkNode.get(input));
+        root.link(CellLink.get(input));
     }
 
     public void link(Neural from,Neural to){
@@ -108,12 +108,12 @@ public class Brain extends GameObject {
         synapses.put(synapse.id,synapse);
         to.useSynapse(synapse.id,angel);
 
-        LinkNode.get(from).link(LinkNode.get(synapse));
-        LinkNode.get(synapse).link(LinkNode.get(to));
+        CellLink.get(from).link(CellLink.get(synapse));
+        CellLink.get(synapse).link(CellLink.get(to));
     }
 
     public void link(Neural neural,Muscle output){
-        LinkNode.get(neural).link(LinkNode.get(output));
+        CellLink.get(neural).link(CellLink.get(output));
     }
 
     @Override
@@ -140,17 +140,17 @@ public class Brain extends GameObject {
 
     @Override
     public void update(float deltaTime){
-        LinkNode.update(deltaTime);
+        CellLink.update(deltaTime);
         Cell.cells.forEach((id,cell)->cell.update(deltaTime));
     }
 
-    private List<Line2D> render(LinkNode root){
+    private List<Line2D> render(CellLink root){
         ArrayList<Line2D> lines = new ArrayList<>();
-        for (Map.Entry<Integer, LinkNode> entry : root) {
-            LinkNode n = entry.getValue();
+        for (Map.Entry<Integer, CellLink> entry : root) {
+            CellLink n = entry.getValue();
             if(n.getType()==0)continue;
             Cell from = Cell.get(n.getId());
-            for(LinkNode output:n.getOutput()){
+            for(CellLink output:n.getOutput()){
                 Cell to = Cell.get(output.getId());
                 Line2D line = new Line2D(from.position, to.position, 5, new Vector4f(0.8f, 0.8f, 0.8f, 1f));
                 lines.add(line);
@@ -184,7 +184,7 @@ public class Brain extends GameObject {
         for (Map.Entry<Integer, Cell> entry:Cell.cells.entrySet()){
             Cell e = entry.getValue();
             e.color.get(idx*4,colorData);
-            e.global.get(idx*16,modelData);
+            e.transform.getWorldMatrix().get(idx*16,modelData);
             idx++;
         }
 

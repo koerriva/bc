@@ -4,25 +4,25 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class LinkNode implements Iterable<Map.Entry<Integer,LinkNode>>{
-    private static final Map<Integer,LinkNode> nodes = new HashMap<>();
-    private static LinkNode root;
+public class CellLink implements Iterable<Map.Entry<Integer, CellLink>>{
+    private static final Map<Integer, CellLink> nodes = new HashMap<>();
+    private static CellLink root;
     private static Random random = new Random(1234);
 
     private final Integer id;
 
-    private final ArrayList<LinkNode> input;
-    private final ArrayList<LinkNode> output;
+    private final ArrayList<CellLink> input;
+    private final ArrayList<CellLink> output;
     private int type=0;
 
-    private LinkNode(){
+    private CellLink(){
         this.id = null;
         this.input = new ArrayList<>();
         this.output = new ArrayList<>();
         root = this;
     }
 
-    private LinkNode(Cell cell){
+    private CellLink(Cell cell){
         this.id = cell.id;
         this.input = new ArrayList<>();
         this.output = new ArrayList<>();
@@ -40,7 +40,7 @@ public class LinkNode implements Iterable<Map.Entry<Integer,LinkNode>>{
         }
     }
 
-    public void link(LinkNode out){
+    public void link(CellLink out){
         if(!this.output.contains(out)){
             this.output.add(out);
             out.input.add(this);
@@ -49,14 +49,14 @@ public class LinkNode implements Iterable<Map.Entry<Integer,LinkNode>>{
 
     private void active(){
         if(type==1){
-            for (LinkNode out:output){
+            for (CellLink out:output){
                 out.active();
             }
         }else if(type>1){
             Integer signals = input.stream().map(node -> Cell.get(node.id).isActive?1:0).reduce(0, Integer::sum);
             Cell.get(id).isActive = signals==input.size();
 
-            for (LinkNode out:output){
+            for (CellLink out:output){
                 out.active();
             }
         }
@@ -70,17 +70,17 @@ public class LinkNode implements Iterable<Map.Entry<Integer,LinkNode>>{
         return nodes.containsKey(cell.id);
     }
 
-    public static LinkNode root(){
-        LinkNode node = new LinkNode();
+    public static CellLink create(){
+        CellLink node = new CellLink();
         nodes.put(node.getId(),node);
         return node;
     }
 
-    public static LinkNode get(Cell cell){
+    public static CellLink get(Cell cell){
         if(nodes.containsKey(cell.id)){
             return nodes.get(cell.id);
         }
-        LinkNode node = new LinkNode(cell);
+        CellLink node = new CellLink(cell);
         nodes.put(node.getId(),node);
         return node;
     }
@@ -90,16 +90,16 @@ public class LinkNode implements Iterable<Map.Entry<Integer,LinkNode>>{
         if(cell==null)return cells;
         cells.add(cell.id);
         if(nodes.containsKey(cell.id)){
-            LinkNode me = nodes.get(cell.id);
+            CellLink me = nodes.get(cell.id);
             if(cell instanceof Neural){
                 //移除 synapse
-                for (LinkNode synapseNode : me.input) {
+                for (CellLink synapseNode : me.input) {
                     synapseNode.input.forEach(node -> node.output.remove(synapseNode));
                     nodes.remove(synapseNode.id);
                     cells.add(synapseNode.id);
                 }
 
-                for (LinkNode node : me.output){
+                for (CellLink node : me.output){
                     if(node.type==2){
                         node.output.forEach(outNode -> outNode.input.remove(node));
                         nodes.remove(node.id);
@@ -116,23 +116,23 @@ public class LinkNode implements Iterable<Map.Entry<Integer,LinkNode>>{
     }
 
     public static void update(float deltaTime){
-        root.output.forEach((LinkNode::active));
+        root.output.forEach((CellLink::active));
     }
 
     public int getType() {
         return type;
     }
 
-    public ArrayList<LinkNode> getInput() {
+    public ArrayList<CellLink> getInput() {
         return input;
     }
 
-    public ArrayList<LinkNode> getOutput() {
+    public ArrayList<CellLink> getOutput() {
         return output;
     }
 
     @Override
-    public @NotNull Iterator<Map.Entry<Integer,LinkNode>> iterator() {
+    public @NotNull Iterator<Map.Entry<Integer, CellLink>> iterator() {
         return nodes.entrySet().iterator();
     }
 
@@ -151,8 +151,8 @@ public class LinkNode implements Iterable<Map.Entry<Integer,LinkNode>>{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LinkNode linkNode = (LinkNode) o;
-        return type == linkNode.type && Objects.equals(id, linkNode.id);
+        CellLink cellLink = (CellLink) o;
+        return type == cellLink.type && Objects.equals(id, cellLink.id);
     }
 
     @Override
