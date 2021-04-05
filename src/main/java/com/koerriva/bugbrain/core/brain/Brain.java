@@ -182,7 +182,7 @@ public class Brain extends GameObject {
         for (Map.Entry<Integer, Cell> entry:Cell.cells.entrySet()){
             Cell e = entry.getValue();
             e.color.get(idx*4,colorData);
-            e.transform.getWorldMatrix().get(idx*16,modelData);
+            e.getWorldTransform().getWorldMatrix().get(idx*16,modelData);
             idx++;
         }
 

@@ -1,5 +1,6 @@
 package com.koerriva.bugbrain.core.brain;
 
+import com.koerriva.bugbrain.engine.scene.Transform;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
@@ -13,6 +14,8 @@ public class Neural extends Cell{
 
     private final HashMap<Integer,Integer> holes = new HashMap<>();
     private final HashMap<Integer,Synapse> synapses = new HashMap<>();
+
+    private final Transform worldTransform = new Transform();
 
     public Neural(Vector2f position, Vector2f size) {
         super(position, size, new Vector4f(baseColor));
@@ -41,5 +44,12 @@ public class Neural extends Cell{
         }else {
             color.set(baseColor);
         }
+    }
+
+    @Override
+    public Transform getWorldTransform() {
+        this.worldTransform.setTranslation(position);
+        this.worldTransform.setScaling(size);
+        return worldTransform;
     }
 }

@@ -1,5 +1,6 @@
 package com.koerriva.bugbrain.core.brain;
 
+import com.koerriva.bugbrain.engine.scene.Transform;
 import org.joml.Math;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -14,11 +15,14 @@ public class Synapse extends Cell{
     private final Neural neural;
     private final Vector2f localPosition;
 
+    private final Transform worldTransform = new Transform();
+
     public Synapse(Neural neural,Vector2f size, int angle) {
         super(new Vector2f(neural.position), size, new Vector4f(baseColor));
 
         this.neural = neural;
         this.localPosition = getCirclePos(size.x/2,angle);
+        this.position.add(this.localPosition);
         neural.useSynapse(this,angle);
         cells.put(this.id,this);
     }
@@ -29,6 +33,14 @@ public class Synapse extends Cell{
         }else {
             color.set(baseColor);
         }
+    }
+
+    @Override
+    public Transform getWorldTransform() {
+        neural.position.add(this.localPosition,this.position);
+        this.worldTransform.setTranslation(position);
+        this.worldTransform.setScaling(size);
+        return worldTransform;
     }
 
     private Vector2f getCirclePos(Vector2f r0,float r,float angle){

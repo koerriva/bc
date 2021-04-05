@@ -1,5 +1,6 @@
 package com.koerriva.bugbrain.core.brain;
 
+import com.koerriva.bugbrain.engine.scene.Transform;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
@@ -10,6 +11,8 @@ public class Vision extends Cell{
     private final float activeFrequency;
     private float activeSignal = 0;
     private float lastActiveTime = 0;
+
+    private final Transform worldTransform = new Transform();
 
     public Vision(Vector2f position, Vector2f size,float frequency) {
         super(position, size, new Vector4f(baseColor));
@@ -37,5 +40,12 @@ public class Vision extends Cell{
         }else {
             color.set(baseColor);
         }
+    }
+
+    @Override
+    public Transform getWorldTransform() {
+        this.worldTransform.setTranslation(position);
+        this.worldTransform.setScaling(size);
+        return worldTransform;
     }
 }
