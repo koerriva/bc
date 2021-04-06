@@ -3,7 +3,6 @@ package com.koerriva.bugbrain.core.brain;
 import com.koerriva.bugbrain.engine.scene.Transform;
 import org.joml.Math;
 import org.joml.Vector2f;
-import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import static org.joml.Math.PI;
@@ -21,7 +20,7 @@ public class Synapse extends Cell{
         super(new Vector2f(neural.position), size, new Vector4f(baseColor));
 
         this.neural = neural;
-        this.localPosition = getCirclePos(size.x/2,angle);
+        this.localPosition = getCirclePos(neural.size.x/2,angle);
         this.position.add(this.localPosition);
         neural.useSynapse(this,angle);
         cells.put(this.id,this);
