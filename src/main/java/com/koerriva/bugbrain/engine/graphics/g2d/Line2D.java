@@ -22,7 +22,7 @@ public class Line2D extends GameObject {
         Transform transform;
     }
 
-    public static final int BEZIER_LINE_DIVISIONS = 24;
+    public static final int BEZIER_LINE_DIVISIONS = 30;
     public final float width;
 
     public final Vector2f startPoint;
@@ -127,7 +127,7 @@ public class Line2D extends GameObject {
     }
 
     public static Vector2f[] getBezierPoints2D(Vector2f startPos,Vector2f endPos){
-        Vector2f[] points = new Vector2f[BEZIER_LINE_DIVISIONS+1];
+        Vector2f[] points = new Vector2f[BEZIER_LINE_DIVISIONS+2];
         Vector2f previous = new Vector2f(startPos);
         points[0]=new Vector2f(startPos);
         for (int i = 1; i <= BEZIER_LINE_DIVISIONS; i++)
@@ -141,11 +141,8 @@ public class Line2D extends GameObject {
             points[i]=current;
             previous.set(current);
         }
+        points[BEZIER_LINE_DIVISIONS+1] = new Vector2f(endPos);
         return points;
-    }
-
-    private static float easeInOutCubic(float x){
-        return x < 0.5 ? 4 * x * x * x : (float) (1 - java.lang.Math.pow(-2 * x + 2, 3) / 2);
     }
 
     private static float EaseCubicInOut(float t, float b, float c, float d)
