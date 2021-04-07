@@ -141,6 +141,8 @@ dependencies {
 
 //    compile 'org.jxta.platform:jxta:2.3.6'
 
+    compile 'com.typesafe.akka:akka-actor_2.11:2.5.19'
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
