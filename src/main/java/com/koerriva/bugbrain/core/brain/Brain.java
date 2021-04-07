@@ -130,8 +130,10 @@ public class Brain extends GameObject {
                             LinkedFrom = (Neural) e;
                         }
                         if(LinkedStage==1){
-                            LinkedStage=2;
-                            LinkedTo = (Neural) e;
+                            if(e.id!=LinkedFrom.id){
+                                LinkedStage=2;
+                                LinkedTo = (Neural) e;
+                            }
                         }
                         if(LinkedStage==2){
                             link(LinkedFrom,LinkedTo);
