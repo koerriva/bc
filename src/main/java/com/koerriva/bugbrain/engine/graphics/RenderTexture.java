@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL30C.*;
 
 public class RenderTexture {
     private final Integer fbo;
-    private final Integer texture;
+    private final Texture texture;
     private final Integer rbo;
     public final Integer width,height;
 
@@ -15,14 +15,8 @@ public class RenderTexture {
         fbo = glGenFramebuffers();
         glBindFramebuffer(GL_FRAMEBUFFER,fbo);
 
-        texture = glGenTextures();
-        glBindTexture(GL_TEXTURE_2D,texture);
-        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_INT,0);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-        glBindTexture(GL_TEXTURE_2D,0);
-
-        glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,texture,0);
+        texture = Texture.createRenderTexture(width,height);
+        glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,texture.id,0);
 
         rbo = glGenRenderbuffers();
         glBindRenderbuffer(GL_RENDERBUFFER, rbo);
@@ -47,6 +41,6 @@ public class RenderTexture {
     }
 
     public Texture getTexture(){
-        return Texture.create(texture,width,height);
+        return texture;
     }
 }

@@ -29,6 +29,10 @@ public class Texture {
         this.height = height;
     }
 
+    public void delete(){
+        glDeleteTextures(id);
+    }
+
     public static Texture background(Vector2f size) {
         int width = (int) size.x;
         int height = (int) size.y;
@@ -68,8 +72,15 @@ public class Texture {
         return load(width,height,data);
     }
 
-    public static Texture create(Integer texture, Integer width, Integer height) {
-        return new Texture(texture,width,height);
+    public static Texture createRenderTexture(Integer width, Integer height) {
+        int id = glGenTextures();
+        Texture texture = new Texture(id, width, height);
+        glBindTexture(GL_TEXTURE_2D,texture.id);
+        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_INT,0);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        glBindTexture(GL_TEXTURE_2D,0);
+        return texture;
     }
 
     public void bind(){
