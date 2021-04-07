@@ -60,7 +60,7 @@ public class NanovgGUI implements GUI {
         }
         Demo.renderGraph(ctx,5,50,fpsGraph);
 
-        Demo.drawLabel(ctx, InputManager.mouse.toString(),5,80,100,35);
+//        Demo.drawLabel(ctx, InputManager.mouse.toString(),5,80,100,35);
 
         nvgEndFrame(ctx);
 
