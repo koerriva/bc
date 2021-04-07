@@ -5,6 +5,7 @@ import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -72,6 +73,26 @@ public class Texture {
         return load(width,height,data);
     }
 
+    public static Texture blank(Vector2f size) {
+        int width = (int) size.x;
+        int height = (int) size.y;
+        byte[] buffer = new byte[width*height*4];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int idx = (y*width+x)*4;
+                buffer[idx] = (byte) (0);
+                buffer[idx+1] = (byte) (0);
+                buffer[idx+2] = (byte) (0);
+                buffer[idx+3] = (byte) (255);
+            }
+        }
+
+        ByteBuffer data = MemoryUtil.memAlloc(width*height*4);
+        data.put(buffer);
+        data.flip();
+        return load(width,height,data);
+    }
+
     public static Texture createRenderTexture(Integer width, Integer height) {
         int id = glGenTextures();
         Texture texture = new Texture(id, width, height);
@@ -127,5 +148,12 @@ public class Texture {
             glDeleteTextures(texture.id);
             iterator.remove();
         }
+    }
+
+    public void swapBuffers(ByteBuffer data) {
+        glBindTexture(GL_TEXTURE_2D,id);
+        glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+        glTexImage2D(GL_TEXTURE_2D, 0, Internal_Format, width, height, 0, Image_Format, GL_UNSIGNED_BYTE,data);
+        glBindTexture(GL_TEXTURE_2D,0);
     }
 }

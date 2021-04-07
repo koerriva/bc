@@ -52,16 +52,18 @@ public class RenderTarget extends GameObject {
 
     public void draw(SpriteRenderer renderer){
         renderTexture.bind();
-        glViewport(0,0,renderTexture.width,renderTexture.height);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        renderer.newFrame(renderTexture.width,renderTexture.height);
 
         for (GameObject gameobject : renderList) {
             renderer.draw(gameobject);
         }
 
         renderTexture.unbind();
+    }
+
+    public void draw(RaytracingRenderer renderer){
+        renderer.newFrame(renderTexture.getTexture());
+        renderer.draw();
     }
 
     @Override

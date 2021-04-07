@@ -15,6 +15,7 @@ public class GameLevel {
     private final ArrayList<GameObject> objects = new ArrayList<>();
     private final static Random random = new Random();
     private Viewport minimap;
+    private RenderTarget realWorld;
 
     public static GameLevel load(int width,int height){
         long t = System.currentTimeMillis();
@@ -50,11 +51,14 @@ public class GameLevel {
         t = System.currentTimeMillis()-t;
         System.out.printf("Level load![%d]ms\n",t);
 
-        level.minimap = new Viewport(new Vector2f(300f,200f),new Vector2f(200),new RenderTexture(800,600));
+        level.minimap = new Viewport(new Vector2f(300f,200f),new Vector2f(100),new RenderTexture(800,600));
         for (GameObject o: level.objects) {
             level.minimap.add(o);
         }
         level.objects.add(level.minimap);
+
+        level.realWorld = new RenderTarget(new Vector2f(0),new Vector2f(400),new RenderTexture(800,600));
+        level.objects.add(level.realWorld);
         return level;
     }
 
@@ -66,11 +70,16 @@ public class GameLevel {
         objects.forEach(obj-> obj.update(window.frameTime));
     }
 
-    public void draw(Window window, SpriteRenderer renderer){
-        minimap.draw(renderer);
+    public void draw(Window window, SpriteRenderer renderer, RaytracingRenderer raytracingRenderer){
+        realWorld.draw(raytracingRenderer);
 
-        renderer.newFrame(window);
-        objects.forEach(renderer::draw);
+        renderer.newFrame(window.size.frameBufferWidth,window.size.frameBufferHeight);
+        renderer.draw(realWorld);
+
+//        minimap.draw(renderer);
+//
+//        renderer.newFrame(window.size.frameBufferWidth,window.size.frameBufferHeight);
+//        objects.forEach(renderer::draw);
     }
 
     public boolean isCompleted(){

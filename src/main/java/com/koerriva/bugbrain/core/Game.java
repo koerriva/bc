@@ -1,6 +1,7 @@
 package com.koerriva.bugbrain.core;
 
 import com.koerriva.bugbrain.engine.audio.AudioManager;
+import com.koerriva.bugbrain.engine.graphics.RaytracingRenderer;
 import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
 import com.koerriva.bugbrain.engine.graphics.g2d.SpriteRenderer;
 import com.koerriva.bugbrain.engine.gui.GUI;
@@ -16,6 +17,7 @@ public class Game {
     private GameState state;
     private GameLevel level;
     private SpriteRenderer spriteRenderer;
+    private RaytracingRenderer raytracingRenderer;
     private final Window window;
     private final GUI gui;
     private final Camera2D camera;
@@ -25,6 +27,7 @@ public class Game {
         this.gui = new NanovgGUI();
         this.camera = new Camera2D(window);
         this.spriteRenderer = new SpriteRenderer(camera);
+        this.raytracingRenderer = new RaytracingRenderer(camera);
     }
 
     public void init() throws Exception {
@@ -79,7 +82,7 @@ public class Game {
     }
 
     private void render(){
-        level.draw(window,spriteRenderer);
+        level.draw(window,spriteRenderer, raytracingRenderer);
         gui.render(window);
         window.update();
     }

@@ -1,6 +1,7 @@
 package com.koerriva.bugbrain.engine.graphics;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
 
@@ -44,6 +45,10 @@ public class Material {
 
     public static Material from(RenderTexture renderTexture,Shader shader){
         return new Material(shader,renderTexture.getTexture(),new Vector4f(1f));
+    }
+
+    public static Material from(Shader shader, Vector2f size){
+        return new Material(shader,Texture.blank(size),new Vector4f(1f));
     }
 
     public static Material from(Texture texture,Shader shader){
