@@ -114,15 +114,32 @@ public class Brain extends GameObject {
         return transform;
     }
 
+    private int LinkedStage = 0;
+    private Neural LinkedFrom;
+    private Neural LinkedTo;
     @Override
     public void input(Window window) {
         Vector2f mWPos = InputManager.mouse.getWorld();
-        Vector2f offset = InputManager.mouse.getWorldOffset();
         for (Map.Entry<Integer, Cell> entry:Cell.cells.entrySet()){
             Cell e = entry.getValue();
             if(e.isInSide(mWPos)){
                 if(InputManager.isDrag()){
-                    e.setPosition(mWPos);
+                    if(e instanceof Neural && e.isInEdge(mWPos)){
+                        if(LinkedStage==0){
+                            LinkedStage=1;
+                            LinkedFrom = (Neural) e;
+                        }
+                        if(LinkedStage==1){
+                            LinkedStage=2;
+                            LinkedTo = (Neural) e;
+                        }
+                        if(LinkedStage==2){
+                            link(LinkedFrom,LinkedTo);
+                            LinkedStage=0;
+                        }
+                    }else {
+                        e.setPosition(mWPos);
+                    }
                     InputManager.dragHandled();
                 }
             }
