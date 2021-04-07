@@ -27,10 +27,10 @@ switch (OperatingSystem.current()) {
 application {
     mainClassName = 'com.koerriva.bugbrain.BrainEditor'
     if(OperatingSystem.current()==OperatingSystem.MAC_OS){
-        applicationDefaultJvmArgs = ['-XstartOnFirstThread','-Dfile.encoding=UTF-8']
+        applicationDefaultJvmArgs = ['-XstartOnFirstThread','-Dfile.encoding=UTF-8','-XX:+UseZGC']
     }
     if(OperatingSystem.current()==OperatingSystem.WINDOWS){
-        applicationDefaultJvmArgs = ['-Dfile.encoding=UTF-8']
+        applicationDefaultJvmArgs = ['-Dfile.encoding=UTF-8','-XX:+UseZGC']
     }
 }
 
