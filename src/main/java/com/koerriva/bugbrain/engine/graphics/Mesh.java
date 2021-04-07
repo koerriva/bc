@@ -68,16 +68,16 @@ public class Mesh {
         }
         float[] vertices = {
                 // 位置
-                -0.5f, 0.5f,
                 -0.5f, -0.5f,
-                0.5f, -0.5f,
+                -0.5f, 0.5f,
                 0.5f, 0.5f,
+                0.5f, -0.5f,
         };
         float[] texCoords = {
                 // 纹理
-                0.0f, 0.0f,
+                0.0f, 0.0f,//左下角
                 0.0f, 1.0f,
-                1.0f, 1.0f,
+                1.0f, 1.0f,//右上角
                 1.0f, 0.0f
         };
         int[] indices = {
