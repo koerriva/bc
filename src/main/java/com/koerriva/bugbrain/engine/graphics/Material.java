@@ -39,7 +39,7 @@ public class Material {
     }
 
     public static Material from(RenderTexture renderTexture){
-        return new Material(Shader.load("hud"),renderTexture.getTexture(),new Vector4f(1f));
+        return new Material(Shader.load("base"),renderTexture.getTexture(),new Vector4f(1f));
     }
 
     public static Material from(RenderTexture renderTexture,Shader shader){
