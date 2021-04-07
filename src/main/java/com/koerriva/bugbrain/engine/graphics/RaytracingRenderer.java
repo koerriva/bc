@@ -40,11 +40,23 @@ public class RaytracingRenderer {
     }
 
     private void drawBackground(){
-        for (int i = 0; i < width * height; i++) {
-            frameBuffer[i*4] = (byte)255;
-            frameBuffer[i*4+1] = (byte)122;
-            frameBuffer[i*4+2] = (byte)255;
-            frameBuffer[i*4+3] = (byte)255;
+        for (int j = height-1; j >=0; j--) {
+            for (int i = 0; i < width; i++) {
+                float r = i*1.0f/width;
+                float g = j*1.0f/height;
+                float b = 0.2f;
+
+                byte ir = (byte) (255.99*r);
+                byte ig = (byte) (255.99*g);
+                byte ib = (byte) (255.99*b);
+
+                int idx = (j*width+i)*4;
+
+                frameBuffer[idx] = ir;
+                frameBuffer[idx+1] = ig;
+                frameBuffer[idx+2] = ib;
+                frameBuffer[idx+3] = (byte)255;
+            }
         }
     }
 

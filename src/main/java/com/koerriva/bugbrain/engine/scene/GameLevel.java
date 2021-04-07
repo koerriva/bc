@@ -57,7 +57,7 @@ public class GameLevel {
         }
         level.objects.add(level.minimap);
 
-        level.realWorld = new RenderTarget(new Vector2f(0),new Vector2f(400),new RenderTexture(800,600));
+        level.realWorld = new RenderTarget(new Vector2f(0),new Vector2f(400,200),new RenderTexture(200,100));
         level.objects.add(level.realWorld);
         return level;
     }

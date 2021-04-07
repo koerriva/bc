@@ -125,20 +125,20 @@ public class Brain extends GameObject {
             if(e.isInSide(mWPos)){
                 if(InputManager.isDrag()){
                     if(e instanceof Neural && e.isInEdge(mWPos)){
-                        if(LinkedStage==0){
-                            LinkedStage=1;
-                            LinkedFrom = (Neural) e;
-                        }
-                        if(LinkedStage==1){
-                            if(e.id!=LinkedFrom.id){
-                                LinkedStage=2;
-                                LinkedTo = (Neural) e;
-                            }
-                        }
-                        if(LinkedStage==2){
-                            link(LinkedFrom,LinkedTo);
-                            LinkedStage=0;
-                        }
+//                        if(LinkedStage==0){
+//                            LinkedStage=1;
+//                            LinkedFrom = (Neural) e;
+//                        }
+//                        if(LinkedStage==1){
+//                            if(e.id!=LinkedFrom.id){
+//                                LinkedStage=2;
+//                                LinkedTo = (Neural) e;
+//                            }
+//                        }
+//                        if(LinkedStage==2){
+//                            link(LinkedFrom,LinkedTo);
+//                            LinkedStage=0;
+//                        }
                     }else {
                         e.setPosition(mWPos);
                     }

@@ -152,7 +152,7 @@ public class Texture {
 
     public void swapBuffers(ByteBuffer data) {
         glBindTexture(GL_TEXTURE_2D,id);
-        glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+        glPixelStorei(GL_UNPACK_ALIGNMENT,4);
         glTexImage2D(GL_TEXTURE_2D, 0, Internal_Format, width, height, 0, Image_Format, GL_UNSIGNED_BYTE,data);
         glBindTexture(GL_TEXTURE_2D,0);
     }
