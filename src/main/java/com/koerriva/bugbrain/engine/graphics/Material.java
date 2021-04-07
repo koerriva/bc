@@ -38,6 +38,14 @@ public class Material {
         return new Material(Shader.load("sprite"),texture,new Vector4f(1f));
     }
 
+    public static Material from(RenderTexture renderTexture){
+        return new Material(Shader.load("hud"),renderTexture.getTexture(),new Vector4f(1f));
+    }
+
+    public static Material from(RenderTexture renderTexture,Shader shader){
+        return new Material(shader,renderTexture.getTexture(),new Vector4f(1f));
+    }
+
     public static Material from(Texture texture,Shader shader){
         return new Material(shader,texture,new Vector4f(1f));
     }

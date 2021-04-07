@@ -68,6 +68,10 @@ public class Texture {
         return load(width,height,data);
     }
 
+    public static Texture create(Integer texture, Integer width, Integer height) {
+        return new Texture(texture,width,height);
+    }
+
     public void bind(){
         glBindTexture(GL_TEXTURE_2D,id);
     }

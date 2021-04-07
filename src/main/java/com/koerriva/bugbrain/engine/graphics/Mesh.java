@@ -88,7 +88,7 @@ public class Mesh {
         int vao = glGenVertexArrays();
         glBindVertexArray(vao);
 
-        Mesh mesh = new Mesh("quad", vao, vertices, texCoords, indices);
+        Mesh mesh = new Mesh(name, vao, vertices, texCoords, indices);
 
         for (int i = 0; i < 4; i++) {
             mesh.vbo[i] = glGenBuffers();

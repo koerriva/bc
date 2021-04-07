@@ -1,14 +1,11 @@
 package com.koerriva.bugbrain.engine.scene;
 
-import com.koerriva.bugbrain.engine.graphics.Window;
+import com.koerriva.bugbrain.engine.graphics.*;
 import com.koerriva.bugbrain.core.brain.Brain;
 import com.koerriva.bugbrain.core.brain.Muscle;
 import com.koerriva.bugbrain.core.brain.Neural;
 import com.koerriva.bugbrain.core.brain.Vision;
-import com.koerriva.bugbrain.engine.graphics.Material;
-import com.koerriva.bugbrain.engine.graphics.Particle;
 import com.koerriva.bugbrain.engine.graphics.g2d.SpriteRenderer;
-import com.koerriva.bugbrain.engine.graphics.Texture;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;
@@ -17,6 +14,7 @@ import java.util.Random;
 public class GameLevel {
     private final ArrayList<GameObject> objects = new ArrayList<>();
     private final static Random random = new Random();
+    private Viewport minimap;
 
     public static GameLevel load(int width,int height){
         long t = System.currentTimeMillis();
@@ -51,6 +49,12 @@ public class GameLevel {
 
         t = System.currentTimeMillis()-t;
         System.out.printf("Level load![%d]ms\n",t);
+
+        level.minimap = new Viewport(new Vector2f(300f,200f),new Vector2f(200),new RenderTexture(800,600));
+        for (GameObject o: level.objects) {
+            level.minimap.add(o);
+        }
+        level.objects.add(level.minimap);
         return level;
     }
 
@@ -63,6 +67,8 @@ public class GameLevel {
     }
 
     public void draw(Window window, SpriteRenderer renderer){
+        minimap.draw(renderer);
+
         renderer.newFrame(window);
         objects.forEach(renderer::draw);
     }

@@ -1,5 +1,6 @@
 package com.koerriva.bugbrain.engine.graphics;
 
+import com.koerriva.bugbrain.engine.input.InputManager;
 import com.koerriva.bugbrain.engine.scene.GameObject;
 import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
 import com.koerriva.bugbrain.engine.scene.Transform;
@@ -39,9 +40,6 @@ public class Particle extends GameObject {
         this.batchSize = batchSize;
         this.data = new ArrayList<>();
 
-        this.worldTransform.setTranslation(position);
-        this.worldTransform.setScaling(size);
-
         random.setSeed(System.currentTimeMillis());
         System.out.println("init particle!");
     }
@@ -80,12 +78,14 @@ public class Particle extends GameObject {
 
     @Override
     public Transform getWorldTransform() {
-        return null;
+        this.worldTransform.setTranslation(position);
+        this.worldTransform.setScaling(size);
+        return worldTransform;
     }
 
     @Override
     public void input(Window window) {
-//        position.set(InputManager.mouse.getWorld());
+        position.set(InputManager.mouse.getWorld());
     }
 
     public void update(float deltaTime){
