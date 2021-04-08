@@ -134,7 +134,7 @@ vec3 getColor(Ray ray,HitList world){
 
     float t = (normalize(ray.direction).y+1.)*0.5;
     vec3 color = (1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
-    return sqrt(scale*color);
+    return scale*color;
 }
 
 void main()
@@ -155,5 +155,6 @@ void main()
     Ray ray = getRay(camera,TexCoords);
     vec3 rayColor = getColor(ray,world);
 
-    color = vec4(rayColor,1.);
+    //gamma 补偿
+    color = vec4(sqrt(rayColor),1.);
 }
