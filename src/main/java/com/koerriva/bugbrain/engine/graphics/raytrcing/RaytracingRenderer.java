@@ -1,8 +1,7 @@
 package com.koerriva.bugbrain.engine.graphics.raytrcing;
 
 import com.koerriva.bugbrain.engine.graphics.Texture;
-import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
-import org.joml.Math;
+import org.joml.Random;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
 
@@ -10,13 +9,15 @@ import java.nio.ByteBuffer;
 
 public class RaytracingRenderer {
     private static final int MAX_BUFFER_SIZE = 1920*1080*4;
-    private final Camera2D camera;
+    private final RayCamera camera;
     private byte[] frameBuffer = new byte[MAX_BUFFER_SIZE];
     private int bufferLength = 0;
     private int width,height;
     private Texture canvas;
 
-    public RaytracingRenderer(Camera2D camera) {
+    private Random random = new Random();
+
+    public RaytracingRenderer(RayCamera camera) {
         this.camera = camera;
     }
 
@@ -34,7 +35,7 @@ public class RaytracingRenderer {
     }
 
     public void draw() {
-        drawBackground();
+        render();
         ByteBuffer data = MemoryUtil.memAlloc(width*height*4);
         data.put(frameBuffer,0,bufferLength);
         data.flip();
@@ -42,31 +43,25 @@ public class RaytracingRenderer {
         MemoryUtil.memFree(data);
     }
 
-    private Vector3f lowerLeftCorner = new Vector3f(-2f,-1f,-1f);
-    private Vector3f horizontal = new Vector3f(4f,0,0);
-    private Vector3f vertical = new Vector3f(0,2,0);
-    private Vector3f origin = new Vector3f(0,0,0);
+    private final HitableList world = new HitableList();
 
-    private HitableList world = new HitableList();
-
-    private void drawBackground(){
+    private void render(){
         world.clear();
         world.add(new Sphere(new Vector3f(0,0,-1),0.5f));
         world.add(new Sphere(new Vector3f(0,-100.5f,-1),100f));
+        int ns = 4;
 
         for (int j = height-1; j >=0; j--) {
             for (int i = 0; i < width; i++) {
-                float u = i*1.0f/width;
-                float v = j*1.0f/height;
-                Vector3f u_dir = new Vector3f();
-                horizontal.mul(u,u_dir);
-                Vector3f v_dir = new Vector3f();
-                vertical.mul(v,v_dir);
-                Vector3f dir = new Vector3f();
-                dir.add(lowerLeftCorner).add(u_dir).add(v_dir);
+                Vector3f color = new Vector3f();
+                for (int k = 0; k < ns; k++) {
+                    float u = (i*1.0f + k*random.nextFloat()/ns)/width;
+                    float v = (j*1.0f + k*random.nextFloat()/ns)/height;
+                    Ray ray = camera.getRay(u,v);
+                    color.add(getColor(ray,world));
+                }
 
-                Ray ray = new Ray(origin,dir);
-                Vector3f color = getColor(ray,world);
+                color.div(ns);
 
                 byte ir = (byte) (255.99*color.x);
                 byte ig = (byte) (255.99*color.y);

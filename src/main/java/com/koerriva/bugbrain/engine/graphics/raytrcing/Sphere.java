@@ -17,11 +17,11 @@ public class Sphere extends Hitable{
         HitInfo hitInfo = new HitInfo();
         Vector3f oc = new Vector3f(ray.getOrigin()).sub(center);
         float a = ray.getDirection().dot(ray.getDirection());
-        float b = oc.dot(ray.getDirection());
+        float b = 2f*oc.dot(ray.getDirection());
         float c = oc.dot(oc) - radius*radius;
-        float discriminant = b*b - a*c;
+        float discriminant = b*b - 4*a*c;
         if(discriminant>0){
-            float tmp = (-b-Math.sqrt(discriminant))/a;
+            float tmp = (-b-Math.sqrt(discriminant))/a*0.5f;
             if(tmp<max_t&&tmp>min_t){
                 hitInfo.hit = true;
                 hitInfo.t = tmp;
@@ -30,7 +30,7 @@ public class Sphere extends Hitable{
                 hitInfo.point.sub(center,hitInfo.normal).div(radius);
                 return hitInfo;
             }
-            tmp = (-b+Math.sqrt(discriminant))/a;
+            tmp = (-b+Math.sqrt(discriminant))/a*0.5f;
             if(tmp<max_t&&tmp>min_t){
                 hitInfo.hit = true;
                 hitInfo.t = tmp;
