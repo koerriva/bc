@@ -6,10 +6,9 @@ out vec2 TexCoords;
 
 uniform mat4 P;
 uniform mat4 M;
-uniform mat4 V;
 
 void main()
 {
     TexCoords = texCoords;
-    gl_Position = P * V * M * vec4(vertex, 0.0, 1.0);
+    gl_Position = P * M * vec4(vertex, 0.0, 1.0);
 }

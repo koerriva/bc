@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public class RenderTarget extends GameObject {
     private final RenderTexture renderTexture;
     private final Transform worldTransform;
-
     private final ArrayList<GameObject> renderList = new ArrayList<>();
 
     public RenderTarget(Vector2f position, Vector2f size,RenderTexture renderTexture) {
@@ -21,8 +20,8 @@ public class RenderTarget extends GameObject {
         this.worldTransform = new Transform();
     }
 
-    public RenderTarget(Vector2f position, Vector2f size,RenderTexture renderTexture,boolean viewport) {
-        super(position, size, Material.from(renderTexture,Shader.load(viewport?"hud":"base")));
+    public RenderTarget(Vector2f position, Vector2f size,RenderTexture renderTexture,Shader shader) {
+        super(position, size, Material.from(renderTexture,shader));
         this.renderTexture = renderTexture;
         this.worldTransform = new Transform();
     }

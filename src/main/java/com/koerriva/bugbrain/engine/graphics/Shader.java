@@ -21,9 +21,11 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 public class Shader {
     private static final HashMap<String,Shader> resource = new HashMap<>();
     public final int id;
+    public final String name;
 
-    private Shader(int id){
+    private Shader(int id, String name){
         this.id = id;
+        this.name = name;
     }
 
     public void use(){
@@ -73,7 +75,7 @@ public class Shader {
         glUniform4f(location,value.x,value.y,value.z,value.w);
     }
 
-    public static Shader load(String vert,String frag) {
+    public static Shader load(String name,String vert,String frag) {
         int sVertex, sFragment;
 
         sVertex = glCreateShader(GL_VERTEX_SHADER);
@@ -99,7 +101,7 @@ public class Shader {
 
         // Shader Program
         int id = glCreateProgram();
-        Shader shader = new Shader(id);
+        Shader shader = new Shader(id, name);
 
         glAttachShader(shader.id, sVertex);
         glAttachShader(shader.id, sFragment);
@@ -133,7 +135,7 @@ public class Shader {
 
         String vert = StandardCharsets.UTF_8.decode(vertData).toString();
         String frag = StandardCharsets.UTF_8.decode(fragData).toString();
-        Shader shader = load(vert,frag);
+        Shader shader = load(name,vert,frag);
         resource.put(name,shader);
         return  shader;
     }

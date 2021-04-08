@@ -1,6 +1,7 @@
 package com.koerriva.bugbrain.engine.graphics.raytrcing;
 
 import com.koerriva.bugbrain.engine.graphics.Window;
+import org.joml.Math;
 import org.joml.Vector3f;
 
 public class RayCamera {

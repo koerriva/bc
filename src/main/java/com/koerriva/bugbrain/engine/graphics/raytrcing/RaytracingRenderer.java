@@ -36,7 +36,7 @@ public class RaytracingRenderer {
     }
 
     public void draw() {
-        render();
+        fill();
         ByteBuffer data = MemoryUtil.memAlloc(width*height*4);
         data.put(frameBuffer,0,bufferLength);
         data.flip();
@@ -46,7 +46,16 @@ public class RaytracingRenderer {
 
     private final HitableList world = new HitableList();
 
-    private void render(){
+    private void fill(){
+        for (int i = 0; i < width * height; i++) {
+            frameBuffer[i*4]=0;
+            frameBuffer[i*4+1]=0;
+            frameBuffer[i*4+2]=0;
+            frameBuffer[i*4+3]= (byte) 255;
+        }
+    }
+
+    private void trace(){
         world.clear();
         world.add(new Sphere(new Vector3f(0,0,-1),0.5f));
         world.add(new Sphere(new Vector3f(0,-100.5f,-1),100f));

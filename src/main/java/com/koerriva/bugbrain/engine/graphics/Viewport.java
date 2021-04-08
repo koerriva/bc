@@ -4,8 +4,8 @@ import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
 import org.joml.Vector2f;
 
 public class Viewport extends RenderTarget {
-    public Viewport(Vector2f position, Vector2f size, RenderTexture renderTexture) {
-        super(position, size, renderTexture,true);
+    public Viewport(Vector2f position, Vector2f size, RenderTexture renderTexture,Shader shader) {
+        super(position, size, renderTexture,shader);
     }
 
     @Override

@@ -14,7 +14,6 @@ import java.util.Random;
 
 public class GameLevel {
     private final ArrayList<GameObject> objects = new ArrayList<>();
-    private final static Random random = new Random();
     private Viewport minimap;
     private RenderTarget realWorld;
 
@@ -52,13 +51,13 @@ public class GameLevel {
         t = System.currentTimeMillis()-t;
         System.out.printf("Level load![%d]ms\n",t);
 
-        level.minimap = new Viewport(new Vector2f(300f,200f),new Vector2f(100),new RenderTexture(800,600));
+        level.minimap = new Viewport(new Vector2f(300f,200f),new Vector2f(100),new RenderTexture(800,600),Shader.load("hud"));
         for (GameObject o: level.objects) {
             level.minimap.add(o);
         }
         level.objects.add(level.minimap);
 
-        level.realWorld = new Viewport(new Vector2f(0),new Vector2f(800,400),new RenderTexture(200,100));
+        level.realWorld = new Viewport(new Vector2f(0),new Vector2f(800,400),new RenderTexture(200,100),Shader.load("raytracing"));
         level.objects.add(level.realWorld);
         return level;
     }
