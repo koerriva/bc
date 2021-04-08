@@ -13,6 +13,14 @@ public class Ray {
         this.point = new Vector3f(origin);
     }
 
+    public void setOrigin(Vector3f origin){
+        this.origin.set(origin);
+    }
+
+    public void setDirection(Vector3f direction){
+        this.direction.set(direction);
+    }
+
     public Ray(float ox,float oy,float oz,float dx,float dy,float dz){
         this.origin = new Vector3f(ox,oy,oz);
         this.direction = new Vector3f(dx,dy,dz);

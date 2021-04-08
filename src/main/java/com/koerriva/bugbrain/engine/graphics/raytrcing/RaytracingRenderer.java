@@ -1,6 +1,7 @@
 package com.koerriva.bugbrain.engine.graphics.raytrcing;
 
 import com.koerriva.bugbrain.engine.graphics.Texture;
+import org.joml.Math;
 import org.joml.Random;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
@@ -49,23 +50,28 @@ public class RaytracingRenderer {
         world.clear();
         world.add(new Sphere(new Vector3f(0,0,-1),0.5f));
         world.add(new Sphere(new Vector3f(0,-100.5f,-1),100f));
-        int ns = 4;
+        int ns = 8;
 
         for (int j = height-1; j >=0; j--) {
             for (int i = 0; i < width; i++) {
                 Vector3f color = new Vector3f();
                 for (int k = 0; k < ns; k++) {
-                    float u = (i*1.0f + k*random.nextFloat()/ns)/width;
-                    float v = (j*1.0f + k*random.nextFloat()/ns)/height;
+//                    float u = (i*1.0f + random.nextFloat())/width;
+//                    float v = (j*1.0f + random.nextFloat())/height;
+                    float u = (i*1.0f + k*1.0f/ns)/width;
+                    float v = (j*1.0f + k*1.0f/ns)/height;
+//                    float u = (i*1.0f + k*random.nextFloat()/ns)/width;
+//                    float v = (j*1.0f + k*random.nextFloat()/ns)/height;
+
                     Ray ray = camera.getRay(u,v);
                     color.add(getColor(ray,world));
                 }
 
                 color.div(ns);
 
-                byte ir = (byte) (255.99*color.x);
-                byte ig = (byte) (255.99*color.y);
-                byte ib = (byte) (255.99*color.z);
+                byte ir = (byte) (255.99*Math.sqrt(color.x));
+                byte ig = (byte) (255.99*Math.sqrt(color.y));
+                byte ib = (byte) (255.99*Math.sqrt(color.z));
 
                 int idx = (j*width+i)*4;
 
@@ -80,17 +86,15 @@ public class RaytracingRenderer {
     private Vector3f getColor(Ray ray,Hitable world){
         Hitable.HitInfo info = world.hit(ray,0f,1000f);
         if(info.hit){
-            Vector3f normal = info.normal;
-            return normal.add(1,1,1).mul(0.5f);
+            Vector3f target = new Vector3f();
+            target.add(info.point).add(info.normal).add(Sphere.getUnitRandomPoint());
+            return getColor(new Ray(info.point,target.sub(info.point)),world).mul(0.5f);
         }else{
             Vector3f unitDirection = new Vector3f(ray.getDirection()).normalize();
             float t = 0.5f*(unitDirection.y+1.0f);
             Vector3f startColor = new Vector3f(1);
             Vector3f endColor = new Vector3f(0.5f,0.7f,1f);
             return startColor.mul(1-t).add(endColor.mul(t));
-//        float r = Math.lerp(1,0.5f,t);
-//        float g = Math.lerp(1,0.7f,t);
-//        return unitDirection.set(r,g,1f);
         }
     }
 

@@ -43,4 +43,21 @@ public class Sphere extends Hitable{
         hitInfo.hit = false;
         return hitInfo;
     }
+
+    private static final Vector3f point = new Vector3f();
+    public static Vector3f getUnitRandomPoint(){
+        do {
+            float rand1 = (float) Math.random();
+            float rand2 = (float) Math.random();
+            float rand3 = (float) Math.random();
+             point.set(rand1,rand2,rand3).mul(2.0f).sub(1,1,1);
+        }while (point.dot(point)>=1.0);
+        return point;
+    }
+
+    public static double drand48() {
+        long seed = System.currentTimeMillis();
+        seed = (0x5DEECE66DL * seed + 0xBL) & ((1L << 48) - 1);
+        return (double)seed / (1L << 48);
+    }
 }
