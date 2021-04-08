@@ -1,7 +1,7 @@
 package com.koerriva.bugbrain.core;
 
 import com.koerriva.bugbrain.engine.audio.AudioManager;
-import com.koerriva.bugbrain.engine.graphics.RaytracingRenderer;
+import com.koerriva.bugbrain.engine.graphics.raytrcing.RaytracingRenderer;
 import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
 import com.koerriva.bugbrain.engine.graphics.g2d.SpriteRenderer;
 import com.koerriva.bugbrain.engine.gui.GUI;

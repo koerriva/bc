@@ -6,6 +6,7 @@ import com.koerriva.bugbrain.core.brain.Muscle;
 import com.koerriva.bugbrain.core.brain.Neural;
 import com.koerriva.bugbrain.core.brain.Vision;
 import com.koerriva.bugbrain.engine.graphics.g2d.SpriteRenderer;
+import com.koerriva.bugbrain.engine.graphics.raytrcing.RaytracingRenderer;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class GameLevel {
         }
         level.objects.add(level.minimap);
 
-        level.realWorld = new Viewport(new Vector2f(0),new Vector2f(800*2,600*2),new RenderTexture(200,100));
+        level.realWorld = new Viewport(new Vector2f(0),new Vector2f(800,400),new RenderTexture(200,100));
         level.objects.add(level.realWorld);
         return level;
     }

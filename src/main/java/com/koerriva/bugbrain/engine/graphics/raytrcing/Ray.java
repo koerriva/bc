@@ -1,4 +1,4 @@
-package com.koerriva.bugbrain.engine.graphics;
+package com.koerriva.bugbrain.engine.graphics.raytrcing;
 
 import org.joml.Vector3f;
 
@@ -20,7 +20,8 @@ public class Ray {
     }
 
     public final Vector3f pointAt(float t){
-        return origin.add(direction.mul(t,point),point);
+        origin.add(direction.mul(t,point),point);
+        return point;
     }
 
     public final Vector3f getDirection() {

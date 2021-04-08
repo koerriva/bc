@@ -1,8 +1,8 @@
-package com.koerriva.bugbrain.engine.graphics;
+package com.koerriva.bugbrain.engine.graphics.raytrcing;
 
+import com.koerriva.bugbrain.engine.graphics.Texture;
 import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
 import org.joml.Math;
-import org.joml.RayAabIntersection;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
 
@@ -46,7 +46,14 @@ public class RaytracingRenderer {
     private Vector3f horizontal = new Vector3f(4f,0,0);
     private Vector3f vertical = new Vector3f(0,2,0);
     private Vector3f origin = new Vector3f(0,0,0);
+
+    private HitableList world = new HitableList();
+
     private void drawBackground(){
+        world.clear();
+        world.add(new Sphere(new Vector3f(0,0,-1),0.5f));
+        world.add(new Sphere(new Vector3f(0,-100.5f,-1),100f));
+
         for (int j = height-1; j >=0; j--) {
             for (int i = 0; i < width; i++) {
                 float u = i*1.0f/width;
@@ -56,11 +63,10 @@ public class RaytracingRenderer {
                 Vector3f v_dir = new Vector3f();
                 vertical.mul(v,v_dir);
                 Vector3f dir = new Vector3f();
-
                 dir.add(lowerLeftCorner).add(u_dir).add(v_dir);
 
                 Ray ray = new Ray(origin,dir);
-                Vector3f color = getColor(ray);
+                Vector3f color = getColor(ray,world);
 
                 byte ir = (byte) (255.99*color.x);
                 byte ig = (byte) (255.99*color.y);
@@ -76,31 +82,26 @@ public class RaytracingRenderer {
         }
     }
 
-    private boolean hitSphere(Vector3f center,float radius,Ray ray){
-        Vector3f oc = new Vector3f(ray.getOrigin()).sub(center);
-        float a = ray.getDirection().dot(ray.getDirection());
-        float b = 2f * oc.dot(ray.getDirection());
-        float c = oc.dot(oc) - radius*radius;
-        float discriminant = b*b - 4*a*c;
-        return discriminant>0;
-    }
-
-    private Vector3f getColor(Ray ray){
-        if(hitSphere(new Vector3f(0,0,-1),0.5f,ray)){
-            return new Vector3f(1,0,0);
-        }
-        Vector3f unitDirection = new Vector3f(ray.getDirection()).normalize();
-        float t = 0.5f*(unitDirection.y+1.0f);
-        Vector3f startColor = new Vector3f(1);
-        Vector3f endColor = new Vector3f(0.5f,0.7f,1f);
-        return startColor.mul(1-t).add(endColor.mul(t));
+    private Vector3f getColor(Ray ray,Hitable world){
+        Hitable.HitInfo info = world.hit(ray,0f,1000f);
+        if(info.hit){
+            Vector3f normal = info.normal;
+            return normal.add(1,1,1).mul(0.5f);
+        }else{
+            Vector3f unitDirection = new Vector3f(ray.getDirection()).normalize();
+            float t = 0.5f*(unitDirection.y+1.0f);
+            Vector3f startColor = new Vector3f(1);
+            Vector3f endColor = new Vector3f(0.5f,0.7f,1f);
+            return startColor.mul(1-t).add(endColor.mul(t));
 //        float r = Math.lerp(1,0.5f,t);
 //        float g = Math.lerp(1,0.7f,t);
 //        return unitDirection.set(r,g,1f);
+        }
     }
 
     private void viewport(int width,int height) {
         clear();
+        if(width==this.width&&height==this.height)return;
         this.width = width;
         this.height = height;
         bufferLength = width*height*4;

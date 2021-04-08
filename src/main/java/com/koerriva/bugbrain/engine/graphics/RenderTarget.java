@@ -2,14 +2,12 @@ package com.koerriva.bugbrain.engine.graphics;
 
 import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
 import com.koerriva.bugbrain.engine.graphics.g2d.SpriteRenderer;
+import com.koerriva.bugbrain.engine.graphics.raytrcing.RaytracingRenderer;
 import com.koerriva.bugbrain.engine.scene.GameObject;
 import com.koerriva.bugbrain.engine.scene.Transform;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;
-
-import static org.lwjgl.opengl.GL11C.*;
-import static org.lwjgl.opengl.GL11C.GL_ONE_MINUS_SRC_ALPHA;
 
 public class RenderTarget extends GameObject {
     private final RenderTexture renderTexture;
