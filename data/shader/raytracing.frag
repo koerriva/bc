@@ -120,7 +120,7 @@ bool hit_world(HitList world,Ray ray,float min_t,float max_t,out HitRecord rec){
 vec3 getColor(Ray ray,HitList world){
     HitRecord rec;
     int hitCount = 0;
-    bool isHit = hit_world(world,ray,0,1000,rec);
+    bool isHit = hit_world(world,ray,0.001,1000,rec);
 
     vec3 scale = vec3(1);
     while(isHit && hitCount<50){
@@ -129,7 +129,7 @@ vec3 getColor(Ray ray,HitList world){
         ray = Ray(rec.p,rec.normal+random_in_unit_sphere());
 
         scale *= 0.5;
-        isHit = hit_world(world,ray,0,1000,rec);
+        isHit = hit_world(world,ray,0.001,1000,rec);
     }
 
     float t = (normalize(ray.direction).y+1.)*0.5;
@@ -152,7 +152,10 @@ void main()
 
     randState = TexCoords;
 
-    Ray ray = getRay(camera,TexCoords);
+    float u = float(TexCoords.x*800 + rand2D()) / 800.;
+    float v = float(TexCoords.y*400 + rand2D()) / 400.;
+
+    Ray ray = getRay(camera,vec2(u,v));
     vec3 rayColor = getColor(ray,world);
 
     //gamma 补偿
