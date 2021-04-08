@@ -57,7 +57,7 @@ public class GameLevel {
         }
         level.objects.add(level.minimap);
 
-        level.realWorld = new Viewport(new Vector2f(0),new Vector2f(800,400),new RenderTexture(200,100),Shader.load("raytracing"));
+        level.realWorld = new Viewport(new Vector2f(0),new Vector2f(800,400),new RenderTexture(800,400),Shader.load("raytracing"));
         level.objects.add(level.realWorld);
         return level;
     }
@@ -71,11 +71,10 @@ public class GameLevel {
     }
 
     public void draw(Window window, SpriteRenderer renderer, RaytracingRenderer raytracingRenderer){
-        realWorld.draw(raytracingRenderer);
+//        realWorld.draw(raytracingRenderer);
 
         renderer.newFrame(window.size.frameBufferWidth,window.size.frameBufferHeight);
         renderer.draw(realWorld);
-
 //        minimap.draw(renderer);
 //
 //        renderer.newFrame(window.size.frameBufferWidth,window.size.frameBufferHeight);

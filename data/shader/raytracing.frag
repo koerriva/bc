@@ -1,4 +1,7 @@
 #version 330 core
+
+#define PI 3.141592653589793
+
 in vec2 TexCoords;
 out vec4 color;
 uniform sampler2D texture0;
@@ -32,6 +35,36 @@ struct HitList{
     Sphere sphere[20];
     int size;
 };
+
+float drand48(vec2 co) {
+    return 2 * fract(sin(dot(co.xy, vec2(12.9898,78.233))) * 43758.5453) - 1;
+}
+
+vec2 randState;
+
+float rand2D()
+{
+    randState.x = fract(sin(dot(randState.xy+time, vec2(12.9898, 78.233))) * 43758.5453);
+    randState.y = fract(sin(dot(randState.xy+time, vec2(12.9898, 78.233))) * 43758.5453);;
+
+    return randState.x;
+}
+
+vec3 random_in_unit_sphere()
+{
+    float phi = 2.0 * PI * rand2D();
+    float cosTheta = 2.0 * rand2D() - 1.0;
+    float u = rand2D();
+
+    float theta = acos(cosTheta);
+    float r = pow(u, 1.0 / 3.0);
+
+    float x = r * sin(theta) * cos(phi);
+    float y = r * sin(theta) * sin(phi);
+    float z = r * cos(theta);
+
+    return vec3(x, y, z);
+}
 
 Ray getRay(Camera camera,vec2 uv){
     vec3 origin = camera.origin;
@@ -69,7 +102,7 @@ bool hit_sphere(Sphere sphere,Ray ray,float min_t,float max_t,out HitRecord rec)
     return false;
 }
 
-bool hit(HitList world,Ray ray,float min_t,float max_t,out HitRecord rec){
+bool hit_world(HitList world,Ray ray,float min_t,float max_t,out HitRecord rec){
     HitRecord tmp;
     bool hit_anyting = false;
     float closet_far = max_t;
@@ -86,15 +119,22 @@ bool hit(HitList world,Ray ray,float min_t,float max_t,out HitRecord rec){
 
 vec3 getColor(Ray ray,HitList world){
     HitRecord rec;
-    if(hit(world,ray,0,1000,rec)){
-        return (rec.normal+1)*0.5;
-    }
-    float t = (normalize(ray.direction).y+1.)*0.5;
-    return mix(vec3(1.),vec3(0.5,0.7,1.),t);
-}
+    int hitCount = 0;
+    bool isHit = hit_world(world,ray,0,1000,rec);
 
-float drand48(vec2 co) {
-    return 2 * fract(sin(dot(co.xy, vec2(12.9898,78.233))) * 43758.5453) - 1;
+    vec3 scale = vec3(1);
+    while(isHit && hitCount<50){
+        hitCount++;
+
+        ray = Ray(rec.p,rec.normal+random_in_unit_sphere());
+
+        scale *= 0.5;
+        isHit = hit_world(world,ray,0,1000,rec);
+    }
+
+    float t = (normalize(ray.direction).y+1.)*0.5;
+    vec3 color = (1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
+    return sqrt(scale*color);
 }
 
 void main()
@@ -110,8 +150,10 @@ void main()
     world.sphere[0] = Sphere(vec3(0,0,-1),0.5);
     world.sphere[1] = Sphere(vec3(0,-100.5,-1),100);
 
-    Ray ray = getRay(camera,TexCoords);
+    randState = TexCoords;
 
+    Ray ray = getRay(camera,TexCoords);
     vec3 rayColor = getColor(ray,world);
+
     color = vec4(rayColor,1.);
 }

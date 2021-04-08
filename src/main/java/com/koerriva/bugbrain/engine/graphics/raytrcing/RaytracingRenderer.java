@@ -35,13 +35,16 @@ public class RaytracingRenderer {
 
     }
 
+    private boolean update = true;
     public void draw() {
-        fill();
-        ByteBuffer data = MemoryUtil.memAlloc(width*height*4);
-        data.put(frameBuffer,0,bufferLength);
-        data.flip();
-        canvas.swapBuffers(data);
-        MemoryUtil.memFree(data);
+//        if(update)return;
+//        fill();
+//        ByteBuffer data = MemoryUtil.memAlloc(width*height*4);
+//        data.put(frameBuffer,0,bufferLength);
+//        data.flip();
+//        canvas.swapBuffers(data);
+//        MemoryUtil.memFree(data);
+//        update = true;
     }
 
     private final HitableList world = new HitableList();
