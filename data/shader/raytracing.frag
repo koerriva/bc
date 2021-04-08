@@ -1,6 +1,9 @@
 #version 330 core
 
 #define PI 3.141592653589793
+#define DIFFUSE 1
+#define METAL   2
+#define GLASS   3
 
 in vec2 TexCoords;
 out vec4 color;
@@ -20,15 +23,23 @@ struct Ray{
     vec3 direction;
 };
 
+struct Material{
+    int type;
+    vec3 albedo;
+    float fuzz;
+};
+
 struct Sphere{
     vec3 center;
     float r;
+    Material material;
 };
 
 struct HitRecord{
     float t;
     vec3 p;
     vec3 normal;
+    Material material;
 };
 
 struct HitList{
@@ -50,6 +61,11 @@ float rand2D()
     return randState.x;
 }
 
+bool near_zero(vec3 v){
+    float s = 1e-8;
+    return (abs(v.x)<s)&&(abs(v.y)<s)&&(abs(v.y)<s);
+}
+
 vec3 random_in_unit_sphere()
 {
     float phi = 2.0 * PI * rand2D();
@@ -68,7 +84,7 @@ vec3 random_in_unit_sphere()
 
 vec3 random_in_unit_hemisphere(vec3 normal){
     vec3 in_unit_sphere = random_in_unit_sphere();
-    if(dot(in_unit_sphere,normal)>0.001){
+    if(dot(in_unit_sphere,normal)>0.0){
         return in_unit_sphere;
     }else{
         return -in_unit_sphere;
@@ -85,6 +101,30 @@ vec3 getRayPoint(Ray ray,float t){
     return ray.origin+ray.direction*t;
 }
 
+bool scatter(inout Ray ray,HitRecord rec){
+    int materialType = rec.material.type;
+    if(materialType==DIFFUSE){
+        vec3 scatter_direction = random_in_unit_hemisphere(rec.normal);
+        if(near_zero(scatter_direction)){
+            scatter_direction = rec.normal;
+        }
+        ray = Ray(rec.p,scatter_direction);
+//        ray = Ray(rec.p,rec.normal+random_in_unit_sphere());
+        return true;
+    }else if(materialType==METAL){
+        vec3 reflected = reflect(ray.direction,rec.normal);
+        float fuzz = rec.material.fuzz > 1.0 ? 1.0 : rec.material.fuzz < 0.0 ? 0.0 : rec.material.fuzz;
+        if(fuzz>0.0){
+            ray = Ray(rec.p,normalize(reflected)+fuzz*random_in_unit_sphere());
+        }else{
+            ray = Ray(rec.p,reflected);
+        }
+        return (dot(ray.direction,rec.normal)>0.0);
+    }else{
+        return false;
+    }
+}
+
 bool hit_sphere(Sphere sphere,Ray ray,float min_t,float max_t,out HitRecord rec){
     vec3 oc = ray.origin-sphere.center;
     float a = dot(ray.direction,ray.direction);
@@ -98,6 +138,7 @@ bool hit_sphere(Sphere sphere,Ray ray,float min_t,float max_t,out HitRecord rec)
             rec.t = t;
             rec.p = getRayPoint(ray,rec.t);
             rec.normal = normalize(rec.p-sphere.center);
+            rec.material = sphere.material;
             return true;
         }
         t = (-b+sqrt(discriminant))/a*0.5;
@@ -105,6 +146,7 @@ bool hit_sphere(Sphere sphere,Ray ray,float min_t,float max_t,out HitRecord rec)
             rec.t = t;
             rec.p = getRayPoint(ray,rec.t);
             rec.normal = normalize(rec.p-sphere.center);
+            rec.material = sphere.material;
             return true;
         }
     }
@@ -136,9 +178,11 @@ vec3 getColor(Ray ray,HitList world){
         hitCount++;
 
 //        ray = Ray(rec.p,rec.normal+random_in_unit_sphere());
-        ray = Ray(rec.p,random_in_unit_hemisphere(rec.normal));
+//        ray = Ray(rec.p,random_in_unit_hemisphere(rec.normal));
+        bool isScatter = scatter(ray,rec);
+        if(!isScatter) return vec3(0);
         //衰减
-        scale *= 0.5;
+        scale *= rec.material.albedo;
         isHit = hit_world(world,ray,0.001,1000,rec);
     }
 
@@ -147,18 +191,33 @@ vec3 getColor(Ray ray,HitList world){
     return scale*color;
 }
 
+vec3 hsb2rgb(vec3 c){
+    vec3 rgb = clamp(abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),
+    6.0)-3.0)-1.0,
+    0.0,
+    1.0 );
+    rgb = rgb*rgb*(3.0-2.0*rgb);
+    return c.z * mix( vec3(1.0), rgb, c.y);
+}
+
+vec3 rgb(int r,int g,int b){
+    return vec3(float(r)/255,float(g)/255,float(r)/255);
+}
+
 void main()
 {
     Camera camera;
-    camera.origin = vec3(0,0,0);
+    camera.origin = vec3(0,abs(sin(time)),0);
     camera.horizontal = vec3(4,0,0);
     camera.vertical = vec3(0,2,0);
     camera.lowerLeftCorner = vec3(-2,-1,-1);
 
     HitList world;
-    world.size=2;
-    world.sphere[0] = Sphere(vec3(0,0,-1),0.5);
-    world.sphere[1] = Sphere(vec3(0,-100.5,-1),100);
+    world.size=4;
+    world.sphere[0] = Sphere(vec3(0,-100.5,-1),100,Material(DIFFUSE,vec3(0.5,0.5,0.5),0.0));
+    world.sphere[1] = Sphere(vec3(0,0,-1),0.5,Material(DIFFUSE,vec3(0.5537532126201208, 0.5414521567205806, 0.7067976503378637),0.0));
+    world.sphere[2] = Sphere(vec3(-1,0,-1),0.5,Material(METAL,vec3(0.5537532126201208, 0.5414521567205806, 0.7067976503378637),0.0));
+    world.sphere[3] = Sphere(vec3(1,0,-1),0.5,Material(DIFFUSE,vec3(0.5537532126201208, 0.5414521567205806, 0.7067976503378637),0.0));
 
     randState = TexCoords;
 
@@ -182,4 +241,5 @@ void main()
 
     //gamma 补偿
     color = vec4(sqrt(rayColor),1.);
+//    color = vec4(rayColor,1.);
 }
