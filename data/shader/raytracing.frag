@@ -66,6 +66,15 @@ vec3 random_in_unit_sphere()
     return vec3(x, y, z);
 }
 
+vec3 random_in_unit_hemisphere(vec3 normal){
+    vec3 in_unit_sphere = random_in_unit_sphere();
+    if(dot(in_unit_sphere,normal)>0.001){
+        return in_unit_sphere;
+    }else{
+        return -in_unit_sphere;
+    }
+}
+
 Ray getRay(Camera camera,vec2 uv){
     vec3 origin = camera.origin;
     vec3 direction = camera.lowerLeftCorner+uv.x*camera.horizontal+uv.y*camera.vertical;
@@ -126,8 +135,9 @@ vec3 getColor(Ray ray,HitList world){
     while(isHit && hitCount<50){
         hitCount++;
 
-        ray = Ray(rec.p,rec.normal+random_in_unit_sphere());
-
+//        ray = Ray(rec.p,rec.normal+random_in_unit_sphere());
+        ray = Ray(rec.p,random_in_unit_hemisphere(rec.normal));
+        //衰减
         scale *= 0.5;
         isHit = hit_world(world,ray,0.001,1000,rec);
     }
@@ -152,11 +162,23 @@ void main()
 
     randState = TexCoords;
 
-    float u = float(TexCoords.x*800 + rand2D()) / 800.;
-    float v = float(TexCoords.y*400 + rand2D()) / 400.;
+    vec3 rayColor = vec3(0);
 
-    Ray ray = getRay(camera,vec2(u,v));
-    vec3 rayColor = getColor(ray,world);
+    int spp = 16;
+    for(int i=0;i<spp;i++){
+        float u = float(TexCoords.x*800 + rand2D()) / 800;
+        float v = float(TexCoords.y*400 + rand2D()) / 400;
+
+//        float u = TexCoords.x + float(i)/float(spp)/799;
+//        float v = TexCoords.y + float(i)/float(spp)/399;
+
+        Ray ray = getRay(camera,vec2(u,v));
+        rayColor += getColor(ray,world);
+    }
+    rayColor /= spp;
+
+//    Ray ray = getRay(camera,TexCoords);
+//    rayColor = getColor(ray,world);
 
     //gamma 补偿
     color = vec4(sqrt(rayColor),1.);
