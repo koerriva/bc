@@ -35,9 +35,9 @@ application {
 }
 
 
-compileKotlin {
-    kotlinOptions.useIR = true
-}
+//compileKotlin {
+//    kotlinOptions.useIR = true
+//}
 
 compileTestJava {
     options.compilerArgs << '-XDignore.symbol.file'

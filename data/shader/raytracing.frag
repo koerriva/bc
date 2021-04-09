@@ -207,7 +207,7 @@ vec3 rgb(int r,int g,int b){
 void main()
 {
     Camera camera;
-    camera.origin = vec3(0,abs(sin(time)),0);
+    camera.origin = vec3(0,0,0);
     camera.horizontal = vec3(4,0,0);
     camera.vertical = vec3(0,2,0);
     camera.lowerLeftCorner = vec3(-2,-1,-1);
@@ -223,14 +223,10 @@ void main()
 
     vec3 rayColor = vec3(0);
 
-    int spp = 16;
+    int spp = 8;
     for(int i=0;i<spp;i++){
         float u = float(TexCoords.x*800 + rand2D()) / 800;
         float v = float(TexCoords.y*400 + rand2D()) / 400;
-
-//        float u = TexCoords.x + float(i)/float(spp)/799;
-//        float v = TexCoords.y + float(i)/float(spp)/399;
-
         Ray ray = getRay(camera,vec2(u,v));
         rayColor += getColor(ray,world);
     }
