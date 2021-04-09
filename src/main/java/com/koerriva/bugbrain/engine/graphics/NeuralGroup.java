@@ -17,7 +17,7 @@ public class NeuralGroup extends GameObject {
 
     public NeuralGroup(Material material,
                        int batchSize, FloatBuffer colorData, FloatBuffer modelData) {
-        super(new Vector2f(0f),new Vector2f(material.texture.width,material.texture.height),material);
+        super(new Vector2f(0f),new Vector2f(material.texture.getWidth(),material.texture.getHeight()),material);
         this.isInstance = true;
         this.batchSize = batchSize;
         this.colorData = colorData;
@@ -43,10 +43,10 @@ public class NeuralGroup extends GameObject {
     }
 
     @Override
-    public void draw(Camera2D camera) {
+    public void draw(Camera camera) {
         material.use()
-                .setProjection(camera.getProjectionMatrix())
-                .setView(camera.getViewMatrix())
+                .setProjection(camera.getProjection())
+                .setView(camera.getView())
                 .setInstance(this.isInstance?1:0)
                 .setTexture();
         mesh.drawBatch(batchSize,colorData,modelData);

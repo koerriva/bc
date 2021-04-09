@@ -112,7 +112,7 @@ public class Particle extends GameObject {
     }
 
     @Override
-    public void draw(Camera2D camera) {
+    public void draw(Camera camera) {
         if(data.size()==0)return;
 
         for (int i = 0; i < data.size(); i++) {
@@ -123,8 +123,8 @@ public class Particle extends GameObject {
 
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         material.use()
-                .setProjection(camera.getProjectionMatrix())
-                .setView(camera.getViewMatrix())
+                .setProjection(camera.getProjection())
+                .setView(camera.getView())
                 .setInstance(this.isInstance?1:0)
                 .setTexture();
         mesh.drawBatch(data.size(),colorData,modelData);

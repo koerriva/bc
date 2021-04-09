@@ -16,7 +16,8 @@ import static org.lwjgl.opengl.GL11C.*;
 public class Texture {
     private static final HashMap<String,Texture> resource = new LinkedHashMap<>();
     public final int id;
-    public final int width,height,channels=4;
+    public final int channels=4;
+    private int width,height;
     private int Internal_Format = GL_RGBA;
     private int Image_Format = GL_RGBA;
     private int Wrap_S = GL_REPEAT;
@@ -28,6 +29,14 @@ public class Texture {
         this.id = id;
         this.width = width;
         this.height = height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public void delete(){
@@ -155,5 +164,19 @@ public class Texture {
         glPixelStorei(GL_UNPACK_ALIGNMENT,4);
         glTexImage2D(GL_TEXTURE_2D, 0, Internal_Format, width, height, 0, Image_Format, GL_UNSIGNED_BYTE,data);
         glBindTexture(GL_TEXTURE_2D,0);
+    }
+
+    public void resize(int width, int height) {
+        if(this.width!=width||this.height!=height){
+            this.width = width;
+            this.height = height;
+            glBindTexture(GL_TEXTURE_2D,id);
+            glTexImage2D(GL_TEXTURE_2D,0,Internal_Format,width,height,0,Image_Format,GL_UNSIGNED_BYTE,0);
+            glBindTexture(GL_TEXTURE_2D,0);
+        }
+    }
+
+    public float getAspect() {
+        return width * 1.0f / height;
     }
 }

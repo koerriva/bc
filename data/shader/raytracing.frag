@@ -18,6 +18,9 @@ struct Camera{
     vec3 vertical;
 };
 
+uniform Camera camera;
+uniform ivec2 viewport;
+
 struct Ray{
     vec3 origin;
     vec3 direction;
@@ -93,7 +96,7 @@ vec3 random_in_unit_hemisphere(vec3 normal){
 
 Ray getRay(Camera camera,vec2 uv){
     vec3 origin = camera.origin;
-    vec3 direction = camera.lowerLeftCorner+uv.x*camera.horizontal+uv.y*camera.vertical;
+    vec3 direction = camera.lowerLeftCorner+uv.x*camera.horizontal+uv.y*camera.vertical-camera.origin;
     return Ray(origin,direction);
 }
 
@@ -206,11 +209,11 @@ vec3 rgb(int r,int g,int b){
 
 void main()
 {
-    Camera camera;
-    camera.origin = vec3(0,0,0);
-    camera.horizontal = vec3(4,0,0);
-    camera.vertical = vec3(0,2,0);
-    camera.lowerLeftCorner = vec3(-2,-1,-1);
+//    Camera camera;
+//    camera.origin = vec3(0,0,0);
+//    camera.horizontal = vec3(4,0,0);
+//    camera.vertical = vec3(0,2,0);
+//    camera.lowerLeftCorner = vec3(-2,-1,-1);
 
     HitList world;
     world.size=4;
@@ -225,8 +228,8 @@ void main()
 
     int spp = 8;
     for(int i=0;i<spp;i++){
-        float u = float(TexCoords.x*800 + rand2D()) / 800;
-        float v = float(TexCoords.y*400 + rand2D()) / 400;
+        float u = float(TexCoords.x*viewport.x + rand2D()) / viewport.x;
+        float v = float(TexCoords.y*viewport.y + rand2D()) / viewport.y;
         Ray ray = getRay(camera,vec2(u,v));
         rayColor += getColor(ray,world);
     }

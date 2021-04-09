@@ -1,12 +1,9 @@
-package com.koerriva.bugbrain.engine.graphics.raytrcing;
+package com.koerriva.bugbrain.engine.graphics.rtx;
 
 import com.koerriva.bugbrain.engine.graphics.Texture;
 import org.joml.Math;
 import org.joml.Random;
 import org.joml.Vector3f;
-import org.lwjgl.system.MemoryUtil;
-
-import java.nio.ByteBuffer;
 
 public class RaytracingRenderer {
     private static final int MAX_BUFFER_SIZE = 1920*1080*4;
@@ -28,7 +25,7 @@ public class RaytracingRenderer {
 
     public void newFrame(Texture texture){
         this.canvas = texture;
-        viewport(texture.width,texture.height);
+        viewport(texture.getWidth(),texture.getHeight());
     }
 
     public void cleanup(){
@@ -110,7 +107,11 @@ public class RaytracingRenderer {
         }
     }
 
-    private void viewport(int width,int height) {
+    public RayCamera getCamera() {
+        return camera;
+    }
+
+    private void viewport(int width, int height) {
         clear();
         if(width==this.width&&height==this.height)return;
         this.width = width;

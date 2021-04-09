@@ -1,9 +1,6 @@
 package com.koerriva.bugbrain.engine.graphics;
 
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import org.joml.*;
 import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;
@@ -63,6 +60,11 @@ public class Shader {
     public void setVec2(String name, Vector2f value) {
         int location = glGetUniformLocation(id,name);
         glUniform2f(location,value.x,value.y);
+    }
+
+    public void setVec2i(String name, Vector2i value){
+        int location = glGetUniformLocation(id,name);
+        glUniform2i(location,value.x,value.y);
     }
 
     public void setVec3(String name, Vector3f value) {

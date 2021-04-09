@@ -1,5 +1,6 @@
 package com.koerriva.bugbrain.engine.graphics.g2d;
 
+import com.koerriva.bugbrain.engine.graphics.Camera;
 import com.koerriva.bugbrain.engine.input.InputManager;
 import com.koerriva.bugbrain.engine.graphics.Window;
 import org.joml.Matrix4f;
@@ -7,7 +8,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-public class Camera2D {
+public class Camera2D extends Camera {
     private final Vector3f eye = new Vector3f(0f,0f,1f);
     private final Vector3f up = new Vector3f(0f,1f,0f);
     private final Vector3f center = new Vector3f(0f);
@@ -27,7 +28,7 @@ public class Camera2D {
         projection.invert(invProjection);
     }
 
-    public final Matrix4f getViewMatrix() {
+    public final Matrix4f getView() {
         return view;
     }
 
@@ -39,7 +40,7 @@ public class Camera2D {
         view.translate(offset.x,offset.y,0f);
     }
 
-    public final Matrix4f getProjectionMatrix(){
+    public final Matrix4f getProjection(){
         projection.identity()
                 .ortho(-window.size.frameBufferWidth/2f,window.size.frameBufferWidth/2f
                         ,-window.size.frameBufferHeight/2f,window.size.frameBufferHeight/2f,

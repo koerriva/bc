@@ -1,4 +1,4 @@
-package com.koerriva.bugbrain.engine.graphics.raytrcing;
+package com.koerriva.bugbrain.engine.graphics.rtx;
 
 import java.util.ArrayList;
 

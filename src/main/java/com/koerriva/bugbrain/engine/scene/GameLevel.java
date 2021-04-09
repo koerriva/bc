@@ -6,16 +6,16 @@ import com.koerriva.bugbrain.core.brain.Muscle;
 import com.koerriva.bugbrain.core.brain.Neural;
 import com.koerriva.bugbrain.core.brain.Vision;
 import com.koerriva.bugbrain.engine.graphics.g2d.SpriteRenderer;
-import com.koerriva.bugbrain.engine.graphics.raytrcing.RaytracingRenderer;
+import com.koerriva.bugbrain.engine.graphics.rtx.RaytracingRenderer;
 import org.joml.Vector2f;
 
+import javax.swing.text.View;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class GameLevel {
     private final ArrayList<GameObject> objects = new ArrayList<>();
     private Viewport minimap;
-    private RenderTarget realWorld;
+    private Viewport realWorld;
 
     public static GameLevel load(int width,int height){
         long t = System.currentTimeMillis();
@@ -57,7 +57,7 @@ public class GameLevel {
         }
         level.objects.add(level.minimap);
 
-        level.realWorld = new Viewport(new Vector2f(0),new Vector2f(800,400),new RenderTexture(800,400),Shader.load("raytracing"));
+        level.realWorld = new Viewport(new Vector2f(0),new Vector2f(800,400),new RenderTexture(400,200),Shader.load("raytracing"));
         level.objects.add(level.realWorld);
         return level;
     }
@@ -71,8 +71,9 @@ public class GameLevel {
     }
 
     public void draw(Window window, SpriteRenderer renderer, RaytracingRenderer raytracingRenderer){
+        realWorld.setViewSize(window.size.frameBufferWidth,window.size.frameBufferHeight);
 //        realWorld.draw(raytracingRenderer);
-
+        realWorld.openRaytracing(raytracingRenderer.getCamera());
         renderer.newFrame(window.size.frameBufferWidth,window.size.frameBufferHeight);
         renderer.draw(realWorld);
 //        minimap.draw(renderer);

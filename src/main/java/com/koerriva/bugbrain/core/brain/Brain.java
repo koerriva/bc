@@ -9,7 +9,6 @@ import com.koerriva.bugbrain.engine.graphics.g2d.Line2D;
 import com.koerriva.bugbrain.engine.input.InputManager;
 import com.koerriva.bugbrain.engine.scene.GameObject;
 import com.koerriva.bugbrain.engine.scene.Transform;
-import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
@@ -177,10 +176,10 @@ public class Brain extends GameObject {
     }
 
     @Override
-    public void draw(Camera2D camera) {
+    public void draw(Camera camera) {
         material.use()
-                .setProjection(camera.getProjectionMatrix())
-                .setView(camera.getViewMatrix())
+                .setProjection(camera.getProjection())
+                .setView(camera.getView())
                 .setModel(transform.getWorldMatrix())
                 .setInstance(0)
                 .setColor()
@@ -206,8 +205,8 @@ public class Brain extends GameObject {
         }
 
         cellMaterial.use()
-                .setProjection(camera.getProjectionMatrix())
-                .setView(camera.getViewMatrix())
+                .setProjection(camera.getProjection())
+                .setView(camera.getView())
                 .setInstance(1)
                 .setTexture();
         cellMesh.drawBatch(batchSize,colorData,modelData);

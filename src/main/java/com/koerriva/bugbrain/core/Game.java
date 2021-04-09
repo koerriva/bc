@@ -1,8 +1,8 @@
 package com.koerriva.bugbrain.core;
 
 import com.koerriva.bugbrain.engine.audio.AudioManager;
-import com.koerriva.bugbrain.engine.graphics.raytrcing.RayCamera;
-import com.koerriva.bugbrain.engine.graphics.raytrcing.RaytracingRenderer;
+import com.koerriva.bugbrain.engine.graphics.rtx.RayCamera;
+import com.koerriva.bugbrain.engine.graphics.rtx.RaytracingRenderer;
 import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
 import com.koerriva.bugbrain.engine.graphics.g2d.SpriteRenderer;
 import com.koerriva.bugbrain.engine.gui.GUI;
@@ -11,6 +11,7 @@ import com.koerriva.bugbrain.engine.scene.GameLevel;
 import com.koerriva.bugbrain.engine.input.InputManager;
 import com.koerriva.bugbrain.engine.graphics.Window;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -73,6 +74,8 @@ public class Game {
         if(InputManager.isDrag()){
             cameraOffset.set(InputManager.mouse.getLocalOffset());
         }
+
+        rayCamera.rotate(new Vector3f(cameraOffset.x,cameraOffset.y,0));
     }
 
     private void update(){

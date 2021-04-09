@@ -1,5 +1,6 @@
 package com.koerriva.bugbrain.engine.graphics.g2d;
 
+import com.koerriva.bugbrain.engine.graphics.Camera;
 import com.koerriva.bugbrain.engine.graphics.Window;
 import com.koerriva.bugbrain.engine.scene.GameObject;
 import com.koerriva.bugbrain.engine.graphics.Material;
@@ -105,7 +106,7 @@ public class Line2D extends GameObject {
     }
 
     @Override
-    public void draw(Camera2D camera) {
+    public void draw(Camera camera) {
         for (int i = 0; i < data.size(); i++) {
             Data e = data.get(i);
             material.color.get(i*4,colors);
@@ -113,8 +114,8 @@ public class Line2D extends GameObject {
         }
 
         material.use()
-                .setProjection(camera.getProjectionMatrix())
-                .setView(camera.getViewMatrix())
+                .setProjection(camera.getProjection())
+                .setView(camera.getView())
                 .setInstance(this.isInstance?1:0)
                 .setTexture();
         mesh.drawBatch(data.size(),colors,transforms);

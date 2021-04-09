@@ -1,10 +1,9 @@
 package com.koerriva.bugbrain.engine.scene;
 
-import com.koerriva.bugbrain.core.brain.Cell;
-import com.koerriva.bugbrain.engine.graphics.Window;
-import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
+import com.koerriva.bugbrain.engine.graphics.Camera;
 import com.koerriva.bugbrain.engine.graphics.Material;
 import com.koerriva.bugbrain.engine.graphics.Mesh;
+import com.koerriva.bugbrain.engine.graphics.Window;
 import org.joml.Vector2f;
 
 import java.util.HashMap;
@@ -40,7 +39,7 @@ public abstract class GameObject {
 
     public abstract void update(float deltaTime);
 
-    public abstract void draw(Camera2D camera);
+    public abstract void draw(Camera camera);
 
     public abstract void cleanup();
 

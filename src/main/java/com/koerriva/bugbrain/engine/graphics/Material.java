@@ -1,7 +1,9 @@
 package com.koerriva.bugbrain.engine.graphics;
 
+import com.koerriva.bugbrain.engine.graphics.rtx.RayCamera;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
+import org.joml.Vector2i;
 import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
 
@@ -95,6 +97,19 @@ public class Material {
 
     public Material setInstance(int instance) {
         shader.setInt("isInstance",instance);
+        return this;
+    }
+
+    public Material setRayCamera(RayCamera camera) {
+        shader.setVec3("camera.origin",camera.getOrigin());
+        shader.setVec3("camera.lowerLeftCorner",camera.getLowerLeftCorner());
+        shader.setVec3("camera.horizontal", camera.getHorizontal());
+        shader.setVec3("camera.vertical",camera.getVertical());
+        return this;
+    }
+
+    public Material setViewport(int width,int height) {
+        shader.setVec2i("viewport",new Vector2i(width,height));
         return this;
     }
 }

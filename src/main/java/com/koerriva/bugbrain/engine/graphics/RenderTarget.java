@@ -1,8 +1,8 @@
 package com.koerriva.bugbrain.engine.graphics;
 
-import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
 import com.koerriva.bugbrain.engine.graphics.g2d.SpriteRenderer;
-import com.koerriva.bugbrain.engine.graphics.raytrcing.RaytracingRenderer;
+import com.koerriva.bugbrain.engine.graphics.rtx.RayCamera;
+import com.koerriva.bugbrain.engine.graphics.rtx.RaytracingRenderer;
 import com.koerriva.bugbrain.engine.scene.GameObject;
 import com.koerriva.bugbrain.engine.scene.Transform;
 import org.joml.Vector2f;
@@ -64,10 +64,10 @@ public class RenderTarget extends GameObject {
     }
 
     @Override
-    public void draw(Camera2D camera) {
+    public void draw(Camera camera) {
         material.use()
-                .setProjection(camera.getProjectionMatrix())
-                .setView(camera.getViewMatrix())
+                .setProjection(camera.getProjection())
+                .setView(camera.getView())
                 .setModel(getWorldTransform().getWorldMatrix())
                 .setColor()
                 .setTexture();
