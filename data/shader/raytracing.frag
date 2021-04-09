@@ -46,7 +46,7 @@ struct HitRecord{
     Material material;
 };
 
-struct HitList{
+struct Scene{
     Sphere sphere[20];
     int size;
 };
@@ -198,7 +198,7 @@ bool hit_sphere(Sphere sphere,Ray ray,float min_t,float max_t,out HitRecord rec)
     return false;
 }
 
-bool hit_world(HitList world,Ray ray,float min_t,float max_t,out HitRecord rec){
+bool hit_world(Scene world,Ray ray,float min_t,float max_t,out HitRecord rec){
     HitRecord tmp;
     bool hit_anyting = false;
     float closet_far = max_t;
@@ -213,7 +213,7 @@ bool hit_world(HitList world,Ray ray,float min_t,float max_t,out HitRecord rec){
     return hit_anyting;
 }
 
-vec3 getColor(Ray ray,HitList world){
+vec3 getColor(Ray ray,Scene world){
     HitRecord rec;
     int hitCount = 0;
     bool isHit = hit_world(world,ray,0.001,1000,rec);
@@ -257,9 +257,9 @@ void main()
 //    camera.vertical = vec3(0,2,0);
 //    camera.lowerLeftCorner = vec3(-2,-1,-1);
 
-    HitList world;
+    Scene world;
     world.size=13;
-    world.sphere[0]=Sphere(vec3(-1.7767739124623123, 0.2, -1.2816898536829258), 0.2, Material(METAL, vec3(0.8583803237598104, 0.20326924410262914, 0.6395126962804198), 0.0, 1.0));
+    world.sphere[0]=Sphere(vec3(-1.7767739124623123, 0.5, -1.2816898536829258), 0.5, Material(GLASS, vec3(0.8583803237598104, 0.20326924410262914, 0.6395126962804198), 0.0, 1.0));
     world.sphere[1]=Sphere(vec3(-1.7305723691670227, 0.2, 0.3951602921593084), 0.2, Material(METAL, vec3(0.31312642687469494, 0.7515889461590635, 0.28340848312832545), 0.0, 1.0));
     world.sphere[2]=Sphere(vec3(-0.27591460582523974, 0.2, -1.8354952437012457), 0.2, Material(METAL, vec3(0.6198719656801521, 0.556026705514626, 0.648322615823812), 0.0, 1.0));
     world.sphere[3]=Sphere(vec3(-0.9494116695035437, 0.2, 1.1626594958242502), 0.2, Material(DIFFUSE, vec3(0.5537532126201208, 0.5414521567205806, 0.7067976503378637), 0.0, 1.0));
