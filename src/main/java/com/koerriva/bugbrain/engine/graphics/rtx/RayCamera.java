@@ -18,7 +18,7 @@ public class RayCamera extends Camera {
     private final Vector3f eye = new Vector3f(-2f,2f,1f);
     private final Vector3f up = new Vector3f(0f,1f,0f);
     private final Vector3f center = new Vector3f(0f,0,-1f);
-    private float vfov = 45;
+    private float vfov = 90;
     private float aspect = 2;
 
     private final Matrix4f view = new Matrix4f();

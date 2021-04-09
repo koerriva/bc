@@ -30,6 +30,7 @@ struct Material{
     int type;
     vec3 albedo;
     float fuzz;
+    float ref_idx;
 };
 
 struct Sphere{
@@ -104,6 +105,12 @@ vec3 getRayPoint(Ray ray,float t){
     return ray.origin+ray.direction*t;
 }
 
+float schlick(float cosine, float ref_idx) {
+    float r0 = (1.0 - ref_idx) / (1.0 + ref_idx);
+    r0 = r0 * r0;
+    return r0 + (1.0 - r0) * pow((1.0 - cosine), 5.0);
+}
+
 bool scatter(inout Ray ray,HitRecord rec){
     int materialType = rec.material.type;
     if(materialType==DIFFUSE){
@@ -123,6 +130,41 @@ bool scatter(inout Ray ray,HitRecord rec){
             ray = Ray(rec.p,reflected);
         }
         return (dot(ray.direction,rec.normal)>0.0);
+    }else if(materialType==GLASS){
+        vec3 outward_normal;
+        vec3 reflected = reflect(ray.direction, rec.normal);
+        float ni_over_nt;
+        float reflected_prob;
+        float cosine;
+        float ref_idx = rec.material.ref_idx;
+
+        if (dot(ray.direction, rec.normal) > 0.0) {
+            outward_normal = - rec.normal;
+            ni_over_nt = rec.material.ref_idx;
+            cosine = ref_idx * dot(normalize(ray.direction), rec.normal);
+        } else {
+            outward_normal = rec.normal;
+            ni_over_nt = 1.0 / rec.material.ref_idx;
+            cosine = -ref_idx * dot(normalize(ray.direction), rec.normal);
+        }
+
+        vec3 refracted = refract(normalize(ray.direction), outward_normal, ni_over_nt);
+
+        if (refracted.x != 0.0 && refracted.y != 0.0 && refracted.z != 0.0) {
+            reflected_prob = schlick(cosine, ref_idx);
+            // ray = Ray(rec.p, refracted);
+        } else {
+            reflected_prob  = 1.0;
+            // ray = Ray(rec.p, reflected);
+        }
+
+        if (rand2D() < reflected_prob) {
+            ray = Ray(rec.p, reflected);
+        } else {
+            ray = Ray(rec.p, refracted);
+        }
+
+        return true;
     }else{
         return false;
     }
@@ -216,11 +258,20 @@ void main()
 //    camera.lowerLeftCorner = vec3(-2,-1,-1);
 
     HitList world;
-    world.size=4;
-    world.sphere[0] = Sphere(vec3(0,-100.5,-1),100,Material(DIFFUSE,vec3(0.5,0.5,0.5),0.0));
-    world.sphere[1] = Sphere(vec3(0,0,-1),0.5,Material(DIFFUSE,vec3(0.5537532126201208, 0.5414521567205806, 0.7067976503378637),0.0));
-    world.sphere[2] = Sphere(vec3(-1,0,-1),0.5,Material(METAL,vec3(0.5537532126201208, 0.5414521567205806, 0.7067976503378637),0.0));
-    world.sphere[3] = Sphere(vec3(1,0,-1),0.5,Material(DIFFUSE,vec3(0.5537532126201208, 0.5414521567205806, 0.7067976503378637),0.0));
+    world.size=13;
+    world.sphere[0]=Sphere(vec3(-1.7767739124623123, 0.2, -1.2816898536829258), 0.2, Material(METAL, vec3(0.8583803237598104, 0.20326924410262914, 0.6395126962804198), 0.0, 1.0));
+    world.sphere[1]=Sphere(vec3(-1.7305723691670227, 0.2, 0.3951602921593084), 0.2, Material(METAL, vec3(0.31312642687469494, 0.7515889461590635, 0.28340848312832545), 0.0, 1.0));
+    world.sphere[2]=Sphere(vec3(-0.27591460582523974, 0.2, -1.8354952437012457), 0.2, Material(METAL, vec3(0.6198719656801521, 0.556026705514626, 0.648322615823812), 0.0, 1.0));
+    world.sphere[3]=Sphere(vec3(-0.9494116695035437, 0.2, 1.1626594958242502), 0.2, Material(DIFFUSE, vec3(0.5537532126201208, 0.5414521567205806, 0.7067976503378637), 0.0, 1.0));
+    world.sphere[4]=Sphere(vec3(0.34406388813179173, 0.2, -1.3459160365634482), 0.2, Material(METAL, vec3(0.6672582591732812, 0.5969480095581641, 0.06122936189796979), 0.0, 1.0));
+    world.sphere[5]=Sphere(vec3(0.8645388174599531, 0.2, -0.6721135055961149), 0.2, Material(DIFFUSE, vec3(0.8325486386586358, 0.6111814610006208, 0.062379505844914585), 0.0, 1.0));
+    world.sphere[6]=Sphere(vec3(0.26709016789165435, 0.2, 0.8643855722533954), 0.2, Material(METAL, vec3(0.9525838044784114, 0.055228586680290626, 0.9361120234051548), 0.0, 1.0));
+    world.sphere[7]=Sphere(vec3(1.248775787035965, 0.2, -1.2530472200991882), 0.2, Material(METAL, vec3(0.5406328826474636, 0.7101046078344466, 0.2631417124753519), 0.0, 1.0));
+    world.sphere[8]=Sphere(vec3(1.0832295826801093, 0.2, -0.8585841079725383), 0.2, Material(METAL, vec3(0.18963476844985272, 0.15177197074252846, 0.4885690417252797), 0.0, 1.0));
+    world.sphere[9]=Sphere(vec3(1.2052948984262064, 0.2, 0.7685004648640211), 0.2, Material(METAL, vec3(0.2841868868425741, 0.8423035464421846, 0.6406487327665245), 0.0, 1.0));
+    world.sphere[10]=Sphere(vec3(-4.0, 1.0, 0.8), 1.0, Material(DIFFUSE, vec3(0.4, 0.2, 0.1), 0.0, 1.0));
+    world.sphere[11]=Sphere(vec3(0.0, 1.0, 0.0), 1.0, Material(METAL, vec3(1.0, 1.0, 1.0), 0.0, 1.0));
+    world.sphere[12]=Sphere(vec3(0.0, -1000.0, 0.0), 1000.0, Material(METAL, vec3(0.5, 0.5, 0.5), 0.3, 1.0));
 
     randState = TexCoords;
 
