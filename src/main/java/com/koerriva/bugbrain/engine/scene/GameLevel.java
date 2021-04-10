@@ -6,8 +6,11 @@ import com.koerriva.bugbrain.core.brain.Muscle;
 import com.koerriva.bugbrain.core.brain.Neural;
 import com.koerriva.bugbrain.core.brain.Vision;
 import com.koerriva.bugbrain.engine.graphics.g2d.SpriteRenderer;
+import com.koerriva.bugbrain.engine.graphics.rtx.Mat;
+import com.koerriva.bugbrain.engine.graphics.rtx.Model;
 import com.koerriva.bugbrain.engine.graphics.rtx.RaytracingRenderer;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 import javax.swing.text.View;
 import java.util.ArrayList;
@@ -59,6 +62,13 @@ public class GameLevel {
 
         level.realWorld = new Viewport(new Vector2f(0),new Vector2f(800,400),new RenderTexture(400,200),Shader.load("raytracing"));
         level.objects.add(level.realWorld);
+
+        Model sphere1 = Model.sphere(new Vector3f(0,-1000.5f,0),1000f, Mat.diffuse(new Vector3f(0.5f,0.5f,0.5f)));
+        Model sphere2 = Model.sphere(new Vector3f(0,1f,0),1f, Mat.metal(0.2f));
+        Model sphere3 = Model.sphere(new Vector3f(-4f,1,0.8f),1f,Mat.diffuse(new Vector3f(0.4f,0.2f,0.1f)));
+        level.realWorld.addRaytracingModel(sphere1);
+        level.realWorld.addRaytracingModel(sphere2);
+        level.realWorld.addRaytracingModel(sphere3);
         return level;
     }
 

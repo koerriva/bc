@@ -1,14 +1,20 @@
 package com.koerriva.bugbrain.engine.graphics;
 
+import com.koerriva.bugbrain.engine.graphics.rtx.Model;
 import com.koerriva.bugbrain.engine.graphics.rtx.RayCamera;
+import org.bouncycastle.crypto.engines.SM2Engine;
 import org.joml.Vector2f;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Viewport extends RenderTarget {
     private RayCamera rayCamera;
     private boolean raytracing = false;
+    private List<Model> raytracingItemList = new ArrayList<>();
     private final Texture texture;
 
-    private float aspect = 0;
+    private float aspect;
 
     public Viewport(Vector2f position, Vector2f size, RenderTexture renderTexture,Shader shader) {
         super(position, size, renderTexture,shader);
@@ -20,6 +26,10 @@ public class Viewport extends RenderTarget {
     public void openRaytracing(RayCamera rayCamera){
         this.rayCamera = rayCamera;
         raytracing = true;
+    }
+
+    public void addRaytracingModel(Model model){
+        raytracingItemList.add(model);
     }
 
     public void setViewSize(int width,int height){
@@ -40,8 +50,9 @@ public class Viewport extends RenderTarget {
                 .setModel(getWorldTransform().getWorldMatrix())
                 .setTexture();
         if(raytracing){
-            material.setRayCamera(rayCamera);
-            material.setViewport(texture.getWidth(),texture.getHeight());
+            material.setRayCamera(rayCamera)
+                    .setViewport(texture.getWidth(),texture.getHeight())
+                    .setWorld(raytracingItemList);
         }
         mesh.draw();
     }

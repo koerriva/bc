@@ -5,6 +5,9 @@
 #define METAL   2
 #define GLASS   3
 
+#define SPHERE 1
+#define TRIANGLE 2
+
 in vec2 TexCoords;
 out vec4 color;
 uniform sampler2D texture0;
@@ -39,6 +42,17 @@ struct Sphere{
     Material material;
 };
 
+struct Triangle{
+    vec3 v0,v1,v2;
+    Material material;
+};
+
+struct Model{
+    int type;
+    Sphere sphere;
+    Triangle triagnle;
+};
+
 struct HitRecord{
     float t;
     vec3 p;
@@ -47,9 +61,11 @@ struct HitRecord{
 };
 
 struct Scene{
-    Sphere sphere[20];
+    Model item[20];
     int size;
 };
+
+uniform Scene world;
 
 float drand48(vec2 co) {
     return 2 * fract(sin(dot(co.xy, vec2(12.9898,78.233))) * 43758.5453) - 1;
@@ -170,6 +186,60 @@ bool scatter(inout Ray ray,HitRecord rec){
     }
 }
 
+bool hit_triangle(Triangle face,Ray ray,float min_t,float max_t,out HitRecord rec){
+    // compute plane's normal
+    vec3 v0v1 = face.v1 - face.v0;
+    vec3 v0v2 = face.v2 - face.v0;
+    // no need to normalize
+    vec3 N = v0v1*v0v2;// v0v1.crossProduct(v0v2); // N
+    float area2 = N.length();
+
+    // Step 1: finding P
+
+    // check if ray and plane are parallel ?
+    float NdotRayDirection = dot(N,ray.direction);//N.dotProduct(dir);
+    if (abs(NdotRayDirection) < 1e-8) // almost 0
+    return false; // they are parallel so they don't intersect !
+
+    // compute d parameter using equation 2
+    float d = dot(N,face.v0);//N.dotProduct(v0);
+
+    // compute t (equation 3)
+    rec.t = (dot(N,ray.origin) + d) / NdotRayDirection;
+    if(rec.t<min_t||rec.t>max_t) return false;
+    // check if the triangle is in behind the ray
+    if (rec.t < 0) return false; // the triangle is behind
+
+    // compute the intersection point using equation 1
+    vec3 P = getRayPoint(ray,rec.t);
+    rec.p = P;
+
+    // Step 2: inside-outside test
+    vec3 C; // vector perpendicular to triangle's plane
+
+    // edge 0
+    vec3 edge0 = face.v1 - face.v0;
+    vec3 vp0 = P - face.v0;
+    C = edge0*vp0;//edge0.crossProduct(vp0);
+    if (dot(N,C) < 0) return false; // P is on the right side
+
+    // edge 1
+    vec3 edge1 = face.v2 - face.v1;
+    vec3 vp1 = P - face.v1;
+    C = edge1*vp1;//edge1.crossProduct(vp1);
+    if (dot(N,C) < 0)  return false; // P is on the right side
+
+    // edge 2
+    vec3 edge2 = face.v0 - face.v2;
+    vec3 vp2 = P - face.v2;
+    C = edge2*vp2;//edge2.crossProduct(vp2);
+    if (dot(N,C) < 0) return false; // P is on the right side;
+
+    rec.normal = N;
+    rec.material = face.material;
+    return true; // this ray hits the triangle
+}
+
 bool hit_sphere(Sphere sphere,Ray ray,float min_t,float max_t,out HitRecord rec){
     vec3 oc = ray.origin-sphere.center;
     float a = dot(ray.direction,ray.direction);
@@ -204,10 +274,20 @@ bool hit_world(Scene world,Ray ray,float min_t,float max_t,out HitRecord rec){
     float closet_far = max_t;
     for(int i=0;i<world.size;i++){
         //选取最近的一个
-        if(hit_sphere(world.sphere[i],ray,min_t,closet_far,tmp)){
-            closet_far = tmp.t;
-            hit_anyting = true;
-            rec = tmp;
+        Model model = world.item[i];
+        if(model.type==SPHERE){
+            if(hit_sphere(model.sphere,ray,min_t,closet_far,tmp)){
+                closet_far = tmp.t;
+                hit_anyting = true;
+                rec = tmp;
+            }
+        }
+        if(model.type==TRIANGLE){
+            if(hit_triangle(model.triagnle,ray,min_t,closet_far,tmp)){
+                closet_far = tmp.t;
+                hit_anyting = true;
+                rec = tmp;
+            }
         }
     }
     return hit_anyting;
@@ -257,37 +337,23 @@ void main()
 //    camera.vertical = vec3(0,2,0);
 //    camera.lowerLeftCorner = vec3(-2,-1,-1);
 
-    Scene world;
-    world.size=13;
-    world.sphere[0]=Sphere(vec3(-1.7767739124623123, 0.5, -1.2816898536829258), 0.5, Material(GLASS, vec3(0.8583803237598104, 0.20326924410262914, 0.6395126962804198), 0.0, 1.0));
-    world.sphere[1]=Sphere(vec3(-1.7305723691670227, 0.2, 0.3951602921593084), 0.2, Material(METAL, vec3(0.31312642687469494, 0.7515889461590635, 0.28340848312832545), 0.0, 1.0));
-    world.sphere[2]=Sphere(vec3(-0.27591460582523974, 0.2, -1.8354952437012457), 0.2, Material(METAL, vec3(0.6198719656801521, 0.556026705514626, 0.648322615823812), 0.0, 1.0));
-    world.sphere[3]=Sphere(vec3(-0.9494116695035437, 0.2, 1.1626594958242502), 0.2, Material(DIFFUSE, vec3(0.5537532126201208, 0.5414521567205806, 0.7067976503378637), 0.0, 1.0));
-    world.sphere[4]=Sphere(vec3(0.34406388813179173, 0.2, -1.3459160365634482), 0.2, Material(METAL, vec3(0.6672582591732812, 0.5969480095581641, 0.06122936189796979), 0.0, 1.0));
-    world.sphere[5]=Sphere(vec3(0.8645388174599531, 0.2, -0.6721135055961149), 0.2, Material(DIFFUSE, vec3(0.8325486386586358, 0.6111814610006208, 0.062379505844914585), 0.0, 1.0));
-    world.sphere[6]=Sphere(vec3(0.26709016789165435, 0.2, 0.8643855722533954), 0.2, Material(METAL, vec3(0.9525838044784114, 0.055228586680290626, 0.9361120234051548), 0.0, 1.0));
-    world.sphere[7]=Sphere(vec3(1.248775787035965, 0.2, -1.2530472200991882), 0.2, Material(METAL, vec3(0.5406328826474636, 0.7101046078344466, 0.2631417124753519), 0.0, 1.0));
-    world.sphere[8]=Sphere(vec3(1.0832295826801093, 0.2, -0.8585841079725383), 0.2, Material(METAL, vec3(0.18963476844985272, 0.15177197074252846, 0.4885690417252797), 0.0, 1.0));
-    world.sphere[9]=Sphere(vec3(1.2052948984262064, 0.2, 0.7685004648640211), 0.2, Material(METAL, vec3(0.2841868868425741, 0.8423035464421846, 0.6406487327665245), 0.0, 1.0));
-    world.sphere[10]=Sphere(vec3(-4.0, 1.0, 0.8), 1.0, Material(DIFFUSE, vec3(0.4, 0.2, 0.1), 0.0, 1.0));
-    world.sphere[11]=Sphere(vec3(0.0, 1.0, 0.0), 1.0, Material(METAL, vec3(1.0, 1.0, 1.0), 0.0, 1.0));
-    world.sphere[12]=Sphere(vec3(0.0, -1000.0, 0.0), 1000.0, Material(METAL, vec3(0.5, 0.5, 0.5), 0.3, 1.0));
+//    Triangle triagnle;
+//    Sphere sphere;
+//    Scene world;
+//    world.size=4;
+//    world.item[0] = Model(SPHERE,Sphere(vec3(-4.0, 1.0, 0.8), 1.0, Material(DIFFUSE, vec3(0.4, 0.2, 0.1), 0.0, 1.0)),triagnle);
+//    world.item[1] = Model(SPHERE,Sphere(vec3(0.0, 1.0, 0.0), 1.0, Material(METAL, vec3(0.2, 1.0, 1.0), 0.2, 1.0)),triagnle);
+//    world.item[2] = Model(SPHERE,Sphere(vec3(0.0, -1000.0, 0.0), 1000.0, Material(DIFFUSE, vec3(0.5, 0.5, 0.5), 0.0, 1.0)),triagnle);
+//    world.item[3] = Model(TRIANGLE,sphere,Triangle(vec3(0,1,0),vec3(1,1,0),vec3(2,1,0),Material(DIFFUSE, vec3(0.4, 0.2, 0.1), 0.0, 1.0)));
 
     randState = TexCoords;
 
     vec3 rayColor = vec3(0);
 
-    int spp = 8;
-    for(int i=0;i<spp;i++){
-        float u = float(TexCoords.x*viewport.x + rand2D()) / viewport.x;
-        float v = float(TexCoords.y*viewport.y + rand2D()) / viewport.y;
-        Ray ray = getRay(camera,vec2(u,v));
-        rayColor += getColor(ray,world);
-    }
-    rayColor /= spp;
-
-//    Ray ray = getRay(camera,TexCoords);
-//    rayColor = getColor(ray,world);
+    float u = TexCoords.s;
+    float v = TexCoords.t;
+    Ray ray = getRay(camera,vec2(u,v));
+    rayColor = getColor(ray,world);
 
     //gamma 补偿
     color = vec4(sqrt(rayColor),1.);

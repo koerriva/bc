@@ -75,7 +75,7 @@ public class Game {
             cameraOffset.set(InputManager.mouse.getLocalOffset());
         }
 
-        rayCamera.rotate(new Vector3f(cameraOffset.x,cameraOffset.y,0));
+        rayCamera.move(new Vector3f(cameraOffset.x,cameraOffset.y,0));
     }
 
     private void update(){

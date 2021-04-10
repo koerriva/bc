@@ -1,11 +1,13 @@
 package com.koerriva.bugbrain.engine.graphics;
 
-import com.koerriva.bugbrain.engine.graphics.rtx.RayCamera;
+import com.koerriva.bugbrain.engine.graphics.rtx.*;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.List;
 
 import static org.lwjgl.opengl.GL13C.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13C.glActiveTexture;
@@ -110,6 +112,57 @@ public class Material {
 
     public Material setViewport(int width,int height) {
         shader.setVec2i("viewport",new Vector2i(width,height));
+        return this;
+    }
+
+    private void setMat(String name, Mat mat){
+        String attr_mat_type = name+".type";
+        String attr_mat_albedo = name+".albedo";
+        String attr_mat_fuzz = name+".fuzz";
+        String attr_mat_ref_idx = name+".ref_idx";
+        shader.setInt(attr_mat_type,mat.type);
+        shader.setVec3(attr_mat_albedo, mat.albedo);
+        shader.setFloat(attr_mat_fuzz,mat.fuzz);
+        shader.setFloat(attr_mat_ref_idx,mat.ref_idx);
+    }
+
+    private void setTriangle(String name, Triangle triangle, Mat mat){
+        String attr_v0 = name+".v0";
+        String attr_v1 = name+".v1";
+        String attr_v2 = name+".v2";
+        String attr_mat = name+".material";
+
+        shader.setVec3(attr_v0,triangle.v0);
+        shader.setVec3(attr_v1,triangle.v1);
+        shader.setVec3(attr_v2,triangle.v2);
+        setMat(attr_mat,mat);
+    }
+
+    private void setSphere(String name, Sphere sphere, Mat mat){
+        String attr_center = name+".center";
+        String attr_radius = name+".r";
+        String attr_mat = name+".material";
+
+        shader.setVec3(attr_center,sphere.center);
+        shader.setFloat(attr_radius,sphere.radius);
+        setMat(attr_mat,mat);
+    }
+
+    public Material setWorld(List<Model> models){
+        shader.setInt("world.size",models.size());
+        for (int i = 0; i < models.size(); i++) {
+            String name = String.format("world.item[%d]",i);
+            Model model = models.get(i);
+            shader.setInt(name+".type",model.type);
+            if(model.type==1){
+                String sphereName = name +".sphere";
+                setSphere(sphereName,model.getSphere(),model.material);
+            }
+            if(model.type==2){
+                String triangleName = name +".triangle";
+                setTriangle(triangleName,model.getTriangle(),model.material);
+            }
+        }
         return this;
     }
 }
