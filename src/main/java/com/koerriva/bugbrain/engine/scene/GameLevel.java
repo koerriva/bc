@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class GameLevel {
     private final ArrayList<GameObject> objects = new ArrayList<>();
     private Viewport minimap;
-    private Viewport realWorld;
 
     public static GameLevel load(int width,int height){
         long t = System.currentTimeMillis();
@@ -59,16 +58,6 @@ public class GameLevel {
             level.minimap.add(o);
         }
         level.objects.add(level.minimap);
-
-        level.realWorld = new Viewport(new Vector2f(0),new Vector2f(800,400),new RenderTexture(400,200),Shader.load("raytracing"));
-        level.objects.add(level.realWorld);
-
-        Model sphere1 = Model.sphere(new Vector3f(0,-1000.5f,0),1000f, Mat.diffuse(new Vector3f(0.5f,0.5f,0.5f)));
-        Model sphere2 = Model.sphere(new Vector3f(0,1f,0),1f, Mat.metal(0.2f));
-        Model sphere3 = Model.sphere(new Vector3f(-4f,1,0.8f),1f,Mat.diffuse(new Vector3f(0.4f,0.2f,0.1f)));
-        level.realWorld.addRaytracingModel(sphere1);
-        level.realWorld.addRaytracingModel(sphere2);
-        level.realWorld.addRaytracingModel(sphere3);
         return level;
     }
 
@@ -81,15 +70,11 @@ public class GameLevel {
     }
 
     public void draw(Window window, SpriteRenderer renderer, RaytracingRenderer raytracingRenderer){
-        realWorld.setViewSize(window.size.frameBufferWidth,window.size.frameBufferHeight);
-//        realWorld.draw(raytracingRenderer);
-        realWorld.openRaytracing(raytracingRenderer.getCamera());
         renderer.newFrame(window.size.frameBufferWidth,window.size.frameBufferHeight);
-        renderer.draw(realWorld);
-//        minimap.draw(renderer);
-//
-//        renderer.newFrame(window.size.frameBufferWidth,window.size.frameBufferHeight);
-//        objects.forEach(renderer::draw);
+        minimap.draw(renderer);
+
+        renderer.newFrame(window.size.frameBufferWidth,window.size.frameBufferHeight);
+        objects.forEach(renderer::draw);
     }
 
     public boolean isCompleted(){
