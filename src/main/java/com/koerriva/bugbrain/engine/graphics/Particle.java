@@ -10,8 +10,8 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.Random;
 
+import static com.koerriva.bugbrain.utils.IOUtil.drand48;
 import static org.lwjgl.opengl.GL11C.*;
 
 public class Particle extends GameObject {
@@ -22,7 +22,6 @@ public class Particle extends GameObject {
         Matrix4f model;
     }
 
-    private final Random random = new Random();
     private final ArrayList<Data> data;
     private final float life;
     private final int batchSize;
@@ -39,8 +38,6 @@ public class Particle extends GameObject {
         this.isInstance = true;
         this.batchSize = batchSize;
         this.data = new ArrayList<>();
-
-        random.setSeed(System.currentTimeMillis());
         System.out.println("init particle!");
     }
 
@@ -58,22 +55,19 @@ public class Particle extends GameObject {
         e.model = new Matrix4f().identity()
                 .translate(position.x+xoffset*5,position.y+yoffset*5,0f)
                 .rotateZ(rotation)
-                .scale(size.x,size.y,0f);
+                .scale(size.x*0.5f,size.y*0.5f,0f);
         return e;
     }
 
     private void respawn(final Data e){
-        float xoffset = random.nextFloat()*2-1;
-        float yoffset = random.nextFloat()*2-1;
-        float xv = random.nextFloat()*10f-5f;
-        float yv = 5f+random.nextFloat()*5f;
+        float xoffset = (float) Math.random()*2-1;
+        float yoffset = (float) Math.random()*2-1;
 
         e.life = life;
         e.color.set(material.color);
-        e.velocity.set(xv,yv,0f);
         e.model.identity().translate(position.x+xoffset*5,position.y+yoffset*5,0f)
                 .rotateZ(rotation)
-                .scale(size.x,size.y,0f);
+                .scale(size.x*0.5f,size.y*0.5f,0f);
     }
 
     @Override
@@ -99,12 +93,13 @@ public class Particle extends GameObject {
             e.color.w -= deltaTime*2.5f;
 //            e.color.w = e.life;
             if (e.life > 0f) {
-                if(e.velocity.x>0){
-                    e.velocity.x -= deltaTime*200f;
-                }else {
-                    e.velocity.x += deltaTime*200f;
-                }
-                e.model.translate(e.velocity.x * deltaTime, e.velocity.y * deltaTime, e.velocity.z * deltaTime);
+//                if(e.velocity.x>0){
+//                    e.velocity.x -= deltaTime*200f;
+//                }else {
+//                    e.velocity.x += deltaTime*200f;
+//                }
+                float vecx = e.velocity.x - (e.velocity.x>0?-1:1)*deltaTime*200f;
+                e.model.translate(vecx * deltaTime, e.velocity.y * deltaTime, 0);
             }else {
                 respawn(e);
             }

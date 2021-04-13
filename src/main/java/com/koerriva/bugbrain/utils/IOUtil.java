@@ -66,4 +66,9 @@ public final class IOUtil {
         return memSlice(buffer);
     }
 
+    public static double drand48() {
+        long seed = System.currentTimeMillis();
+        seed = (0x5DEECE66DL * seed + 0xBL) & ((1L << 48) - 1);
+        return (double)seed / (1L << 48);
+    }
 }
