@@ -4,7 +4,6 @@ import com.koerriva.bugbrain.core.Direction;
 import com.koerriva.bugbrain.engine.audio.Audio;
 import com.koerriva.bugbrain.engine.audio.AudioManager;
 import com.koerriva.bugbrain.engine.graphics.*;
-import com.koerriva.bugbrain.engine.graphics.g2d.Camera2D;
 import com.koerriva.bugbrain.engine.graphics.g2d.Line2D;
 import com.koerriva.bugbrain.engine.input.InputManager;
 import com.koerriva.bugbrain.engine.scene.GameObject;
@@ -141,12 +140,12 @@ public class Brain extends GameObject {
                     }else {
                         e.setPosition(mWPos);
                     }
-                    InputManager.dragHandled();
+                    InputManager.overDrag();
                 }
             }
         }
 
-        if(InputManager.isKeyPress(GLFW.GLFW_KEY_DELETE)){
+        if(InputManager.isKeyPressed(GLFW.GLFW_KEY_DELETE)){
             Neural n = neurals.get(3);
             if(n!=null){
                 remove(n);

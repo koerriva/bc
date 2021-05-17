@@ -58,16 +58,16 @@ public class Game {
         level.input(window);
 
         cameraOffset.zero();
-        if(InputManager.isKeyPress(GLFW_KEY_LEFT)){
+        if(InputManager.isKeyDown(GLFW_KEY_LEFT)){
             cameraOffset.set(-1f,0f);
         }
-        if(InputManager.isKeyPress(GLFW_KEY_RIGHT)){
+        if(InputManager.isKeyDown(GLFW_KEY_RIGHT)){
             cameraOffset.set(1f,0f);
         }
-        if(InputManager.isKeyPress(GLFW_KEY_UP)){
+        if(InputManager.isKeyDown(GLFW_KEY_UP)){
             cameraOffset.set(0f,1f);
         }
-        if(InputManager.isKeyPress(GLFW_KEY_DOWN)){
+        if(InputManager.isKeyDown(GLFW_KEY_DOWN)){
             cameraOffset.set(0f,-1f);
         }
 

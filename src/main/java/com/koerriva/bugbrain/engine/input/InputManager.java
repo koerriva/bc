@@ -48,23 +48,24 @@ public class InputManager {
     }
     public static final Mouse mouse = new Mouse();
 
-    private static final boolean[] keyState = new boolean[GLFW.GLFW_KEY_LAST+1];
-    private static final int[] mouseState = new int[GLFW.GLFW_MOUSE_BUTTON_LAST+1];
-    private static final float[] mouseStateTime = new float[GLFW.GLFW_MOUSE_BUTTON_LAST+1];
+    private static final int[] keyLastState = new int[GLFW.GLFW_KEY_LAST+1];
+    private static final int[] keyCurrState = new int[GLFW.GLFW_KEY_LAST+1];
+
+    private static final int[] mouseLastState = new int[GLFW.GLFW_MOUSE_BUTTON_LAST+1];
+    private static final int[] mouseCurrState = new int[GLFW.GLFW_MOUSE_BUTTON_LAST+1];
+
     private static final boolean[] dragHandleState = new boolean[GLFW_MOUSE_BUTTON_LAST+1];
 
     public static void init(Window window){
         glfwSetMouseButtonCallback(window.getHandle(), (handle, button, action, mods) -> {
             switch (button) {
-                case 1:
-                    button = 2;
-                    break;
-                case 2:
-                    button = 1;
-                    break;
+                case 1 -> button = 2;
+                case 2 -> button = 1;
             }
             uiSetButton(button, mods, action == GLFW_PRESS);
-            mouseState[button] = action;
+
+            mouseLastState[button] = mouseCurrState[button];
+            mouseCurrState[button] = action;
         });
         glfwSetCursorPosCallback(window.getHandle(), (handle, xpos, ypos) -> {
             mouse.localOffset.x = (float) (xpos-mouse.local.x);
@@ -79,33 +80,60 @@ public class InputManager {
                 glfwSetWindowShouldClose(handle, true);
             }
             uiSetKey(keyCode, mods, action != GLFW_RELEASE);
-            keyState[keyCode] = action != GLFW_RELEASE;
+
+            keyLastState[keyCode] = keyCurrState[keyCode];
+            keyCurrState[keyCode] = action;
         });
     }
 
     public static void update(Window window){
         mouse.resetOffset();
-        for (int i = 0; i < mouseState.length; i++) {
-            int action = mouseState[i];
-            if(action==GLFW_RELEASE){
-                mouseStateTime[i]=0;
-            }else {
-                mouseStateTime[i] += window.frameTime;
-            }
-            dragHandleState[i] = false;
-        }
     }
 
-    public static boolean isKeyPress(int key){
-        return keyState[key];
+    public static boolean isLeftPressed(){
+        return mouseLastState[GLFW_MOUSE_BUTTON_LEFT]!=mouseCurrState[GLFW_MOUSE_BUTTON_LEFT] &&
+                mouseCurrState[GLFW_MOUSE_BUTTON_LEFT]==GLFW_RELEASE;
+    }
+
+    public static boolean isLeftDown(){
+        return mouseCurrState[GLFW_MOUSE_BUTTON_LEFT]==GLFW_PRESS;
+    }
+
+    public static boolean isLeftUp(){
+        return mouseCurrState[GLFW_MOUSE_BUTTON_LEFT]==GLFW_RELEASE;
     }
 
     public static boolean isDrag(){
         if(dragHandleState[GLFW_MOUSE_BUTTON_LEFT])return false;
-        return mouseState[GLFW_MOUSE_BUTTON_LEFT]==GLFW_PRESS&&mouseStateTime[GLFW_MOUSE_BUTTON_LEFT]>0.1f;
+        return mouseCurrState[GLFW_MOUSE_BUTTON_LEFT]==GLFW_PRESS||mouseCurrState[GLFW_MOUSE_BUTTON_LEFT]==GLFW_REPEAT;
     }
 
-    public static void dragHandled(){
+    public static void overDrag(){
         dragHandleState[GLFW_MOUSE_BUTTON_LEFT] = true;
+    }
+
+    public static boolean isRightPressed(){
+        return mouseLastState[GLFW_MOUSE_BUTTON_RIGHT]!=mouseCurrState[GLFW_MOUSE_BUTTON_RIGHT] &&
+                mouseCurrState[GLFW_MOUSE_BUTTON_RIGHT]==GLFW_RELEASE;
+    }
+
+    public static boolean isRightDown(){
+        return mouseCurrState[GLFW_MOUSE_BUTTON_RIGHT]==GLFW_PRESS;
+    }
+
+    public static boolean isRightUp(){
+        return mouseCurrState[GLFW_MOUSE_BUTTON_RIGHT]==GLFW_RELEASE;
+    }
+
+    public static boolean isKeyPressed(int key){
+        return keyLastState[key]!=keyCurrState[key] && keyCurrState[key]==GLFW_RELEASE;
+    }
+
+    public static boolean isKeyDown(int key){
+        return keyCurrState[key] == GLFW_PRESS;
+    }
+
+    public static boolean isKeyUp(int key){
+        return keyCurrState[key] == GLFW_RELEASE;
     }
 }
